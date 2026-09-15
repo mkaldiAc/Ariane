@@ -1,23 +1,34 @@
-version: "1.0.0"
+version: "1.1.0"
 project: "ARIANE"
 purpose: >-
   Référentiel machine-readable des objets patrimoniaux autorisés, de leurs parents
-  physiques possibles et des règles structurantes à appliquer lors de la captation.
+  possibles et des règles structurantes à appliquer lors de la captation.
 
 principles:
-  - "La hiérarchie décrit d'abord la réalité physique du patrimoine."
-  - "Chaque objet possède au maximum un parent physique principal, sauf l'objet racine."
-  - "Le parent physique le plus précis démontrable doit être utilisé."
+  - "PROGRAMME est la racine de contexte du référentiel ARIANE."
+  - "À partir de FONCIER, la hiérarchie décrit d'abord la réalité physique du patrimoine."
+  - "Chaque objet possède au maximum un parent principal, sauf l'objet racine."
+  - "Le parent physique le plus précis démontrable doit être utilisé à partir du niveau FONCIER."
   - "Les niveaux RDC, R+1, SS-1, etc. sont des localisations et non des objets."
   - "Les relations d'affectation, d'usage, de desserte ou d'implantation cadastrale sont complémentaires."
   - "Ne jamais inventer un type patrimonial absent de ce référentiel."
 
 objects:
-  FON:
-    label: "Foncier"
-    description: "Périmètre foncier patrimonial regroupant une opération."
+  PRG:
+    label: "Programme"
+    description: "Opération immobilière globale servant de racine de contexte et pouvant porter des attributs généraux."
     allowed_parents: []
     root: true
+    physical: false
+    characteristics:
+      denomination_programme:
+        description: "Dénomination générale du programme."
+
+  FON:
+    label: "Foncier"
+    description: "Périmètre foncier patrimonial dépendant d'un programme."
+    allowed_parents: [PRG]
+    physical: true
 
   PAR:
     label: "Parcelle"
