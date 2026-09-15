@@ -1,62 +1,68 @@
 # ARIANE — Référentiel normatif de structure patrimoniale
 
-Version : 1.0.0
+Version : 1.1.0
 
 ## 1. Objet
 
 Cette spécification définit les règles à respecter pour construire une structure patrimoniale ARIANE à partir de plans, pièces graphiques, documents techniques, bases de données ou autres sources documentaires.
 
-L'objectif est d'obtenir une représentation physique, homogène, lisible et exploitable du patrimoine, destinée ensuite à accueillir des données attributaires.
+L'objectif est d'obtenir une représentation homogène, lisible et exploitable du patrimoine, destinée ensuite à accueillir des données attributaires.
+
+Le modèle comprend une racine de contexte `PROGRAMME`, puis une hiérarchie physique à partir du niveau `FONCIER`.
 
 L'IA ne doit pas créer sa propre ontologie. Elle doit utiliser exclusivement les objets, relations et règles définis ici.
 
 ## 2. Principe fondamental
 
-La hiérarchie doit répondre en priorité à la question : **où cet objet se situe-t-il physiquement dans le patrimoine ?**
+`PROGRAMME` est l'objet racine du référentiel ARIANE. Il représente l'opération immobilière dans son ensemble et peut porter des informations générales telles que la dénomination du programme.
 
-Une relation parent/enfant représente donc d'abord une relation physique de contenance, d'appartenance ou de dépendance spatiale.
+À partir du niveau `FONCIER`, la hiérarchie doit répondre en priorité à la question : **où cet objet se situe-t-il physiquement dans le patrimoine ?**
+
+Une relation parent/enfant sous `FONCIER` représente donc d'abord une relation physique de contenance, d'appartenance ou de dépendance spatiale.
 
 Les relations d'affectation, d'usage, de desserte ou d'implantation cadastrale sont complémentaires et ne remplacent jamais le parent physique.
 
 ## 3. Structure de référence
 
 ```text
-FONCIER
-├── PARCELLE
-└── RÉSIDENCE
-    ├── BÂTIMENT
-    │   ├── ENTRÉE / HALL
-    │   ├── CAGE D'ESCALIER
-    │   │   └── ZONE DE CIRCULATION
-    │   ├── ZONE DE CIRCULATION
-    │   ├── LOGEMENT
-    │   │   ├── PIÈCE
-    │   │   └── ESPACE EXTÉRIEUR PRIVATIF
-    │   ├── LOCAL D'ACTIVITÉ / COMMERCE
-    │   │   ├── PIÈCE
-    │   │   └── ESPACE EXTÉRIEUR PRIVATIF
-    │   ├── LOCAL POUBELLES
-    │   ├── LOCAL VÉLOS
-    │   ├── CAVE
-    │   ├── DÉPENDANCE
-    │   ├── LOCAL TECHNIQUE
-    │   └── ZONE DE STATIONNEMENT INTÉRIEURE
-    │       └── PLACE DE STATIONNEMENT
-    └── ESPACE EXTÉRIEUR DE RÉSIDENCE
-        ├── ESPACE VÉGÉTALISÉ
-        ├── ZONE DE CIRCULATION EXTÉRIEURE
-        ├── AIRE DE JEUX
-        └── ZONE DE STATIONNEMENT EXTÉRIEURE
-            └── PLACE DE STATIONNEMENT
+PROGRAMME
+└── FONCIER
+    ├── PARCELLE
+    └── RÉSIDENCE
+        ├── BÂTIMENT
+        │   ├── ENTRÉE / HALL
+        │   ├── CAGE D'ESCALIER
+        │   │   └── ZONE DE CIRCULATION
+        │   ├── ZONE DE CIRCULATION
+        │   ├── LOGEMENT
+        │   │   ├── PIÈCE
+        │   │   └── ESPACE EXTÉRIEUR PRIVATIF
+        │   ├── LOCAL D'ACTIVITÉ / COMMERCE
+        │   │   ├── PIÈCE
+        │   │   └── ESPACE EXTÉRIEUR PRIVATIF
+        │   ├── LOCAL POUBELLES
+        │   ├── LOCAL VÉLOS
+        │   ├── CAVE
+        │   ├── DÉPENDANCE
+        │   ├── LOCAL TECHNIQUE
+        │   └── ZONE DE STATIONNEMENT INTÉRIEURE
+        │       └── PLACE DE STATIONNEMENT
+        └── ESPACE EXTÉRIEUR DE RÉSIDENCE
+            ├── ESPACE VÉGÉTALISÉ
+            ├── ZONE DE CIRCULATION EXTÉRIEURE
+            ├── AIRE DE JEUX
+            └── ZONE DE STATIONNEMENT EXTÉRIEURE
+                └── PLACE DE STATIONNEMENT
 ```
 
-Cette arborescence présente les parcours principaux. Le rattachement réel doit toujours suivre le parent physique le plus précis démontrable.
+Cette arborescence présente les parcours principaux. Le rattachement réel doit toujours suivre le parent physique le plus précis démontrable à partir du niveau `FONCIER`.
 
 ## 4. Référentiel des objets
 
 | Code | Objet | Définition |
 |---|---|---|
-| FON | Foncier | Périmètre foncier patrimonial regroupant une opération |
+| PRG | Programme | Opération immobilière globale servant de racine de contexte et pouvant porter des attributs généraux |
+| FON | Foncier | Périmètre foncier patrimonial dépendant d'un programme |
 | PAR | Parcelle | Parcelle cadastrale composant tout ou partie du foncier |
 | RES | Résidence | Ensemble immobilier géré comme une même opération patrimoniale |
 | BAT | Bâtiment | Construction physiquement identifiable : immeuble, maison, bâtiment technique, parking construit, etc. |
@@ -80,9 +86,13 @@ Cette arborescence présente les parcours principaux. Le rattachement réel doit
 | CEX | Zone de circulation extérieure | Voirie, cheminement, accès ou circulation extérieure |
 | AJE | Aire de jeux | Espace extérieur aménagé destiné aux jeux |
 
-## 5. Règles foncières
+## 5. Programme et foncier
 
-- `FON` est l'objet racine.
+- `PRG` est l'objet racine du référentiel ARIANE.
+- `PRG` est un objet de contexte et de regroupement ; il ne représente pas un objet physique en lui-même.
+- `PRG` peut porter des informations attributaires générales, par exemple la dénomination du programme.
+- Tout `FON` dépend obligatoirement d'un `PRG`.
+- Un `PRG` peut comprendre un ou plusieurs `FON`.
 - `PAR` dépend de `FON`.
 - `RES` dépend de `FON`.
 - Une résidence peut être implantée sur une ou plusieurs parcelles via une relation `IMPLANTE_SUR`.
@@ -229,7 +239,7 @@ L'IA ne doit pas inventer un nouveau type pour résoudre un cas ambigu.
 
 ## 15. Règle de précision maximale démontrable
 
-Toujours préférer le parent physique le plus précis lorsque celui-ci est démontrable.
+À partir du niveau `FON`, toujours préférer le parent physique le plus précis lorsque celui-ci est démontrable.
 
 Exemple préféré :
 
@@ -254,7 +264,7 @@ En revanche, ne jamais inventer une cage ou une circulation absente ou incertain
 En cas d'incertitude :
 
 1. créer l'objet si son existence est suffisamment établie ;
-2. utiliser le parent physique le plus sûr ;
+2. utiliser le parent le plus sûr ;
 3. conserver la source ;
 4. indiquer un niveau de confiance ;
 5. documenter ce qui reste à vérifier ;
@@ -281,26 +291,29 @@ Chaque objet ou information capté à partir d'un document doit conserver, lorsq
 
 Avant de considérer une structure comme exploitable, vérifier au minimum :
 
-1. aucun `LOT` ou `PCM` n'a été créé ;
-2. `PAR` et `RES` dépendent de `FON` ;
-3. tout `BAT` dépend de `RES` ;
-4. aucune maison ou immeuble n'est créé comme type distinct de `BAT` ;
-5. aucun étage n'est un objet ;
-6. toute `PIE` dépend de `LOG` ou `LOC` ;
-7. tout `EXP` dépend de `LOG` ou `LOC` ;
-8. toute `PST` dépend de `ZSI` ou `ZSE` ;
-9. toute `ZSI` appartient à un `BAT` ;
-10. toute `ZSE` appartient à `EXT` ;
-11. tous les locaux techniques utilisent `LTE` ;
-12. toute incertitude est explicitement documentée.
+1. `PRG` existe comme racine ;
+2. tout `FON` dépend d'un `PRG` ;
+3. aucun `LOT` ou `PCM` n'a été créé ;
+4. `PAR` et `RES` dépendent de `FON` ;
+5. tout `BAT` dépend de `RES` ;
+6. aucune maison ou immeuble n'est créé comme type distinct de `BAT` ;
+7. aucun étage n'est un objet ;
+8. toute `PIE` dépend de `LOG` ou `LOC` ;
+9. tout `EXP` dépend de `LOG` ou `LOC` ;
+10. toute `PST` dépend de `ZSI` ou `ZSE` ;
+11. toute `ZSI` appartient à un `BAT` ;
+12. toute `ZSE` appartient à `EXT` ;
+13. tous les locaux techniques utilisent `LTE` ;
+14. toute incertitude est explicitement documentée.
 
 ## 19. Principe final
 
 En cas de doute, appliquer dans cet ordre :
 
-1. Décrire ce qui existe physiquement.
-2. Utiliser uniquement les types patrimoniaux autorisés.
-3. Rattacher chaque objet au parent physique le plus précis démontrable.
-4. Séparer structure physique, caractéristiques, localisation et relations fonctionnelles.
+1. Identifier le programme de rattachement.
+2. Décrire ce qui existe physiquement à partir du foncier.
+3. Utiliser uniquement les types patrimoniaux autorisés.
+4. Rattacher chaque objet au parent le plus précis démontrable.
+5. Séparer structure physique, caractéristiques, localisation et relations fonctionnelles.
 
 La fidélité au référentiel ARIANE prime sur toute interprétation libre du document source.
