@@ -1,12 +1,14 @@
 # ARIANE — Instructions de captation pour IA
 
+Version : 1.1.0
+
 ## Rôle
 
 Tu interviens dans le cadre du projet ARIANE.
 
 Ta mission se déroule en deux temps :
 
-1. reconstruire une structure patrimoniale physique à partir des documents fournis, en particulier des plans ;
+1. reconstruire une structure patrimoniale à partir des documents fournis, en particulier des plans ;
 2. capter ensuite les informations attributaires disponibles et les rattacher aux bons objets patrimoniaux.
 
 Tu dois appliquer strictement le référentiel ARIANE présent dans ce dépôt.
@@ -21,14 +23,35 @@ Lire obligatoirement :
 
 Le référentiel ARIANE prévaut sur toute interprétation libre.
 
+## Racine du modèle
+
+`PRG` — Programme est la racine du référentiel ARIANE.
+
+Le programme représente l'opération immobilière dans son ensemble. Il peut porter des attributs généraux comme la dénomination du programme.
+
+`PRG` n'est pas un objet physique. À partir de `FON` — Foncier, la hiérarchie décrit la réalité physique du patrimoine.
+
+Structure minimale :
+
+```text
+PRG
+└── FON
+    ├── PAR
+    └── RES
+```
+
+Tout `FON` doit dépendre d'un `PRG`.
+
 ## Étape 1 — Construire la structure patrimoniale
 
 À partir des documents :
 
+- identifier le `PRG` concerné lorsqu'il est identifiable ;
+- capter les informations générales du programme lorsqu'elles sont disponibles ;
 - identifier les objets patrimoniaux réellement présents ;
 - utiliser uniquement les types autorisés ;
-- reconstruire les relations parent/enfant physiques ;
-- rattacher chaque objet au parent physique le plus précis démontrable ;
+- reconstruire les relations parent/enfant prévues par le référentiel ;
+- à partir de `FON`, rattacher chaque objet au parent physique le plus précis démontrable ;
 - ne jamais créer un niveau uniquement parce qu'il apparaît graphiquement dans un plan ;
 - ne jamais créer d'étage comme objet ;
 - ne jamais créer de `LOT` ou de `PCM / Partie commune` ;
@@ -38,14 +61,16 @@ Le référentiel ARIANE prévaut sur toute interprétation libre.
 
 ### Questions à appliquer pour chaque élément identifié
 
-1. Est-ce un objet patrimonial autorisé ?
-2. Est-ce plutôt une caractéristique, une localisation ou une relation fonctionnelle ?
-3. Quel est son parent physique réel ?
-4. Existe-t-il un parent physique plus précis et démontrable ?
-5. La source permet-elle de confirmer ce rattachement ?
-6. Existe-t-il une relation complémentaire à conserver ?
-7. L'information est-elle explicite ou déduite ?
-8. Quel est le niveau de confiance ?
+1. S'agit-il d'une information portée par le programme ou d'un objet patrimonial ?
+2. Si c'est un objet, est-il d'un type autorisé ?
+3. Est-ce plutôt une caractéristique, une localisation ou une relation fonctionnelle ?
+4. Quel est son parent prévu par le référentiel ?
+5. À partir du niveau foncier, quel est son parent physique réel ?
+6. Existe-t-il un parent physique plus précis et démontrable ?
+7. La source permet-elle de confirmer ce rattachement ?
+8. Existe-t-il une relation complémentaire à conserver ?
+9. L'information est-elle explicite ou déduite ?
+10. Quel est le niveau de confiance ?
 
 ## Étape 2 — Capter les attributs
 
@@ -53,7 +78,7 @@ Cette étape ne doit être réalisée qu'après avoir construit ou stabilisé su
 
 Pour chaque information attributaire trouvée :
 
-- identifier l'objet patrimonial concerné ;
+- identifier l'objet patrimonial concerné, y compris `PRG` lorsque l'information concerne l'opération globale ;
 - utiliser le référentiel d'attributs ARIANE lorsqu'il est disponible ;
 - respecter le niveau de rattachement prévu ;
 - conserver la valeur telle qu'elle est documentée ;
@@ -127,7 +152,7 @@ Ne jamais inventer une structure pour obtenir un résultat apparemment complet.
 
 Si le document ne permet pas de déterminer précisément un rattachement :
 
-- choisir le parent physique le plus sûr ;
+- choisir le parent le plus sûr ;
 - renseigner le niveau de confiance ;
 - expliquer l'incertitude ;
 - conserver la source.
@@ -159,7 +184,7 @@ Lorsque le format n'est pas imposé par l'utilisateur, produire au minimum quatr
 - `Type_objet`
 - `Code_type`
 - `Libelle`
-- `ID_parent_physique`
+- `ID_parent_principal`
 - `Niveau`
 - `Sous_type_ou_caracteristique_principale`
 - `Confiance`
@@ -196,8 +221,9 @@ Lorsque le format n'est pas imposé par l'utilisateur, produire au minimum quatr
 
 En cas de doute :
 
-1. décrire ce qui existe physiquement ;
-2. utiliser uniquement les types autorisés ;
-3. choisir le parent physique le plus précis démontrable ;
-4. séparer hiérarchie physique, localisation, caractéristiques et relations fonctionnelles ;
-5. ne jamais inventer pour combler un manque documentaire.
+1. identifier le programme de rattachement ;
+2. décrire ce qui existe physiquement à partir du foncier ;
+3. utiliser uniquement les types autorisés ;
+4. choisir le parent le plus précis démontrable ;
+5. séparer hiérarchie physique, localisation, caractéristiques et relations fonctionnelles ;
+6. ne jamais inventer pour combler un manque documentaire.
