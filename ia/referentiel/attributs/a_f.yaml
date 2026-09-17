@@ -1,0 +1,550 @@
+version: "1.3.0"
+project: "ARIANE"
+group: "a_f"
+attributes:
+  activites_autorisees:
+    label: "Activités autorisées"
+    objects: [FON]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0216]
+  agence_ho_rattachement:
+    label: "Agence (HO) de rattachement"
+    objects: [RES]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0342]
+  architecte_conception:
+    label: "Architecte de conception"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0264]
+  assurance_architecte_conception:
+    label: "Assurance architecte conception"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0054]
+  assurance_bet_fluides:
+    label: "Assurance BET fluides"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0055]
+  assurance_bet_structure:
+    label: "Assurance BET structure"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0056]
+  assurance_bet_thermique:
+    label: "Assurance BET thermique"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0057]
+  assurance_controleur_technique:
+    label: "Assurance contrôleur technique"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0058]
+  assurance_entreprise_ascenseur:
+    label: "Assurance entreprise ascenseur"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0048]
+  assurance_entreprise_charpente:
+    label: "Assurance entreprise charpente"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0037]
+  assurance_entreprise_cloisons:
+    label: "Assurance entreprise cloisons"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0045]
+  assurance_entreprise_couverture:
+    label: "Assurance entreprise couverture"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0038]
+  assurance_entreprise_electricite_cfa:
+    label: "Assurance entreprise électricité CFA"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0052]
+  assurance_entreprise_electricite_cfo:
+    label: "Assurance entreprise électricité CFO"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0051]
+  assurance_entreprise_espaces_verts:
+    label: "Assurance entreprise espaces verts"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0049]
+  assurance_entreprise_etancheite:
+    label: "Assurance entreprise étanchéité"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0039]
+  assurance_entreprise_generale:
+    label: "Assurance entreprise generale"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0033]
+  assurance_entreprise_go:
+    label: "Assurance entreprise go"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0034]
+  assurance_entreprise_menuiseries_exterieures:
+    label: "Assurance entreprise menuiseries extérieures"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0041]
+  assurance_entreprise_menuiseries_interieures:
+    label: "Assurance entreprise menuiseries intérieures"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0042]
+  assurance_entreprise_peinture:
+    label: "Assurance entreprise peinture"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0047]
+  assurance_entreprise_plomberie:
+    label: "Assurance entreprise plomberie"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0050]
+  assurance_entreprise_porte_automatique:
+    label: "Assurance entreprise porte automatique"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0044]
+  assurance_entreprise_ravalement:
+    label: "Assurance entreprise ravalement"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0040]
+  assurance_entreprise_revetement_sol_faience:
+    label: "Assurance entreprise revetement sol faience"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0046]
+  assurance_entreprise_serrurerie:
+    label: "Assurance entreprise serrurerie"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0043]
+  assurance_entreprise_terrassement:
+    label: "Assurance entreprise terrassement"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0035]
+  assurance_entreprise_vrd:
+    label: "Assurance entreprise vrd"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0036]
+  assurance_moex:
+    label: "Assurance MOEX"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0053]
+  assurance_proprietaire_non_occupant:
+    label: "Assurance propriétaire non occupant"
+    objects: [BAT]
+    data_type: "Booléen"
+    unit: "Sans unité"
+    historical_ids: [ATT-0215]
+  assureur_cnr:
+    label: "Assureur CNR"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0229]
+  assureur_dab:
+    label: "Assureur DAB"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0227]
+  assureur_do:
+    label: "Assureur DO"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0226]
+  assureur_pno:
+    label: "Assureur PNO"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0241]
+  assureur_trc:
+    label: "Assureur TRC"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0228]
+  bail_emphyteotique:
+    label: "Bail emphyteotique"
+    objects: [PAR]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0204]
+  base_tantiemes_charges_generales:
+    label: "Base de répartition des tantièmes de charges générales"
+    objects: [LOG, LOC, CAV, DEP, PST]
+    data_type: "Nombre entier"
+    unit: "Tantièmes"
+    historical_ids: [ATT-0087]
+  bet_fluides:
+    label: "BET fluides"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0266]
+  bet_structure:
+    label: "BET structure"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0267]
+  bet_thermique:
+    label: "BET thermique"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0268]
+  certification_batiment:
+    label: "Certification du bâtiment"
+    objects: [BAT]
+    data_type: "Texte / liste"
+    unit: "Sans unité"
+    historical_ids: [ATT-0061, ATT-0062]
+  charge_maximale_ascenseur:
+    label: "Charge maximale de l’ascenseur"
+    objects: [CAG]
+    data_type: "Nombre décimal"
+    unit: "kg"
+    historical_ids: [ATT-0276]
+  classe_erp:
+    label: "Classe ERP"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0075]
+  code_court_programme:
+    label: "Trigramme / quadrigramme du programme"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0232]
+  configuration_niveaux_logement:
+    label: "Configuration en niveaux du logement"
+    objects: [LOG]
+    data_type: "Texte / nomenclature"
+    unit: "Sans unité"
+    historical_ids: [ATT-0097]
+  contexte_amenagement:
+    label: "Contexte d’aménagement du foncier"
+    objects: [FON]
+    data_type: "Texte / liste"
+    unit: "Sans unité"
+    historical_ids: [ATT-0059, ATT-0060]
+  controleur_technique:
+    label: "Contrôleur technique"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0269]
+  convention_specifique_foyer:
+    label: "Convention specifique foyer"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0201]
+  coordonnee_x_lambert93:
+    label: "Coordonnée X Lambert-93 issue de l’adressage"
+    objects: [BAT]
+    data_type: "Nombre décimal"
+    unit: "m"
+    historical_ids: [ATT-0341]
+  coordonnee_y_lambert93:
+    label: "Coordonnée Y Lambert-93 issue de l’adressage"
+    objects: [BAT]
+    data_type: "Nombre décimal"
+    unit: "m"
+    historical_ids: [ATT-0341]
+  daact_non_contestation:
+    label: "Validation / non-contestation de la DAACT"
+    objects: [PRG]
+    data_type: "Booléen"
+    unit: "Sans unité"
+    historical_ids: [ATT-0072]
+  date_daact:
+    label: "Date DAACT"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0071]
+  date_depot_pc_initial:
+    label: "Date depot PC initial"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0303]
+  date_depot_pc_modificatif:
+    label: "Date depot PC modificatif"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0304]
+  date_droc:
+    label: "Date DROC"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0070]
+  date_fin_bail_emphyteotique:
+    label: "Date fin bail emphyteotique"
+    objects: [PAR]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0205]
+  date_levee_reserves:
+    label: "Date de levée des réserves"
+    objects: [BAT]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0064]
+  date_obtention_agrement:
+    label: "Date obtention agrément"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0202]
+  date_obtention_pc_initial:
+    label: "Date obtention PC initial"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0305]
+  date_obtention_pc_modificatif:
+    label: "Date obtention PC modificatif"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0306]
+  date_raccordement_chauffage_urbain:
+    label: "Date de raccordement au réseau de chauffage urbain"
+    objects: [LTE]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0107]
+  date_reception_travaux:
+    label: "Date de réception des travaux"
+    objects: [BAT]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0063]
+  date_signature_acte:
+    label: "Date signature acte"
+    objects: [PAR]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0220]
+  date_transfert_gestion:
+    label: "Date de transfert en gestion"
+    objects: [RES]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0065]
+  date_transfert_permis:
+    label: "Date transfert permis"
+    objects: [PRG]
+    data_type: "Date"
+    unit: "Sans unité"
+    historical_ids: [ATT-0307]
+  description_installation_photovoltaique:
+    label: "Description installation photovoltaique"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0126]
+  eau_froide_collective_sans_gestion_concessionnaire:
+    label: "Eau froide collective sans gestion concessionnaire"
+    objects: [BAT]
+    data_type: "Booléen"
+    unit: "Sans unité"
+    historical_ids: [ATT-0289]
+  entreprise_ascenseur:
+    label: "Entreprise ascenseur"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0258]
+  entreprise_charpente:
+    label: "Entreprise charpente"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0247]
+  entreprise_cloisons:
+    label: "Entreprise cloisons"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0255]
+  entreprise_couverture:
+    label: "Entreprise couverture"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0248]
+  entreprise_electricite_cfa:
+    label: "Entreprise électricité CFA"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0262]
+  entreprise_electricite_cfo:
+    label: "Entreprise électricité CFO"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0261]
+  entreprise_espaces_verts:
+    label: "Entreprise espaces verts"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0259]
+  entreprise_etancheite:
+    label: "Entreprise étanchéité"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0249]
+  entreprise_generale:
+    label: "Entreprise generale"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0243]
+  entreprise_go:
+    label: "Entreprise go"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0244]
+  entreprise_menuiseries_exterieures:
+    label: "Entreprise menuiseries extérieures"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0251]
+  entreprise_menuiseries_interieures:
+    label: "Entreprise menuiseries intérieures"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0252]
+  entreprise_peinture:
+    label: "Entreprise peinture"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0257]
+  entreprise_plomberie:
+    label: "Entreprise plomberie"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0260]
+  entreprise_porte_automatique:
+    label: "Entreprise porte automatique"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0254]
+  entreprise_ravalement:
+    label: "Entreprise ravalement"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0250]
+  entreprise_revetement_sol_faience:
+    label: "Entreprise revetement sol faience"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0256]
+  entreprise_serrurerie:
+    label: "Entreprise serrurerie"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0253]
+  entreprise_terrassement:
+    label: "Entreprise terrassement"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0245]
+  entreprise_vrd:
+    label: "Entreprise vrd"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0246]
+  est_erp:
+    label: "Bâtiment classé ERP"
+    objects: [BAT]
+    data_type: "Booléen"
+    unit: "Sans unité"
+    historical_ids: [ATT-0074]
+  etancheite_espace_exterieur:
+    label: "Étanchéité de l’espace extérieur privatif"
+    objects: [EXP]
+    data_type: "Texte / nomenclature"
+    unit: "Sans unité"
+    historical_ids: [ATT-0098, ATT-0099]
+  financement_action_logement:
+    label: "Financement action logement"
+    objects: [PRG]
+    data_type: "Booléen"
+    unit: "Sans unité"
+    historical_ids: [ATT-0310]
+  fonction_dependance:
+    label: "Fonction de la dépendance"
+    objects: [DEP]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0078, ATT-0096]
