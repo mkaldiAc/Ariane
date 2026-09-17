@@ -1,4 +1,4 @@
-version: "1.1.0"
+version: "1.2.0"
 project: "ARIANE"
 purpose: >-
   Référentiel machine-readable des objets patrimoniaux autorisés, de leurs parents
@@ -11,6 +11,7 @@ principles:
   - "Le parent physique le plus précis démontrable doit être utilisé à partir du niveau FONCIER."
   - "Les niveaux RDC, R+1, SS-1, etc. sont des localisations et non des objets."
   - "Les relations d'affectation, d'usage, de desserte ou d'implantation cadastrale sont complémentaires."
+  - "Une relation complémentaire ne modifie jamais le parent physique principal."
   - "Ne jamais inventer un type patrimonial absent de ce référentiel."
 
 objects:
@@ -190,9 +191,11 @@ complementary_relations:
     description: "Relation d'implantation cadastrale d'une résidence sur une ou plusieurs parcelles."
 
   AFFECTE_A:
-    source_types: [PST]
+    source_types: [PST, CAV, DEP]
     target_types: [LOG, LOC]
-    description: "Affectation fonctionnelle d'une place de stationnement."
+    description: >-
+      Affectation fonctionnelle d'une place de stationnement, cave ou dépendance à un logement
+      ou local. Cette relation ne modifie jamais le parent physique principal de l'annexe.
 
   UTILISE_PAR:
     source_types: [LVE, LPO, LTE, DEP]
