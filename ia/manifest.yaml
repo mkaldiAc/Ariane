@@ -1,0 +1,49 @@
+version: "1.3.0"
+project: "ARIANE"
+purpose: "Protocole standardisé de captation patrimoniale cumulative assistée par IA."
+
+execution_modes:
+  INITIALISATION_PROGRAMME:
+    description: >-
+      Premier traitement documentaire d'un programme. L'IA construit une structure patrimoniale proposée
+      et capte les premières observations attributaires.
+    may_create_structure: true
+    may_modify_validated_structure: false
+    outputs: [STRUCTURE_PROPOSEE, OBSERVATIONS, RELATIONS, ANOMALIES]
+
+  CAPTATION_INCREMENTALE:
+    description: >-
+      Traitement de tout jeu documentaire postérieur. La structure patrimoniale validée du programme
+      est fournie en entrée et ne peut jamais être modifiée par l'IA.
+    may_create_structure: false
+    may_modify_validated_structure: false
+    outputs: [OBSERVATIONS, RELATIONS, ANOMALIES]
+
+required_context:
+  always:
+    - programme_id
+    - capture_id
+    - documents
+  incremental_only:
+    - validated_structure
+    - structure_version
+
+normative_resources:
+  objects: "ia/referentiel/objets-patrimoniaux.yaml"
+  legal_relations: "ia/referentiel/relations-juridiques.yaml"
+  attributes_index: "ia/referentiel/attributs/index.yaml"
+  execution: "ia/instructions/EXECUTION.md"
+  rules:
+    - "ia/regles/01-structure-patrimoniale.md"
+    - "ia/regles/02-captation-attributs.md"
+    - "ia/regles/03-captation-incrementale.md"
+    - "ia/regles/04-tracabilite-et-sources.md"
+    - "ia/regles/05-score-confiance.md"
+    - "ia/regles/06-preservation-observations.md"
+
+principles:
+  - "Une structure validée est intangible pendant les captations incrémentales."
+  - "Une observation ne remplace jamais une observation antérieure."
+  - "La validation humaine est hors du périmètre IA."
+  - "Toute observation est rattachée à un programme, une captation, une source, un objet et un attribut."
+  - "Toute captation conserve la preuve documentaire et un score de confiance de l'IA."
