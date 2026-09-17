@@ -1,0 +1,118 @@
+version: "1.3.0"
+project: "ARIANE"
+group: "g_m"
+attributes:
+  garde_corps_toiture_protection_collective:
+    label: "Présence d’un garde-corps de toiture en protection collective"
+    objects: [BAT]
+    data_type: "Booléen"
+    unit: "Sans unité"
+    historical_ids: [ATT-0315]
+  geometre:
+    label: "Géomètre"
+    objects: [FON]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0242]
+  gestionnaire_jardin_partage:
+    label: "Gestionnaire du jardin partagé"
+    objects: [VEG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0014]
+  label_mon_logement_sante:
+    label: "Label mon logement sante"
+    objects: [BAT]
+    data_type: "Booléen"
+    unit: "Sans unité"
+    historical_ids: [ATT-0066]
+  longueur_garde_corps_facade:
+    label: "Longueur garde corps façade"
+    objects: [BAT]
+    data_type: "Nombre décimal"
+    unit: "m lin."
+    historical_ids: [ATT-0179]
+  longueur_haies:
+    label: "Longueur de haies"
+    objects: [VEG]
+    data_type: "Nombre décimal"
+    unit: "m lin."
+    historical_ids: [ATT-0012]
+  longueur_reseau_assainissement_eu:
+    label: "Longueur reseau assainissement eu"
+    objects: [EXT]
+    data_type: "Nombre décimal"
+    unit: "m lin."
+    historical_ids: [ATT-0024]
+  longueur_reseau_chauffage:
+    label: "Longueur reseau chauffage"
+    objects: [BAT]
+    data_type: "Nombre décimal"
+    unit: "m lin."
+    historical_ids: [ATT-0025]
+  longueur_reseau_eau_potable:
+    label: "Longueur reseau eau potable"
+    objects: [BAT]
+    data_type: "Nombre décimal"
+    unit: "m lin."
+    historical_ids: [ATT-0027]
+  longueur_reseau_ecs:
+    label: "Longueur reseau ECS"
+    objects: [BAT]
+    data_type: "Nombre décimal"
+    unit: "m lin."
+    historical_ids: [ATT-0026]
+  maitrise_ouvrage:
+    label: "Maîtrise d’ouvrage"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0067]
+  mandataire_groupement_moe:
+    label: "Mandataire groupement MOE"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0240]
+  marque_ascenseur:
+    label: "Marque ascenseur"
+    objects: [CAG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0274]
+  mode_acquisition_operation:
+    label: "Mode de réalisation / acquisition de l’opération"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0068]
+  mode_financement:
+    label: "Mode / catégorie de financement"
+    objects: [LOG]
+    data_type: "Texte / liste"
+    unit: "Sans unité"
+    historical_ids: [ATT-0184, ATT-0185, ATT-0186, ATT-0187, ATT-0188, ATT-0189, ATT-0190, ATT-0191, ATT-0192, ATT-0193, ATT-0194, ATT-0195, ATT-0196, ATT-0197, ATT-0198, ATT-0199, ATT-0200]
+  modele_disconnecteur:
+    label: "Modele disconnecteur"
+    objects: [LTE]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0121]
+  modele_pompe_chauffage_collectif:
+    label: "Modele pompe chauffage collectif"
+    objects: [LTE]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0130]
+  modele_pompe_relevage:
+    label: "Modele pompe relevage"
+    objects: [BAT]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0299]
+  moex:
+    label: "MOEX"
+    objects: [PRG]
+    data_type: "Texte"
+    unit: "Sans unité"
+    historical_ids: [ATT-0263]
