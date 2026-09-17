@@ -1,0 +1,29 @@
+version: "1.2.0"
+project: "ARIANE"
+status: "validated"
+canonical_attribute_count: 278
+historical_need_count: 345
+remaining_arbitrations: 0
+
+catalog_files:
+  - path: "model/attributs/a_f.yaml"
+    count: 91
+  - path: "model/attributs/g_m.yaml"
+    count: 19
+  - path: "model/attributs/n_p.yaml"
+    count: 93
+  - path: "model/attributs/q_s.yaml"
+    count: 51
+  - path: "model/attributs/t_z.yaml"
+    count: 24
+
+semantic_rules:
+  human_reference: "docs/attributs-patrimoniaux.md"
+  capture_rules: "prompts/regles-captation-attributs.md"
+  validated_decisions: "docs/journal-arbitrages-attributs.md"
+
+usage:
+  - "Le catalogue définit les identifiants canoniques, libellés, objets autorisés, types, unités et filiation historique."
+  - "Les règles sémantiques détaillées et règles de déduction sont portées par docs/attributs-patrimoniaux.md et prompts/regles-captation-attributs.md."
+  - "Une occurrence captée est toujours rattachée à un seul objet concret, même si l'attribut autorise plusieurs types d'objets."
+  - "Les anciens ATT-xxxx servent uniquement à la traçabilité et à la migration."
