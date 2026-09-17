@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ariane.structure.schema.json",
+  "type": "object",
+  "required": ["programme_id", "structure_version", "objects"],
+  "properties": {
+    "programme_id": {"type": "string"},
+    "structure_version": {"type": "string"},
+    "objects": {"type": "array", "items": {"$ref": "objet.schema.json"}}
+  },
+  "additionalProperties": false
+}

@@ -1,145 +1,88 @@
 # ARIANE
 
-## Finalité du dépôt
+ARIANE est un référentiel et un protocole standardisé de captation de données patrimoniales assistée par IA.
 
-Ce dépôt est la **source de référence du projet ARIANE** pour la reconstruction de la structure patrimoniale et la captation de données attributaires assistées par IA.
+Version du package : **1.3.0**.
 
-La chaîne ARIANE comporte deux étapes indissociables :
+## Organisation du dépôt
 
-1. **Construire la structure patrimoniale** à partir des documents disponibles.
-2. **Capter les attributs** et les rattacher aux objets patrimoniaux construits.
-
-Une IA ne doit donc jamais extraire des données sans tenir compte de la structure, de la sémantique des attributs et des règles de rattachement définies dans ce dépôt.
-
-## Version courante
-
-Version ARIANE : **1.2.0**.
-
-La version 1.2.0 consolide :
-
-- le référentiel de structure patrimoniale ;
-- le référentiel attributaire issu des 345 besoins historiques ;
-- les arbitrages métier validés le 17 septembre 2026 ;
-- les règles de captation des surfaces, installations, données juridiques, coordonnées et risques naturels ;
-- la traçabilité des anciens `ATT-xxxx` vers les attributs canoniques.
-
-## Principe fondamental de structure
+Le dépôt sépare volontairement deux publics.
 
 ```text
-PROGRAMME [PRG]
-└── FONCIER [FON]
-    ├── PARCELLE [PAR]
-    └── RÉSIDENCE [RES]
-        └── ...
+Ariane/
+├── ia/       # ressources autonomes destinées à l’IA de captation
+├── humain/   # documentation, décisions, historique et livrables de travail
+├── README.md
+└── VERSION
 ```
 
-`PROGRAMME` est la racine de contexte. À partir du niveau `FONCIER`, la hiérarchie décrit prioritairement la réalité physique du patrimoine.
+### `ia/` — paquet autonome pour l’IA
 
-La règle reste :
+Une IA chargée d’exécuter une captation ARIANE doit recevoir **uniquement le contenu du dossier `ia/`**, en plus des documents à analyser et, lorsqu’il s’agit d’une captation incrémentale, de la structure validée du programme.
 
-> **Niveau de détail maximal démontrable, jamais niveau de détail maximal imaginable.**
+Le point d’entrée obligatoire est :
 
-`LOT`, `PCM / PARTIE COMMUNE`, les étages et les catégories fonctionnelles non prévues ne doivent jamais être créés comme objets pour résoudre artificiellement un besoin de captation.
+`ia/instructions/EXECUTION.md`
 
-## Références normatives
+Le fichier `ia/manifest.yaml` liste toutes les ressources nécessaires.
 
-### Structure patrimoniale
+### `humain/` — ressources de compréhension et de gouvernance
 
-- `docs/structure-patrimoniale.md`
-- `model/objets-patrimoniaux.yaml`
+Ce dossier contient les documents explicatifs, journaux d’arbitrage, historiques de migration et futurs livrables Word/Excel. Il n’est pas requis pour exécuter une captation IA.
 
-### Attributs
+## Cycle de captation d’un programme
 
-- `docs/attributs-patrimoniaux.md` — doctrine et décisions métier consolidées ;
-- `model/attributs/index.yaml` — index du dictionnaire canonique ;
-- `model/attributs/*.yaml` — définition machine-readable des 278 attributs canoniques ;
-- `prompts/regles-captation-attributs.md` — règles opérationnelles de captation.
+ARIANE distingue deux modes.
 
-### Migration / historique
+### 1. `INITIALISATION_PROGRAMME`
 
-- `model/migration/index.yaml`
-- `model/migration/mapping_*.yaml`
+À partir du premier jeu documentaire :
 
-Ces fichiers conservent la correspondance des 345 attributs historiques vers le référentiel cible. Ils servent à la migration et à la traçabilité, **pas à définir la captation future**.
+1. l’IA propose la structure patrimoniale du programme ;
+2. l’IA capte également les données attributaires observables dans ce jeu documentaire ;
+3. l’IA produit les relations et anomalies détectées ;
+4. la structure proposée est ensuite contrôlée et validée **hors du processus IA**.
 
-### Relations complémentaires et juridiques
+La structure validée reçoit une version stable et devient le référentiel de rattachement du programme.
 
-- les relations physiques/fonctionnelles principales sont décrites dans `model/objets-patrimoniaux.yaml` ;
-- `docs/relations-juridiques.md` précise la captation des servitudes ;
-- `model/relations-juridiques.yaml` fournit leur représentation machine-readable.
+### 2. `CAPTATION_INCREMENTALE`
 
-### Historique des décisions
+Pour les jeux documentaires 2 à N :
 
-- `docs/journal-arbitrages-attributs.md`
+1. l’IA reçoit l’identifiant du programme ;
+2. elle reçoit la structure patrimoniale validée et sa version ;
+3. elle analyse uniquement le nouveau jeu documentaire ;
+4. elle rattache les nouvelles observations aux objets existants ;
+5. elle **ne crée, ne supprime, ne déplace et ne fusionne aucun objet patrimonial** ;
+6. toute information ne pouvant être rattachée à la structure validée produit une anomalie.
 
-Ce document conserve la mémoire des choix validés pendant la normalisation, pour compréhension humaine et audit futur.
+## Principe d’observation cumulative
 
-## Fichiers à lire par une IA avant captation
+Une donnée captée est une **observation**, pas une valeur de référence.
 
-Une IA doit lire au minimum, dans cet ordre :
+Si trois documents fournissent trois valeurs différentes pour la surface du même hall, ARIANE conserve trois observations distinctes, chacune avec sa source et son score de confiance.
 
-1. `README.md` ;
-2. `docs/structure-patrimoniale.md` ;
-3. `model/objets-patrimoniaux.yaml` ;
-4. `docs/attributs-patrimoniaux.md` ;
-5. `model/attributs/index.yaml` puis les fichiers d’attributs utiles ;
-6. `prompts/regles-captation.md` ;
-7. `prompts/regles-captation-attributs.md`.
+L’IA ne doit jamais :
 
-## Règles transversales de captation
+- écraser une observation antérieure ;
+- choisir la valeur qui « fait foi » ;
+- marquer une valeur comme validée métier ;
+- arbitrer un conflit documentaire.
 
-- une occurrence de donnée est rattachée à **un seul objet concret** ;
-- l’absence d’information signifie `Inconnu`, jamais `Non` ni `0` ;
-- toute valeur calculée, dérivée ou obtenue par proxy est marquée `Déduit` et sa règle est tracée ;
-- une valeur agrégée ne doit pas remplacer une valeur rattachable à un niveau physique plus précis ;
-- le niveau `RES` est exceptionnel pour les agrégats physiques et ne doit jamais être choisi par facilité ;
-- une relation juridique ou fonctionnelle ne doit pas être transformée en parent physique ;
-- si le référentiel ne permet pas une captation sans ambiguïté, l’IA doit créer une anomalie à vérifier plutôt qu’inventer.
+La validation métier et la désignation de la valeur de référence sont réalisées **en aval, dans la base de données et hors des échanges avec l’IA**.
 
-## Sortie minimale d’une captation
+## Identifiants structurants
 
-### OBJETS
+Les captations doivent au minimum être organisées autour de :
 
-- `ID_objet`
-- `Type_objet`
-- `Code_type`
-- `Libelle`
-- `ID_parent_principal`
-- `Niveau`
-- `Confiance`
-- `Source`
+- `programme_id` : programme concerné ;
+- `structure_version` : version de la structure validée utilisée ;
+- `capture_id` : session / lot de captation ;
+- `source_id` : document analysé ;
+- `observation_id` : occurrence attributaire captée.
 
-### RELATIONS_COMPLEMENTAIRES
+## Traçabilité et confiance
 
-- `ID_objet_source`
-- `Type_relation`
-- `ID_objet_cible` ou cible externe documentée
-- `Source`
-- `Confiance`
+Chaque observation conserve sa source documentaire, son repère, son mode d’identification et un score de confiance portant sur la qualité de la captation, et non sur la vérité métier de la valeur.
 
-### ATTRIBUTS
-
-- `ID_objet`
-- `Attribut_canonique`
-- `Valeur_source`
-- `Valeur_normalisee`
-- `Unite_source`
-- `Unite_normalisee`
-- `Document_source`
-- `Page_ou_plan`
-- `Repere`
-- `Mode_identification` (`Explicite` / `Déduit`)
-- `Confiance`
-- `Commentaire`
-
-### ANOMALIES_A_VERIFIER
-
-- `Objet_concerne`
-- `Description`
-- `Hypothese_eventuelle`
-- `Source`
-- `Action_attendue`
-
-## Gouvernance
-
-Le dépôt est la source de vérité ARIANE pour les règles de captation. Toute évolution conceptuelle doit être explicite, documentée et versionnée.
+Pour toute exécution IA, les règles présentes dans `ia/` prévalent.

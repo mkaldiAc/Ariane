@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ariane.observation.schema.json",
+  "type": "object",
+  "required": ["programme_id", "capture_id", "source_id", "observation_id", "object_id", "attribute_id", "value_raw", "identification_mode", "confidence"],
+  "properties": {
+    "programme_id": {"type": "string"},
+    "structure_version": {"type": ["string", "null"]},
+    "capture_id": {"type": "string"},
+    "source_id": {"type": "string"},
+    "observation_id": {"type": "string"},
+    "object_id": {"type": "string"},
+    "attribute_id": {"type": "string"},
+    "value_raw": {},
+    "value_normalized": {},
+    "unit_source": {"type": ["string", "null"]},
+    "unit_normalized": {"type": ["string", "null"]},
+    "page_or_plan": {"type": ["string", "null"]},
+    "source_anchor": {"type": ["string", "null"]},
+    "identification_mode": {"enum": ["EXPLICITE", "DEDUIT", "PROXY", "ENRICHI"]},
+    "derivation_rule": {"type": ["string", "null"]},
+    "confidence": {
+      "type": "object",
+      "required": ["score", "evidence", "object_binding", "semantic_match", "transformation"],
+      "properties": {
+        "score": {"type": "integer", "minimum": 0, "maximum": 100},
+        "evidence": {"type": "integer", "minimum": 0, "maximum": 30},
+        "object_binding": {"type": "integer", "minimum": 0, "maximum": 30},
+        "semantic_match": {"type": "integer", "minimum": 0, "maximum": 25},
+        "transformation": {"type": "integer", "minimum": 0, "maximum": 15}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

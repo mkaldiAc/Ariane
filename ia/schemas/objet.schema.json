@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ariane.objet.schema.json",
+  "type": "object",
+  "required": ["programme_id", "object_id", "object_type"],
+  "properties": {
+    "programme_id": {"type": "string"},
+    "object_id": {"type": "string"},
+    "object_type": {"type": "string"},
+    "parent_object_id": {"type": ["string", "null"]},
+    "label": {"type": ["string", "null"]},
+    "localisation": {"type": ["string", "null"]},
+    "confidence_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100}
+  },
+  "additionalProperties": true
+}

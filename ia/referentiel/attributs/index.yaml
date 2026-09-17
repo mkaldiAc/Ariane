@@ -1,0 +1,24 @@
+version: "1.3.0"
+project: "ARIANE"
+status: "validated"
+canonical_attribute_count: 278
+historical_need_count: 345
+remaining_arbitrations: 0
+
+catalog_files:
+  - path: "a_f.yaml"
+    count: 91
+  - path: "g_m.yaml"
+    count: 19
+  - path: "n_p.yaml"
+    count: 93
+  - path: "q_s.yaml"
+    count: 51
+  - path: "t_z.yaml"
+    count: 24
+
+usage:
+  - "Le catalogue définit les identifiants canoniques, libellés, objets autorisés, types, unités et règles de captation."
+  - "Une occurrence captée est toujours rattachée à un seul objet concret, même si un attribut autorise plusieurs types d'objets."
+  - "Le mapping historique des ATT-xxxx n'est pas nécessaire à une nouvelle captation et reste hors du paquet IA."
+  - "Les règles de déduction, proxy, traçabilité et confiance sont définies dans ../../regles/."
