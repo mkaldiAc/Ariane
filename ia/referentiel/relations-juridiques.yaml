@@ -1,0 +1,39 @@
+version: "1.3.0"
+project: "ARIANE"
+relations:
+  SERVITUDE_FONCIERE:
+    source_types: [PAR]
+    target_types: [PAR, EXTERNAL]
+    description: >-
+      Relation juridique de servitude affectant une parcelle. La cible peut être une autre
+      parcelle ARIANE ou une contrepartie externe documentée.
+    required_traceability_when_available:
+      - nature_servitude
+      - fonds_servant
+      - fonds_dominant_ou_beneficiaire
+      - reference_acte
+      - date_acte
+      - document_source
+      - page_article_repere
+      - identification_mode
+      - confidence
+    rules:
+      - "Ne jamais transformer la servitude en parent physique."
+      - "Ne jamais inventer une parcelle cible absente du référentiel."
+  SERVITUDE_BATIMENT:
+    source_types: [BAT]
+    target_types: [BAT, PAR, RES, EXTERNAL]
+    description: >-
+      Relation juridique de servitude affectant un bâtiment, avec cible patrimoniale ou
+      contrepartie externe lorsqu'elle est documentée.
+    required_traceability_when_available:
+      - nature_servitude
+      - reference_acte
+      - date_acte
+      - document_source
+      - page_article_repere
+      - identification_mode
+      - confidence
+    rules:
+      - "Une contrainte d'usage sans base juridique explicite n'est pas automatiquement une servitude."
+      - "La servitude ne modifie jamais la hiérarchie physique."
