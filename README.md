@@ -2,18 +2,28 @@
 
 ## Finalité du dépôt
 
-Ce dépôt est la **source de référence normative du projet ARIANE** pour les travaux de captation de données patrimoniales assistés par IA.
+Ce dépôt est la **source de référence du projet ARIANE** pour la reconstruction de la structure patrimoniale et la captation de données attributaires assistées par IA.
 
-Le projet poursuit deux objectifs successifs et complémentaires :
+La chaîne ARIANE comporte deux étapes indissociables :
 
-1. **Construire une structure patrimoniale** à partir de l'analyse de documents, en particulier de plans architecturaux et techniques.
-2. **Capter des informations attributaires** dans ces mêmes documents ou dans d'autres sources, puis les rattacher aux objets de la structure patrimoniale ainsi constituée.
+1. **Construire la structure patrimoniale** à partir des documents disponibles.
+2. **Capter les attributs** et les rattacher aux objets patrimoniaux construits.
 
-Une IA utilisant ce dépôt ne réalise donc pas une simple extraction de texte. Elle doit reconstruire un patrimoine selon une ontologie et des règles précises, puis rattacher les données captées aux bons objets patrimoniaux.
+Une IA ne doit donc jamais extraire des données sans tenir compte de la structure, de la sémantique des attributs et des règles de rattachement définies dans ce dépôt.
 
-## Principe fondamental
+## Version courante
 
-La structure ARIANE comporte désormais une racine de contexte :
+Version ARIANE : **1.2.0**.
+
+La version 1.2.0 consolide :
+
+- le référentiel de structure patrimoniale ;
+- le référentiel attributaire issu des 345 besoins historiques ;
+- les arbitrages métier validés le 17 septembre 2026 ;
+- les règles de captation des surfaces, installations, données juridiques, coordonnées et risques naturels ;
+- la traçabilité des anciens `ATT-xxxx` vers les attributs canoniques.
+
+## Principe fondamental de structure
 
 ```text
 PROGRAMME [PRG]
@@ -23,123 +33,113 @@ PROGRAMME [PRG]
         └── ...
 ```
 
-`PROGRAMME` représente l'opération immobilière dans son ensemble. Il peut porter des informations attributaires générales telles que la dénomination du programme. Il ne constitue pas en lui-même un objet physique.
+`PROGRAMME` est la racine de contexte. À partir du niveau `FONCIER`, la hiérarchie décrit prioritairement la réalité physique du patrimoine.
 
-À partir du niveau `FONCIER`, la hiérarchie répond d'abord à la question :
+La règle reste :
 
-> **Où cet objet se situe-t-il physiquement dans le patrimoine ?**
+> **Niveau de détail maximal démontrable, jamais niveau de détail maximal imaginable.**
 
-Sous `FONCIER`, la hiérarchie représente en priorité une relation physique de contenance, d'appartenance ou de dépendance spatiale.
+`LOT`, `PCM / PARTIE COMMUNE`, les étages et les catégories fonctionnelles non prévues ne doivent jamais être créés comme objets pour résoudre artificiellement un besoin de captation.
 
-Les notions d'affectation, d'usage, de desserte ou d'implantation cadastrale sont des relations complémentaires et ne doivent pas déformer la hiérarchie physique.
+## Références normatives
 
-## Chaîne de traitement attendue
-
-### Étape 1 — Construction de la structure patrimoniale
-
-À partir des documents fournis, l'IA doit :
-
-- identifier le `PROGRAMME` concerné et ses informations générales lorsqu'elles sont disponibles ;
-- identifier les objets patrimoniaux réellement présents ;
-- utiliser exclusivement les types définis par le référentiel ARIANE ;
-- reconstruire les relations parent/enfant prévues par le modèle ;
-- à partir du `FONCIER`, rattacher les objets selon leur réalité physique ;
-- distinguer les objets des simples localisations, caractéristiques ou relations fonctionnelles ;
-- conserver la source documentaire de chaque information ;
-- signaler les incertitudes sans inventer de structure.
-
-Les règles applicables sont décrites dans :
+### Structure patrimoniale
 
 - `docs/structure-patrimoniale.md`
 - `model/objets-patrimoniaux.yaml`
-- `prompts/regles-captation.md`
 
-### Étape 2 — Captation des attributs
+### Attributs
 
-Une fois la structure patrimoniale stabilisée, l'IA doit :
+- `docs/attributs-patrimoniaux.md` — doctrine et décisions métier consolidées ;
+- `model/attributs/index.yaml` — index du dictionnaire canonique ;
+- `model/attributs/*.yaml` — définition machine-readable des 278 attributs canoniques ;
+- `prompts/regles-captation-attributs.md` — règles opérationnelles de captation.
 
-- rechercher les attributs présents dans les documents ;
-- rattacher chaque attribut à l'objet patrimonial approprié, y compris `PROGRAMME` lorsque l'information concerne l'opération dans son ensemble ;
-- respecter le niveau de rattachement prévu par le référentiel attributaire ;
-- conserver la valeur, l'unité, la source et le niveau de confiance ;
-- ne jamais créer un attribut non prévu sans le signaler explicitement.
+### Migration / historique
 
-Le référentiel détaillé des attributs sera ajouté progressivement au dépôt.
+- `model/migration/index.yaml`
+- `model/migration/mapping_*.yaml`
 
-## Périmètre documentaire
+Ces fichiers conservent la correspondance des 345 attributs historiques vers le référentiel cible. Ils servent à la migration et à la traçabilité, **pas à définir la captation future**.
 
-Les sources analysées peuvent notamment être :
+### Relations complémentaires et juridiques
 
-- plans de masse ;
-- plans de niveaux ;
-- plans de sous-sol ;
-- coupes ;
-- façades ;
-- plans de stationnement ;
-- notices architecturales ;
-- notices techniques ;
-- tableaux de surfaces ;
-- documents APD, PRO, DOE ou équivalents ;
-- autres documents patrimoniaux structurés ou non structurés.
+- les relations physiques/fonctionnelles principales sont décrites dans `model/objets-patrimoniaux.yaml` ;
+- `docs/relations-juridiques.md` précise la captation des servitudes ;
+- `model/relations-juridiques.yaml` fournit leur représentation machine-readable.
 
-Les plans constituent une source particulièrement importante car ils permettent de reconstruire la structure physique du patrimoine.
+### Historique des décisions
 
-## Règles structurantes actuelles
+- `docs/journal-arbitrages-attributs.md`
 
-Le modèle ARIANE s'appuie notamment sur les principes suivants :
+Ce document conserve la mémoire des choix validés pendant la normalisation, pour compréhension humaine et audit futur.
 
-- `PROGRAMME` est l'objet racine du référentiel ;
-- `PROGRAMME` est un objet de contexte et de regroupement, qui peut porter des attributs généraux de l'opération ;
-- tout `FONCIER` dépend d'un `PROGRAMME` ;
-- un `PROGRAMME` peut comprendre un ou plusieurs `FONCIERS` ;
-- `PARCELLE` et `RÉSIDENCE` dépendent du foncier ;
-- une résidence peut être implantée sur plusieurs parcelles via une relation complémentaire ;
-- `BÂTIMENT` représente indifféremment un immeuble, une maison, un bâtiment technique ou un bâtiment de stationnement ;
-- `LOT` est interdit ;
-- `PCM / PARTIE COMMUNE` est interdit ;
-- les étages (`RDC`, `R+1`, `SS-1`...) sont des localisations, jamais des objets patrimoniaux ;
-- `ENTRÉE / HALL`, `CAGE D'ESCALIER` et `ZONE DE CIRCULATION` décrivent la distribution physique intérieure ;
-- les logements, locaux, caves, dépendances, locaux poubelles, locaux vélos et locaux techniques sont rattachés au parent physique le plus précis démontrable ;
-- un espace extérieur privatif dépend physiquement d'un logement ou d'un local ;
-- les espaces extérieurs collectifs dépendent d'un `ESPACE EXTÉRIEUR DE RÉSIDENCE` ;
-- les stationnements sont structurés par `ZONE DE STATIONNEMENT INTÉRIEURE` ou `ZONE DE STATIONNEMENT EXTÉRIEURE`, puis `PLACE DE STATIONNEMENT` ;
-- `Box`, `ouvert`, `couvert`, `PMR`, `électrifié`, etc. sont des caractéristiques d'une place, pas des types patrimoniaux ;
-- les chaufferies, sous-stations, TGBT, locaux VMC, etc. sont des `LOCAUX TECHNIQUES` caractérisés par leur type.
+## Fichiers à lire par une IA avant captation
 
-## Règle de précision
+Une IA doit lire au minimum, dans cet ordre :
 
-À partir du niveau `FONCIER`, l'IA doit toujours chercher le **parent physique le plus précis démontrable par les sources**, sans inventer de niveau de détail.
-
-> Niveau de détail maximal démontrable, jamais niveau de détail maximal imaginable.
-
-## Traçabilité
-
-Toute information captée doit pouvoir être reliée à sa source documentaire.
-
-À minima, conserver lorsque disponible :
-
-- document source ;
-- page, feuille ou plan ;
-- référence ou repère ;
-- élément constaté ;
-- caractère explicite ou déduit ;
-- niveau de confiance.
-
-## Utilisation par une IA
-
-Avant toute captation, une IA doit lire au minimum :
-
-1. ce `README.md` ;
+1. `README.md` ;
 2. `docs/structure-patrimoniale.md` ;
 3. `model/objets-patrimoniaux.yaml` ;
-4. `prompts/regles-captation.md`.
+4. `docs/attributs-patrimoniaux.md` ;
+5. `model/attributs/index.yaml` puis les fichiers d’attributs utiles ;
+6. `prompts/regles-captation.md` ;
+7. `prompts/regles-captation-attributs.md`.
 
-En cas de divergence entre une interprétation libre et le référentiel ARIANE, **le référentiel ARIANE prévaut**.
+## Règles transversales de captation
 
-## Gouvernance du dépôt
+- une occurrence de donnée est rattachée à **un seul objet concret** ;
+- l’absence d’information signifie `Inconnu`, jamais `Non` ni `0` ;
+- toute valeur calculée, dérivée ou obtenue par proxy est marquée `Déduit` et sa règle est tracée ;
+- une valeur agrégée ne doit pas remplacer une valeur rattachable à un niveau physique plus précis ;
+- le niveau `RES` est exceptionnel pour les agrégats physiques et ne doit jamais être choisi par facilité ;
+- une relation juridique ou fonctionnelle ne doit pas être transformée en parent physique ;
+- si le référentiel ne permet pas une captation sans ambiguïté, l’IA doit créer une anomalie à vérifier plutôt qu’inventer.
 
-Ce dépôt constitue la source de vérité du projet ARIANE pour les règles de captation.
+## Sortie minimale d’une captation
 
-Les évolutions du modèle doivent être explicites, documentées et versionnées.
+### OBJETS
 
-Version courante : voir le fichier `VERSION`.
+- `ID_objet`
+- `Type_objet`
+- `Code_type`
+- `Libelle`
+- `ID_parent_principal`
+- `Niveau`
+- `Confiance`
+- `Source`
+
+### RELATIONS_COMPLEMENTAIRES
+
+- `ID_objet_source`
+- `Type_relation`
+- `ID_objet_cible` ou cible externe documentée
+- `Source`
+- `Confiance`
+
+### ATTRIBUTS
+
+- `ID_objet`
+- `Attribut_canonique`
+- `Valeur_source`
+- `Valeur_normalisee`
+- `Unite_source`
+- `Unite_normalisee`
+- `Document_source`
+- `Page_ou_plan`
+- `Repere`
+- `Mode_identification` (`Explicite` / `Déduit`)
+- `Confiance`
+- `Commentaire`
+
+### ANOMALIES_A_VERIFIER
+
+- `Objet_concerne`
+- `Description`
+- `Hypothese_eventuelle`
+- `Source`
+- `Action_attendue`
+
+## Gouvernance
+
+Le dépôt est la source de vérité ARIANE pour les règles de captation. Toute évolution conceptuelle doit être explicite, documentée et versionnée.
