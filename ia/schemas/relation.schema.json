@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARIANE Relation documentaire",
+  "type": "object",
+  "required": ["programme_id", "capture_id", "source_id", "relation_id", "relation_type", "source_object_id"],
+  "properties": {
+    "programme_id": {"type": "string"},
+    "capture_id": {"type": "string"},
+    "source_id": {"type": "string"},
+    "relation_id": {"type": "string"},
+    "relation_type": {"type": "string"},
+    "source_object_id": {"type": "string"},
+    "target_object_id": {"type": ["string", "null"]},
+    "external_target": {"type": ["string", "null"]},
+    "page_or_plan": {"type": ["string", "null"]},
+    "source_anchor": {"type": ["string", "null"]},
+    "confidence_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100}
+  },
+  "additionalProperties": true
+}
