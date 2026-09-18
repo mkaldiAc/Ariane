@@ -2,16 +2,52 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ARIANE Objet patrimonial",
   "type": "object",
-  "required": ["programme_id", "structure_version", "object_id", "object_type"],
+  "required": [
+    "programme_id",
+    "structure_version",
+    "object_id",
+    "object_type"
+  ],
   "properties": {
-    "programme_id": {"type": "string"},
-    "structure_version": {"type": "string"},
-    "object_id": {"type": "string"},
-    "object_type": {"type": "string"},
-    "label": {"type": ["string", "null"]},
-    "parent_object_id": {"type": ["string", "null"]},
-    "source_id": {"type": ["string", "null"]},
-    "confidence_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100}
+    "programme_id": {
+      "type": "string"
+    },
+    "structure_version": {
+      "type": "string",
+      "description": "Utiliser PROPOSEE tant que la structure n'a pas fait l'objet d'une décision humaine de validation. Une version validée (par ex. STR-001) ne peut être attribuée par l'IA que lors d'une finalisation explicitement déclenchée par l'humain conformément au protocole ARIANE."
+    },
+    "object_id": {
+      "type": "string"
+    },
+    "object_type": {
+      "type": "string"
+    },
+    "label": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_object_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "confidence_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    }
   },
   "additionalProperties": true
 }
