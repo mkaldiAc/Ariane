@@ -1,6 +1,6 @@
 # ARIANE — Préservation des observations
 
-Version : 1.3.0
+Version : 1.3.1
 
 ## Principe cardinal
 
