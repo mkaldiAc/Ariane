@@ -1,6 +1,6 @@
 # ARIANE — Score de confiance de captation
 
-Version : 1.3.0
+Version : 1.3.2
 
 ## Définition
 
