@@ -1,6 +1,6 @@
 # ARIANE — Traçabilité et sources
 
-Version : 1.3.2
+Version : 1.3.3
 
 ## Principe
 
@@ -27,6 +27,18 @@ Chaque observation doit pouvoir être reliée sans ambiguïté à :
 - un `source_id` ;
 - un `object_id` ;
 - un `attribute_id`.
+
+## Distinction entre `source_anchor` et `repere_source`
+
+`source_anchor` est une information technique de traçabilité. Il sert à retrouver la preuve dans le document : page, plan, zone, coordonnées, extrait textuel, voisinage graphique ou autre repère de localisation.
+
+`repere_source` est un attribut patrimonial. Il ne contient que la désignation explicitement utilisée par la source pour repérer l'objet lui-même, selon les conditions strictes de `regles/02-captation-attributs.md`.
+
+Conséquences :
+- une information peut et doit rester dans `source_anchor` sans devenir une observation `repere_source` ;
+- le contenu de `source_anchor` ne doit jamais être recopié automatiquement vers `repere_source` ;
+- une caractéristique utile pour retrouver une zone dans le document peut être conservée dans `source_anchor` même si elle est interdite comme `repere_source` ;
+- une désignation ambiguë ou contradictoire doit rester une preuve d'anomalie et ne doit pas devenir un `repere_source`.
 
 ## Conservation de la valeur source
 

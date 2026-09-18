@@ -1,6 +1,6 @@
 # ARIANE — Protocole d'exécution IA
 
-Version : 1.3.2
+Version : 1.3.3
 
 ## 1. Déterminer le mode
 
@@ -108,6 +108,26 @@ Chaque observation possède son propre `observation_id`.
 Le couple `object_id + attribute_id` peut posséder plusieurs observations issues de documents différents, de captations différentes, ou même du même document si la source fournit plusieurs occurrences distinctes.
 
 Ne jamais écraser, fusionner ni sélectionner automatiquement une observation.
+
+## 5 bis. Contrôle obligatoire de `repere_source` avant émission
+
+Avant de produire la sortie `OBSERVATIONS`, effectuer un contrôle spécifique de chaque observation dont `attribute_id = repere_source`.
+
+Pour chaque occurrence, vérifier :
+1. présence littérale de la valeur dans la source ;
+2. ancre documentaire permettant de retrouver cette occurrence ;
+3. rattachement direct et non ambigu à l'`object_id` ;
+4. fonction de désignation/repérage de l'objet, et non simple description ou caractéristique ;
+5. absence d'anomalie non résolue portant sur le même rattachement.
+
+Si un seul de ces contrôles échoue :
+- ne pas émettre l'observation `repere_source` ;
+- conserver l'élément utile dans la preuve documentaire ;
+- produire, selon le cas, une anomalie `RATTACHEMENT_AMBIGU` ou `ATTRIBUT_NON_CAPTABLE`.
+
+Une observation `repere_source` rejetée par ce contrôle ne peut pas être utilisée comme `documentary_reference` pour justifier la création ou l'existence d'un objet dans `STRUCTURE_PROPOSEE`.
+
+Les références documentaires de la structure doivent s'appuyer sur des preuves directes et cohérentes de l'objet : désignation valide, géométrie identifiable, rattachement physique démontrable ou autre élément explicite de la source.
 
 ## 6. Validation humaine des observations
 

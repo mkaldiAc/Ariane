@@ -1,4 +1,4 @@
-version: "1.3.2"
+version: "1.3.3"
 project: "ARIANE"
 purpose: "Protocole standardisé de captation patrimoniale cumulative assistée par IA."
 
@@ -50,6 +50,8 @@ principles:
   - "Toute source analysée est déclarée dans la sortie SOURCES avec un source_id stable pour la captation."
   - "Toute observation est rattachée à un programme, une captation, une source, un objet et un attribut."
   - "Toute captation conserve la preuve documentaire et un score de confiance de l'IA."
+  - "repere_source est réservé à une désignation explicitement portée par la source et rattachée sans ambiguïté à l'objet ; il ne peut jamais être fabriqué par l'IA ni utilisé pour une simple caractéristique descriptive."
+  - "source_anchor localise la preuve documentaire ; il ne doit jamais être recopié automatiquement dans repere_source."
 
 structure_finalization:
   autonomous_ai_validation: false

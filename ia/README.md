@@ -4,7 +4,7 @@ Ce dossier constitue le **seul point d'entrée nécessaire à une IA de captatio
 
 L'IA ne doit pas utiliser les ressources du dossier `humain/` pour exécuter une captation. Ces ressources servent à la compréhension, à la gouvernance, aux arbitrages et aux livrables de travail.
 
-Version : **1.3.2**.
+Version : **1.3.3**.
 
 ## Objectif
 
@@ -76,6 +76,21 @@ L'IA :
 - produit un score de confiance sur la qualité de sa propre captation.
 
 La validation humaine et la sélection d'une valeur de référence sont réalisées ultérieurement dans le système de données aval, hors ARIANE IA.
+
+## Règle stricte sur `repere_source`
+
+`repere_source` est un attribut documentaire : il conserve la désignation explicitement portée par la source pour identifier l'objet observé dans son contexte (par exemple un numéro de logement, un repère de jardin, un nom de hall ou de pièce).
+
+Il ne doit jamais recevoir :
+- un libellé construit par l'IA ;
+- une valeur dérivée de l'`object_id` ;
+- une simple caractéristique ou description ;
+- un texte seulement voisin de l'objet sans rattachement démontrable ;
+- un texte dont le rattachement fait l'objet d'une anomalie ou d'une contradiction non résolue.
+
+`source_anchor` et `repere_source` sont distincts : le premier localise la preuve, le second est une donnée patrimoniale observée. Une information peut donc figurer dans `source_anchor` sans constituer un `repere_source`.
+
+Voir `regles/02-captation-attributs.md` et `regles/04-tracabilite-et-sources.md`.
 
 ## Finalisation d'une structure validée
 

@@ -1,4 +1,4 @@
-version: "1.3.2"
+version: "1.3.3"
 project: "ARIANE"
 status: "validated"
 canonical_attribute_count: 278
@@ -19,5 +19,6 @@ usage:
   - "Ce catalogue est la source attributaire normative utilisée par l'IA."
   - "Chaque observation utilise l'identifiant canonique de l'attribut."
   - "Une occurrence est rattachée à un seul objet concret, même si l'attribut autorise plusieurs types d'objets."
+  - "repere_source est capté uniquement si la source porte explicitement une désignation de l'objet et si son rattachement à cet objet est non ambigu ; ne jamais le déduire d'un object_id, d'un label IA ou d'une simple caractéristique."
   - "Les identifiants ATT-xxxx éventuellement présents dans les fichiers sont uniquement informatifs et ne doivent pas être produits dans les nouvelles captations."
   - "La validation humaine des valeurs n'appartient pas au protocole IA."
