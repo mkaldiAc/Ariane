@@ -1,6 +1,6 @@
 # ARIANE — Protocole d'exécution IA
 
-Version : 1.3.0
+Version : 1.3.1
 
 ## 1. Déterminer le mode
 
@@ -20,11 +20,12 @@ Entrées :
 - référentiel ARIANE.
 
 L'IA doit :
-1. construire une structure patrimoniale proposée selon le référentiel ;
-2. attribuer des identifiants stables aux objets proposés ;
-3. capter les observations attributaires disponibles ;
-4. produire les relations complémentaires/juridiques identifiables ;
-5. produire les anomalies et incertitudes.
+1. déclarer dans `SOURCES` chaque document effectivement analysé avec un `source_id` stable pour la captation ;
+2. construire une structure patrimoniale proposée selon le référentiel ;
+3. attribuer des identifiants stables aux objets proposés ;
+4. capter les observations attributaires disponibles ;
+5. produire les relations complémentaires/juridiques identifiables ;
+6. produire les anomalies et incertitudes.
 
 La sortie structurelle porte le statut `PROPOSEE`. Elle doit être validée à l'extérieur du processus IA avant toute captation incrémentale.
 
@@ -39,12 +40,13 @@ Entrées :
 - référentiel ARIANE.
 
 L'IA doit :
-1. charger la structure validée ;
-2. réutiliser exclusivement les `object_id` existants ;
-3. analyser les nouveaux documents sans chercher à faire coïncider leurs valeurs avec les observations antérieures ;
-4. ajouter de nouvelles observations ;
-5. produire les relations documentaires éventuelles ;
-6. signaler toute impossibilité de rattachement ou incohérence structurelle dans `ANOMALIES`.
+1. déclarer dans `SOURCES` chaque nouveau document effectivement analysé avec un `source_id` stable pour la captation courante ;
+2. charger la structure validée ;
+3. réutiliser exclusivement les `object_id` existants ;
+4. analyser les nouveaux documents sans chercher à faire coïncider leurs valeurs avec les observations antérieures ;
+5. ajouter de nouvelles observations ;
+6. produire les relations documentaires éventuelles ;
+7. signaler toute impossibilité de rattachement ou incohérence structurelle dans `ANOMALIES`.
 
 Interdictions en mode incrémental :
 - créer un objet patrimonial ;
@@ -91,6 +93,15 @@ L'IA ne renseigne aucun statut tel que :
 Ces décisions sont réalisées ultérieurement dans la base de données ou le système métier aval.
 
 ## 7. Sorties attendues
+
+### SOURCES
+À chaque captation.
+
+Contient la liste des documents effectivement analysés pendant la captation courante.
+
+Chaque élément doit respecter `schemas/source.schema.json`.
+
+Un `source_id` déclaré dans `SOURCES` est réutilisé par les observations, relations et anomalies issues de ce document.
 
 ### STRUCTURE_PROPOSEE
 Uniquement en `INITIALISATION_PROGRAMME`.
