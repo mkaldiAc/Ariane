@@ -2,7 +2,7 @@
 
 ARIANE est un référentiel et un protocole de captation patrimoniale standardisée assistée par IA.
 
-Version courante : **1.3.0**.
+Version courante : **1.3.1**.
 
 ## Organisation du dépôt
 
@@ -49,6 +49,7 @@ Une IA de captation n'a pas besoin de lire ce dossier.
 Le premier jeu documentaire d'un programme est traité en mode `INITIALISATION_PROGRAMME`.
 
 L'IA produit :
+- la liste `SOURCES` des documents effectivement analysés ;
 - une structure patrimoniale proposée ;
 - les premières observations attributaires ;
 - les relations identifiées ;
@@ -73,6 +74,8 @@ L'IA reçoit :
 - sa `structure_version` ;
 - le nouveau jeu documentaire.
 
+Elle produit pour chaque campagne la liste `SOURCES` des nouveaux documents effectivement analysés.
+
 Elle peut ajouter de nouvelles observations et relations documentaires, mais **ne peut jamais modifier la structure validée**.
 
 Un objet absent ou une incohérence structurelle détectés dans un document ultérieur produisent une anomalie, jamais une modification automatique du patrimoine.
@@ -84,7 +87,7 @@ ARIANE conserve des **observations documentaires**, et non une valeur unique par
 Chaque observation est liée au minimum à :
 - un programme ;
 - une campagne de captation ;
-- un document source ;
+- un document source déclaré dans `SOURCES` ;
 - un objet patrimonial ;
 - un attribut canonique ;
 - une valeur brute et éventuellement normalisée ;
