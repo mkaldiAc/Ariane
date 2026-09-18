@@ -1,6 +1,6 @@
 # ARIANE — Traçabilité et sources
 
-Version : 1.3.0
+Version : 1.3.2
 
 ## Principe
 
