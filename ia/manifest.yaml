@@ -1,4 +1,4 @@
-version: "1.3.0"
+version: "1.3.1"
 project: "ARIANE"
 purpose: "Protocole standardisé de captation patrimoniale cumulative assistée par IA."
 
@@ -9,7 +9,7 @@ execution_modes:
       et capte les premières observations attributaires.
     may_create_structure: true
     may_modify_validated_structure: false
-    outputs: [STRUCTURE_PROPOSEE, OBSERVATIONS, RELATIONS, ANOMALIES]
+    outputs: [SOURCES, STRUCTURE_PROPOSEE, OBSERVATIONS, RELATIONS, ANOMALIES]
 
   CAPTATION_INCREMENTALE:
     description: >-
@@ -17,7 +17,7 @@ execution_modes:
       est fournie en entrée et ne peut jamais être modifiée par l'IA.
     may_create_structure: false
     may_modify_validated_structure: false
-    outputs: [OBSERVATIONS, RELATIONS, ANOMALIES]
+    outputs: [SOURCES, OBSERVATIONS, RELATIONS, ANOMALIES]
 
 required_context:
   always:
@@ -45,5 +45,6 @@ principles:
   - "Une structure validée est intangible pendant les captations incrémentales."
   - "Une observation ne remplace jamais une observation antérieure."
   - "La validation humaine est hors du périmètre IA."
+  - "Toute source analysée est déclarée dans la sortie SOURCES avec un source_id stable pour la captation."
   - "Toute observation est rattachée à un programme, une captation, une source, un objet et un attribut."
   - "Toute captation conserve la preuve documentaire et un score de confiance de l'IA."
