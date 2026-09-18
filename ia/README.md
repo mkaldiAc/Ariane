@@ -4,6 +4,8 @@ Ce dossier constitue le **seul point d'entrée nécessaire à une IA de captatio
 
 L'IA ne doit pas utiliser les ressources du dossier `humain/` pour exécuter une captation. Ces ressources servent à la compréhension, à la gouvernance, aux arbitrages et aux livrables de travail.
 
+Version : **1.3.1**.
+
 ## Objectif
 
 ARIANE permet de traiter un programme immobilier en plusieurs temps :
@@ -26,10 +28,13 @@ Entrées minimales :
 - référentiel ARIANE contenu dans ce dossier.
 
 Sorties :
+- `SOURCES` ;
 - `STRUCTURE_PROPOSEE` ;
 - `OBSERVATIONS` ;
 - `RELATIONS` ;
 - `ANOMALIES`.
+
+La sortie `SOURCES` décrit chaque document effectivement analysé et lui associe un `source_id` stable dans la captation.
 
 La structure proposée est ensuite contrôlée et validée **hors du processus IA**.
 
@@ -45,9 +50,12 @@ Entrées minimales :
 - référentiel ARIANE contenu dans ce dossier.
 
 Sorties :
+- `SOURCES` ;
 - `OBSERVATIONS` ;
 - `RELATIONS` documentaires éventuelles ;
 - `ANOMALIES`.
+
+La sortie `SOURCES` décrit uniquement les documents analysés dans la captation courante.
 
 En mode incrémental, **la structure validée est intangible** : l'IA ne crée, ne supprime, ne déplace, ne fusionne et ne renomme aucun objet patrimonial.
 
