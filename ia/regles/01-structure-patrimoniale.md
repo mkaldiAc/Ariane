@@ -23,7 +23,13 @@ En mode `CAPTATION_INCREMENTALE`, la structure validée fournie en entrée prév
 
 La structure produite lors de l'initialisation est une `STRUCTURE_PROPOSEE`.
 
-Après validation externe, elle devient la structure de référence du programme. Toutes les captations ultérieures utilisent cette structure figée.
+Après décision humaine explicite, elle peut devenir la structure de référence du programme selon `07-finalisation-structure-validee.md`.
+
+L'IA ne peut jamais prendre seule cette décision de validation.
+
+Elle peut seulement matérialiser techniquement la décision humaine si le déclencheur formel requis par `07-finalisation-structure-validee.md` est fourni dans le message utilisateur courant.
+
+Toutes les captations ultérieures utilisent cette structure figée.
 
 ## Objets absents dans un jeu ultérieur
 
