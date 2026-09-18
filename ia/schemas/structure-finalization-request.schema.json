@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARIANE Demande de finalisation d'une structure validée",
+  "type": "object",
+  "required": ["action", "human_approval", "programme_id", "target_structure_version"],
+  "properties": {
+    "action": {"const": "FINALISER_STRUCTURE_VALIDEE"},
+    "human_approval": {"const": true},
+    "programme_id": {"type": "string", "minLength": 1},
+    "target_structure_version": {"type": "string", "minLength": 1},
+    "requested_changes": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": true
+}
