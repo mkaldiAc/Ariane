@@ -2,7 +2,7 @@
 
 ARIANE est un référentiel et un protocole de captation patrimoniale standardisée assistée par IA.
 
-Version courante : **1.3.2**.
+Version courante : **1.3.4**.
 
 ## Organisation du dépôt
 
@@ -81,6 +81,16 @@ Elle produit pour chaque campagne la liste `SOURCES` des nouveaux documents effe
 Elle peut ajouter de nouvelles observations et relations documentaires, mais **ne peut jamais modifier la structure validée**.
 
 Un objet absent ou une incohérence structurelle détectés dans un document ultérieur produisent une anomalie, jamais une modification automatique du patrimoine.
+
+## Règle structurante de rattachement physique
+
+Lors de l'initialisation d'un programme, ARIANE rattache chaque objet à son **parent physique réel le plus précis démontrable**.
+
+Pour un logement ou un local desservi directement par une zone de circulation intérieure identifiable — couloir, dégagement, coursive, **palier**, etc. — cette zone de circulation `CIR` est obligatoirement le parent principal de l'objet. Les parents autorisés ne sont donc pas des alternatives équivalentes : la présence d'une `CIR` physique directement desservante impose son utilisation.
+
+Les niveaux `RDC`, `R+1`, `R+2`, `SS-1`, etc. restent des **localisations** et ne sont jamais créés comme objets. Une `CIR` ne doit pas être inventée pour matérialiser un étage : elle doit correspondre à un espace physique réellement identifiable ou démontrable.
+
+En l'absence de circulation physique intermédiaire, le rattachement direct au bâtiment reste valide. C'est notamment le cas d'une maison individuelle dont le logement est directement accessible sans circulation intérieure commune ou intermédiaire.
 
 ## Modèle de données captées
 
