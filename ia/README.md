@@ -4,7 +4,7 @@ Ce dossier constitue le **seul point d'entrée nécessaire à une IA de captatio
 
 L'IA ne doit pas utiliser les ressources du dossier `humain/` pour exécuter une captation. Ces ressources servent à la compréhension, à la gouvernance, aux arbitrages et aux livrables de travail.
 
-Version : **1.3.3**.
+Version : **1.3.4**.
 
 ## Objectif
 
@@ -60,6 +60,20 @@ La sortie `SOURCES` décrit uniquement les documents analysés dans la captation
 En mode incrémental, **la structure validée est intangible** : l'IA ne crée, ne supprime, ne déplace, ne fusionne et ne renomme aucun objet patrimonial.
 
 Si un document ultérieur semble révéler un objet absent ou une incohérence structurelle, l'IA produit une anomalie `OBJET_STRUCTURE_ABSENT` ou `INCOHERENCE_STRUCTURE` et poursuit la captation sans modifier la structure.
+
+## Règle structurante — circulation physique prioritaire
+
+Lors de la construction de `STRUCTURE_PROPOSEE`, l'IA doit rechercher le parent physique réel le plus précis.
+
+Si une zone de circulation intérieure `CIR` identifiable dessert directement un logement ou un local, **la `CIR` est obligatoirement le parent principal de cet objet**. Une circulation physique peut être un couloir, un dégagement, une coursive, un palier ou tout autre espace assurant la distribution directe.
+
+Un simple palier doit donc être représenté comme une `CIR` lorsqu'il constitue un espace physique identifiable desservant directement un ou plusieurs objets.
+
+Les niveaux `RDC`, `R+1`, `R+2`, `SS-1`, etc. sont uniquement des localisations. Ils ne sont jamais des objets et ne suffisent jamais, à eux seuls, à justifier la création d'une `CIR`.
+
+En l'absence de circulation physique intermédiaire démontrable, l'objet est rattaché au parent physique pertinent autorisé. Le rattachement direct `BAT → LOG` est donc valide, notamment pour une maison individuelle dont le logement est directement accessible sans circulation intérieure intermédiaire.
+
+Voir `regles/01-structure-patrimoniale.md` et `referentiel/objets-patrimoniaux.yaml`.
 
 ## Principe d'observation cumulative
 
