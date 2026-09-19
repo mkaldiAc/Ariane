@@ -1,4 +1,4 @@
-version: "1.3.2"
+version: "1.3.4"
 project: "ARIANE"
 purpose: >-
   Référentiel machine-readable des objets patrimoniaux autorisés, de leurs parents
@@ -10,6 +10,9 @@ principles:
   - "Chaque objet possède au maximum un parent principal, sauf l'objet racine."
   - "Le parent physique le plus précis démontrable doit être utilisé à partir du niveau FONCIER."
   - "Les niveaux RDC, R+1, SS-1, etc. sont des localisations et non des objets."
+  - "Lorsqu'une zone de circulation intérieure physique (CIR) dessert directement un logement ou un local, cette CIR est obligatoirement le parent principal de l'objet."
+  - "Un palier physiquement identifiable qui dessert directement un ou plusieurs logements ou locaux est une CIR."
+  - "Une CIR ne doit jamais être créée uniquement pour matérialiser un niveau ; sans circulation physique intermédiaire démontrable, le rattachement direct au BAT ou à un autre parent autorisé reste possible."
   - "Les relations d'affectation, d'usage, de desserte ou d'implantation cadastrale sont complémentaires."
   - "Une relation complémentaire ne modifie jamais le parent physique principal."
   - "Ne jamais inventer un type patrimonial absent de ce référentiel."
@@ -55,7 +58,7 @@ objects:
     allowed_parents: [BAT]
   CIR:
     label: "Zone de circulation"
-    description: "Espace intérieur de distribution horizontale ou locale."
+    description: "Espace intérieur physique de distribution horizontale ou locale : couloir, dégagement, coursive, palier ou autre espace assurant une distribution directe."
     allowed_parents: [BAT, CAG]
   LOG:
     label: "Logement"
@@ -133,6 +136,29 @@ objects:
       usage: {examples: ["Standard", "PMR", "Moto", "Autre"]}
       electrification: {examples: ["Oui", "Non"]}
       borne_recharge: {examples: ["Oui", "Non"]}
+
+parent_selection_rules:
+  circulation_physique_prioritaire:
+    applies_to: [LOG, LOC, LPO, LVE, CAV, DEP, LTE]
+    condition: >-
+      Une zone de circulation intérieure CIR physiquement identifiable ou démontrable
+      dessert directement l'objet.
+    mandatory_parent: CIR
+    rule: >-
+      Lorsque la condition est satisfaite, CIR doit être utilisée comme parent principal.
+      BAT, HAL et CAG ne sont pas des alternatives équivalentes et ne doivent pas être choisis
+      par commodité lorsqu'une CIR directement desservante plus précise est démontrable.
+    circulation_examples: ["Couloir", "Dégagement", "Coursive", "Palier", "Autre espace physique de distribution directe"]
+    landing_rule: >-
+      Un simple palier constitue une CIR dès lors qu'il s'agit d'un espace physique identifiable
+      qui dessert directement un ou plusieurs logements ou locaux.
+    level_rule: >-
+      RDC, R+1, R+2, SS-1 et les autres niveaux sont des localisations et non des objets.
+      L'existence d'un niveau ne suffit jamais à créer une CIR.
+    fallback_rule: >-
+      Si aucune CIR physique intermédiaire n'existe ou ne peut être démontrée, utiliser le parent
+      physique pertinent parmi les allowed_parents. BAT peut notamment être le parent direct d'un
+      LOG dans une maison individuelle directement accessible sans circulation intérieure intermédiaire.
 
 complementary_relations:
   IMPLANTE_SUR:
