@@ -1,6 +1,6 @@
 # ARIANE — Structure patrimoniale de référence
 
-Version : 1.3.0
+Version : 1.3.4
 
 ## Finalité
 
@@ -44,6 +44,40 @@ PROGRAMME [PRG]
 - Chaque objet est rattaché au parent physique le plus précis démontrable.
 - `LOT`, `PCM`, étage, maison, immeuble, box, chaufferie ou parking générique ne sont pas des types patrimoniaux ARIANE.
 - Les relations d'affectation, de desserte, d'usage ou d'implantation sont complémentaires et ne changent jamais le parent physique.
+
+## Priorité de rattachement aux circulations intérieures
+
+La liste des parents autorisés ne constitue pas une liste de choix équivalents.
+
+Lorsqu'un logement, un local ou un autre espace fermé est **directement desservi par une circulation intérieure physique identifiable**, cette circulation `CIR` doit être utilisée comme parent principal. Cette règle traduit le principe général de rattachement au parent physique le plus précis démontrable.
+
+Sont notamment considérés comme des circulations physiques :
+- les couloirs ;
+- les dégagements ;
+- les coursives ;
+- les paliers, y compris un simple palier desservant quelques logements ;
+- les autres espaces physiques assurant directement la distribution.
+
+Les niveaux `RDC`, `R+1`, `R+2`, `SS-1`, etc. restent des informations de localisation. Ils ne sont pas des objets patrimoniaux et ne doivent pas conduire à créer artificiellement une `CIR`.
+
+Ainsi :
+
+```text
+BAT Immeuble
+└── CAG Cage
+    └── CIR Palier R+1
+        ├── LOG 101
+        └── LOG 102
+```
+
+est attendu lorsqu'un palier physique dessert les logements, tandis que :
+
+```text
+BAT Maison individuelle
+└── LOG Logement
+```
+
+est attendu lorsqu'aucune circulation intérieure intermédiaire n'existe.
 
 ## Stabilisation par programme
 
