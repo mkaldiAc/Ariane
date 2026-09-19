@@ -1,4 +1,4 @@
-version: "1.3.3"
+version: "1.3.4"
 project: "ARIANE"
 purpose: "Protocole standardisé de captation patrimoniale cumulative assistée par IA."
 
@@ -52,6 +52,8 @@ principles:
   - "Toute captation conserve la preuve documentaire et un score de confiance de l'IA."
   - "repere_source est réservé à une désignation explicitement portée par la source et rattachée sans ambiguïté à l'objet ; il ne peut jamais être fabriqué par l'IA ni utilisé pour une simple caractéristique descriptive."
   - "source_anchor localise la preuve documentaire ; il ne doit jamais être recopié automatiquement dans repere_source."
+  - "Lorsqu'une zone de circulation intérieure physique (CIR), y compris un simple palier, dessert directement un logement ou un local, cette CIR est obligatoirement son parent principal."
+  - "Les niveaux RDC, R+1, R+2, SS-1, etc. sont des localisations et ne justifient jamais à eux seuls la création d'une CIR ; sans circulation physique intermédiaire démontrable, le rattachement direct au BAT reste autorisé."
 
 structure_finalization:
   autonomous_ai_validation: false
