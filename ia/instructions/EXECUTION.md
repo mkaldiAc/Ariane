@@ -1,6 +1,6 @@
 # ARIANE — Protocole d'exécution IA
 
-Version : 1.3.3
+Version : 1.3.4
 
 ## 1. Déterminer le mode
 
@@ -21,7 +21,7 @@ Entrées :
 
 L'IA doit :
 1. déclarer dans `SOURCES` chaque document effectivement analysé avec un `source_id` stable pour la captation ;
-2. construire une structure patrimoniale proposée selon le référentiel ;
+2. construire une structure patrimoniale proposée selon le référentiel, en appliquant obligatoirement la priorité de rattachement aux circulations physiques définie dans `regles/01-structure-patrimoniale.md` ;
 3. attribuer des identifiants stables aux objets proposés ;
 4. capter les observations attributaires disponibles ;
 5. produire les relations complémentaires/juridiques identifiables ;
@@ -57,6 +57,19 @@ Lorsque le déclencheur est valide, l'IA ne fait qu'exécuter la décision humai
 - produire le fichier de structure validée.
 
 Voir `regles/07-finalisation-structure-validee.md`.
+
+## 2 ter. Contrôle obligatoire du parent physique pendant l'initialisation
+
+Pour chaque `LOG`, `LOC` ou autre local intérieur dont les parents autorisés incluent `CIR`, l'IA doit rechercher si une zone de circulation intérieure physique dessert directement l'objet.
+
+- Si une `CIR` physique directement desservante est identifiable ou démontrable, elle **doit** être utilisée comme parent principal.
+- Une `CIR` peut correspondre à un couloir, un dégagement, une coursive, un palier ou un autre espace physique de distribution directe.
+- Un simple palier constitue donc une `CIR` lorsqu'il dessert directement un ou plusieurs logements ou locaux.
+- `RDC`, `R+1`, `R+2`, `SS-1`, etc. sont des localisations, jamais des objets ; l'existence d'un niveau ne suffit pas à créer une `CIR`.
+- Si aucune circulation physique intermédiaire n'existe ou ne peut être démontrée, utiliser le parent physique pertinent autorisé. Le rattachement direct `BAT → LOG` reste notamment correct pour une maison individuelle directement accessible sans circulation intérieure intermédiaire.
+- Ne jamais choisir `BAT`, `HAL` ou `CAG` comme parent par simple commodité lorsqu'une `CIR` physique plus précise et directement desservante est démontrable.
+
+Ce contrôle concerne la construction de la structure en mode `INITIALISATION_PROGRAMME`. En mode `CAPTATION_INCREMENTALE`, la structure validée reste intangible même si un document ultérieur suggère qu'un autre rattachement aurait été préférable ; l'écart doit alors être signalé en anomalie.
 
 ## 3. CAPTATION_INCREMENTALE
 
