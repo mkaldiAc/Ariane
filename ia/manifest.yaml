@@ -1,4 +1,4 @@
-version: "1.3.4"
+version: "1.4.0"
 project: "ARIANE"
 purpose: "Protocole standardisé de captation patrimoniale cumulative assistée par IA."
 
@@ -14,10 +14,12 @@ execution_modes:
   CAPTATION_INCREMENTALE:
     description: >-
       Traitement de tout jeu documentaire postérieur. La structure patrimoniale validée du programme
-      est fournie en entrée et ne peut jamais être modifiée par l'IA.
+      est fournie en entrée et ne peut jamais être modifiée par l'IA. Un objet absent peut toutefois
+      être conservé comme OBJET_CANDIDAT dans la CAPTURE avec ses observations et relations associées.
     may_create_structure: false
+    may_emit_candidate_objects: true
     may_modify_validated_structure: false
-    outputs: [SOURCES, OBSERVATIONS, RELATIONS, ANOMALIES]
+    outputs: [SOURCES, OBJETS_CANDIDATS, OBSERVATIONS, RELATIONS, ANOMALIES]
 
 required_context:
   always:
@@ -41,29 +43,42 @@ normative_resources:
     - "ia/regles/05-score-confiance.md"
     - "ia/regles/06-preservation-observations.md"
     - "ia/regles/07-finalisation-structure-validee.md"
+    - "ia/regles/08-capture-current.md"
 
 principles:
+  - "Une CAPTURE est immuable après émission et conserve les constats de l'itération, y compris les objets candidats et leurs données."
+  - "CURRENT représente l'état consolidé courant du programme ; il n'est jamais l'historique exhaustif des sorties IA."
   - "Une structure validée est intangible pendant les captations incrémentales."
-  - "L'IA ne décide jamais seule qu'une structure est validée ; elle ne peut matérialiser cette validation que sur instruction humaine explicite conforme au protocole de finalisation."
+  - "Un objet absent de la structure validée peut être émis comme CANDIDAT_STRUCTURE dans la CAPTURE, mais ne peut pas entrer dans la structure validée ni dans CURRENT sans décision humaine explicite."
+  - "Les observations et relations d'un objet candidat sont conservées dans la CAPTURE avec le statut EN_ATTENTE_RATTACHEMENT_STRUCTUREL."
+  - "L'action VALIDER_STRUCTURE est le seul mécanisme IA autorisé pour matérialiser une décision humaine d'évolution de structure et promouvoir les données devenues rattachables vers CURRENT."
+  - "L'IA ne décide jamais seule qu'une structure est validée."
   - "Une observation ne remplace jamais une observation antérieure."
   - "La validation humaine des observations est hors du périmètre IA."
   - "Toute source analysée est déclarée dans la sortie SOURCES avec un source_id stable pour la captation."
-  - "Toute observation est rattachée à un programme, une captation, une source, un objet et un attribut."
+  - "Toute observation est rattachée à un programme, une captation, une source, un objet existant ou candidat, et un attribut."
   - "Toute captation conserve la preuve documentaire et un score de confiance de l'IA."
   - "repere_source est réservé à une désignation explicitement portée par la source et rattachée sans ambiguïté à l'objet ; il ne peut jamais être fabriqué par l'IA ni utilisé pour une simple caractéristique descriptive."
   - "source_anchor localise la preuve documentaire ; il ne doit jamais être recopié automatiquement dans repere_source."
   - "Lorsqu'une zone de circulation intérieure physique (CIR), y compris un simple palier, dessert directement un logement ou un local, cette CIR est obligatoirement son parent principal."
   - "Les niveaux RDC, R+1, R+2, SS-1, etc. sont des localisations et ne justifient jamais à eux seuls la création d'une CIR ; sans circulation physique intermédiaire démontrable, le rattachement direct au BAT reste autorisé."
 
-structure_finalization:
+structure_validation:
   autonomous_ai_validation: false
   ai_execution_allowed_only_on_explicit_current_user_instruction: true
-  canonical_action: "FINALISER_STRUCTURE_VALIDEE"
+  canonical_action: "VALIDER_STRUCTURE"
   required_user_supplied_fields:
     - action
     - human_approval
     - programme_id
     - target_structure_version
+  candidate_promotion_field: "approved_candidate_object_ids"
   request_schema: "ia/schemas/structure-finalization-request.schema.json"
   rule: "ia/regles/07-finalisation-structure-validee.md"
-  missing_field_behavior: "DO_NOT_FINALIZE"
+  missing_field_behavior: "DO_NOT_VALIDATE"
+
+capture_current:
+  capture_immutable: true
+  candidate_data_status: "EN_ATTENTE_RATTACHEMENT_STRUCTUREL"
+  promote_candidate_data_only_on_structure_validation: true
+  current_structure_must_be_validated: true
