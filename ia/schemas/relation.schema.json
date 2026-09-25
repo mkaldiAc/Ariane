@@ -6,12 +6,17 @@
   "properties": {
     "programme_id": {"type": "string"},
     "capture_id": {"type": "string"},
+    "structure_version": {"type": ["string", "null"]},
     "source_id": {"type": "string"},
     "relation_id": {"type": "string"},
     "relation_type": {"type": "string"},
     "source_object_id": {"type": "string"},
     "target_object_id": {"type": ["string", "null"]},
     "external_target": {"type": ["string", "null"]},
+    "structural_binding_status": {
+      "enum": ["RATTACHE_STRUCTURE_VALIDEE", "EN_ATTENTE_RATTACHEMENT_STRUCTUREL", null],
+      "description": "Une relation impliquant un CANDIDAT_STRUCTURE reste EN_ATTENTE_RATTACHEMENT_STRUCTUREL jusqu'à sa promotion éventuelle via VALIDER_STRUCTURE."
+    },
     "page_or_plan": {"type": ["string", "null"]},
     "source_anchor": {"type": ["string", "null"]},
     "confidence_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100}
