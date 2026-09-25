@@ -1,6 +1,6 @@
 # ARIANE — Règles IA de structure patrimoniale
 
-Version : 1.3.4
+Version : 1.4.0
 
 ## Portée
 
@@ -49,28 +49,6 @@ Les indications `RDC`, `R+1`, `R+2`, `SS-1`, etc. restent des **localisations** 
 
 Une `CIR` ne doit **jamais** être créée uniquement parce qu'un niveau existe. Elle doit correspondre à un espace physique de circulation réellement identifiable ou démontrable dans la source.
 
-Exemple avec circulation réelle :
-
-```text
-BAT Bâtiment A
-└── CAG Cage A
-    └── CIR Palier R+1
-        ├── LOG 101
-        ├── LOG 102
-        └── LOG 103
-```
-
-Ici, `R+1` localise la `CIR` ; ce n'est pas un objet intermédiaire.
-
-Exemple sans circulation intermédiaire :
-
-```text
-BAT Maison
-└── LOG Logement
-```
-
-Ce rattachement direct est correct pour une maison individuelle lorsque le logement est directement accessible et qu'aucune circulation intérieure intermédiaire n'existe.
-
 ## Règle de stabilisation
 
 La structure produite lors de l'initialisation est une `STRUCTURE_PROPOSEE`.
@@ -79,10 +57,20 @@ Après décision humaine explicite, elle peut devenir la structure de référenc
 
 L'IA ne peut jamais prendre seule cette décision de validation.
 
-Elle peut seulement matérialiser techniquement la décision humaine si le déclencheur formel requis par `07-finalisation-structure-validee.md` est fourni dans le message utilisateur courant.
+Elle peut seulement matérialiser techniquement la décision humaine par l'action `VALIDER_STRUCTURE` si le déclencheur formel requis est fourni dans le message utilisateur courant.
 
 Toutes les captations ultérieures utilisent cette structure figée.
 
 ## Objets absents dans un jeu ultérieur
 
-Toute mention d'un objet non présent dans la structure validée produit une anomalie et non une évolution structurelle.
+Lorsqu'un document d'une captation incrémentale démontre l'existence d'un objet absent de la structure validée :
+
+- la structure validée reste strictement inchangée ;
+- l'IA peut créer dans la **CAPTURE courante uniquement** un objet avec `object_status = CANDIDAT_STRUCTURE` ;
+- cet objet candidat reçoit un `object_id` permettant de rattacher les constats de cette capture ;
+- le `structure_version` porté par l'objet candidat désigne la structure de référence par rapport à laquelle l'absence est constatée ; il ne signifie jamais que l'objet appartient à cette structure ;
+- l'IA peut renseigner le type et le parent pressentis uniquement s'ils sont démontrables par la source ;
+- l'IA produit obligatoirement une anomalie `OBJET_STRUCTURE_ABSENT` liée au candidat ;
+- l'objet candidat ne peut jamais entrer dans la structure validée ni dans `CURRENT` au cours de la captation.
+
+Une évolution de structure ne peut intervenir qu'après décision humaine explicite matérialisée par `VALIDER_STRUCTURE`.
