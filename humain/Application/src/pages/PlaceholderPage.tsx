@@ -1,0 +1,1 @@
+import {Construction} from 'lucide-react';export function PlaceholderPage({title,description}:{title:string;description:string}){return <section className="ariane-placeholder panel"><Construction/><h1>{title}</h1><p>{description}</p></section>}
