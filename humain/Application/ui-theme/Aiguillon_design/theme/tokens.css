@@ -1,0 +1,8 @@
+:root {
+  --blue-950:#203864;--blue-900:#29467b;--blue-850:#2f518d;--blue-800:#3560a4;--blue-700:#3b7cbb;--blue-600:#4f8ecc;--blue-500:#679ad1;--blue-300:#8faadc;--blue-100:#eaf1fb;
+  --app-bg:#f4f6f9;--surface:#fff;--border:#e1e6ed;--border-strong:#c9d2de;--text:#14213d;--text-muted:#5e6a7d;--focus:#1d64c8;
+  --data-teal-700:#006a7e;--data-teal-600:#007b91;--data-red-700:#b11f0d;--data-red-500:#ef4b2d;--data-blue-700:#0059a8;--data-blue-500:#2f7fc1;
+  --success:#137a55;--warning:#a85c00;--radius-sm:4px;--radius-md:7px;--shadow:0 1px 4px rgb(32 56 100 / 8%);--sidebar-width:276px;
+  --hero-min-height:270px;--table-font-size:15.6px;--row-blue-a:#f8fbff;--row-blue-b:#edf4fc;--overlay:#e5e7ebd9;
+  --font-ui:"Segoe UI Variable","Segoe UI",Arial,sans-serif;
+}
