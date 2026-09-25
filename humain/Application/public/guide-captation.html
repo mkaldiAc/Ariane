@@ -1,0 +1,31 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARIANE — Guide de captation</title><link rel="stylesheet" href="/theme/tokens.css"><link rel="stylesheet" href="/theme/shell.css"><link rel="stylesheet" href="/theme/components.css"><link rel="stylesheet" href="/guide.css"></head><body><aside class="doc-side"><h1>ARIANE</h1><p>Guide de captation · 1.4.0</p><a href="#modele">Modèle</a><a href="#init">Initialisation</a><a href="#validation">Validation</a><a href="#increment">Incrémental</a><a href="#candidate">Candidat</a><a href="#audit">Audit</a></aside><main class="doc-main"><section id="modele"><h2>Captation de bout en bout</h2><div class="flow"><b>Documents</b><span>→</span><b>CAPTURE immuable</b><span>→</span><b>STR validée</b><span>→</span><b>CURRENT consolidé</b></div><p class="note">La structure ne change qu'après décision humaine explicite via <code>VALIDER_STRUCTURE</code>.</p></section><section id="init"><h2>1. Initialisation</h2><pre>MODE: INITIALISATION_PROGRAMME
+programme_id: &lt;PROGRAMME_ID&gt;
+capture_id: &lt;CAPTURE_ID_INITIAL&gt;
+
+Charge strictement le référentiel ia/ du dépôt mkaldiAc/Ariane.
+Produis SOURCES, STRUCTURE_PROPOSEE, OBSERVATIONS, RELATIONS et ANOMALIES.
+Dépose les JSON dans Ariane_capture_data/&lt;PROGRAMME_ID&gt;/captures/001_&lt;CAPTURE_ID_INITIAL&gt;/.
+Ne crée aucune STR validée et ne valide jamais la structure de ta propre initiative.</pre></section><section id="validation"><h2>2. Validation humaine</h2><pre>action: VALIDER_STRUCTURE
+human_approval: true
+programme_id: &lt;PROGRAMME_ID&gt;
+source_structure_version: PROPOSEE
+target_structure_version: STR-001
+requested_changes: []
+
+Crée STR-001, archive-la, initialise CURRENT et ne modifie aucune CAPTURE.</pre></section><section id="increment"><h2>3. Captation incrémentale</h2><pre>MODE: CAPTATION_INCREMENTALE
+programme_id: &lt;PROGRAMME_ID&gt;
+capture_id: &lt;CAPTURE_ID_N&gt;
+structure_version: &lt;STR_COURANTE&gt;
+
+Charge current/structure.json. La structure est intangible.
+Si un objet absent est démontré, crée un CANDIDAT_STRUCTURE dans la CAPTURE et conserve ses données en EN_ATTENTE_RATTACHEMENT_STRUCTUREL.
+Ne le promeus pas dans CURRENT.</pre></section><section id="candidate"><h2>4. Accepter un candidat</h2><pre>action: VALIDER_STRUCTURE
+human_approval: true
+programme_id: &lt;PROGRAMME_ID&gt;
+source_structure_version: STR-001
+target_structure_version: STR-002
+approved_candidate_object_ids:
+  - CAV_003
+
+Crée STR-002 puis promeus les observations et relations déjà captées de CAV_003 sans changer leurs identifiants.
+Résous l'anomalie dans CURRENT. Ne modifie aucune CAPTURE.</pre></section><section id="audit"><h2>5. Audit</h2><p>Vérifier l'immutabilité des CAPTURE, la cohérence de CURRENT, les archives STR, l'absence de données en attente dans CURRENT et la préservation des identifiants.</p></section></main></body></html>
