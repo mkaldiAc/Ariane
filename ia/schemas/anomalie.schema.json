@@ -13,7 +13,12 @@
     "proposed_object_type": {"type": ["string", "null"]},
     "source_reference": {"type": ["string", "null"]},
     "description": {"type": "string"},
-    "confidence_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100}
+    "confidence_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "resolution_status": {
+      "enum": ["OUVERTE", "RESOLUE", "REJETEE", null],
+      "description": "Dans une CAPTURE l'anomalie historique reste immuable. Ce champ est principalement utilisé par la projection CURRENT pour le suivi opérationnel."
+    },
+    "resolved_by_structure_version": {"type": ["string", "null"]}
   },
   "additionalProperties": true
 }
