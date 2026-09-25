@@ -11,6 +11,10 @@
     "observation_id": {"type": "string"},
     "object_id": {"type": "string"},
     "attribute_id": {"type": "string"},
+    "structural_binding_status": {
+      "enum": ["RATTACHE_STRUCTURE_VALIDEE", "EN_ATTENTE_RATTACHEMENT_STRUCTUREL", null],
+      "description": "EN_ATTENTE_RATTACHEMENT_STRUCTUREL est obligatoire selon les règles lorsqu'une observation porte sur un CANDIDAT_STRUCTURE."
+    },
     "value_raw": {},
     "value_normalized": {},
     "unit_raw": {"type": ["string", "null"]},
