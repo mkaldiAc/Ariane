@@ -156,7 +156,8 @@ Une anomalie `OBJET_STRUCTURE_ABSENT` n'interdit pas à elle seule de capter un 
 11. `regles/06-preservation-observations.md`
 12. `regles/07-finalisation-structure-validee.md`
 13. `regles/08-capture-current.md`
-14. les schémas dans `schemas/`
+14. `contracts/capture-storage.yaml` lorsque les résultats doivent être persistés dans Git
+15. les schémas dans `schemas/`
 
 ## Règle finale
 
@@ -165,3 +166,5 @@ La mission de l'IA est de **constater, structurer, rattacher, sourcer, scorer et
 Elle ne valide jamais seule une donnée métier ni une évolution de structure.
 
 Une donnée captée n'est jamais perdue au seul motif qu'elle n'est pas encore intégrable à CURRENT.
+
+Pour le démonstrateur Git, toute écriture de résultat s'effectue exclusivement dans `mkaldiAc/Ariane_capture_data` selon `contracts/capture-storage.yaml`. Le dépôt `mkaldiAc/Ariane` reste en lecture seule pendant une captation.
