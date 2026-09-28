@@ -1,0 +1,125 @@
+version: "1.4.0"
+project: "ARIANE"
+purpose: "Contrat de stockage Git des captations ARIANE pour le démonstrateur."
+
+repository:
+  full_name: "mkaldiAc/Ariane_capture_data"
+  branch: "main"
+  root_catalog: "catalog.json"
+
+principles:
+  - "Le dépôt Ariane contient les règles ; Ariane_capture_data contient uniquement les résultats et index de captation."
+  - "Une CAPTURE stockée est immuable : aucun fichier sous captures/<capture_id>/ ne peut être réécrit après son commit initial."
+  - "Les répertoires structures/ sont append-only : une STR validée n'est jamais réécrite."
+  - "Le répertoire current/ est une projection mutable et peut être mis à jour par une captation incrémentale ou par VALIDER_STRUCTURE."
+  - "catalog.json et les index de programme sont des index techniques mutables."
+  - "Un chemin existant de CAPTURE ne doit jamais être écrasé. En cas de collision de capture_id, l'exécution s'arrête."
+  - "L'IA peut créer les répertoires nécessaires uniquement dans mkaldiAc/Ariane_capture_data."
+  - "L'IA ne modifie jamais le dépôt mkaldiAc/Ariane pendant une exécution de captation."
+
+paths:
+  programme_root: "programmes/{programme_id}"
+  programme_index: "programmes/{programme_id}/index.json"
+  capture_root: "programmes/{programme_id}/captures/{capture_id}"
+  structure_root: "programmes/{programme_id}/structures/{structure_version}"
+  current_root: "programmes/{programme_id}/current"
+  validation_root: "programmes/{programme_id}/validations"
+
+capture_files:
+  metadata: "capture.json"
+  sources: "sources.json"
+  structure_proposee: "structure_proposee.json"
+  objets_candidats: "objets_candidats.json"
+  observations: "observations.json"
+  relations: "relations.json"
+  anomalies: "anomalies.json"
+
+structure_files:
+  structure: "structure.json"
+
+current_files:
+  structure: "structure.json"
+  sources: "sources.json"
+  observations: "observations.json"
+  relations: "relations.json"
+  anomalies: "anomalies.json"
+
+json_shapes:
+  sources:
+    required_root_fields: [programme_id, capture_id, sources]
+    collection_field: "sources"
+    item_schema: "ia/schemas/source.schema.json"
+  structure_proposee:
+    required_root_fields: [programme_id, capture_id, structure_version, objects]
+    collection_field: "objects"
+    item_schema: "ia/schemas/objet.schema.json"
+    structure_version_value: "PROPOSEE"
+  objets_candidats:
+    required_root_fields: [programme_id, capture_id, structure_version, objects]
+    collection_field: "objects"
+    item_schema: "ia/schemas/objet.schema.json"
+  observations:
+    required_root_fields: [programme_id, capture_id, observations]
+    collection_field: "observations"
+    item_schema: "ia/schemas/observation.schema.json"
+  relations:
+    required_root_fields: [programme_id, capture_id, relations]
+    collection_field: "relations"
+    item_schema: "ia/schemas/relation.schema.json"
+  anomalies:
+    required_root_fields: [programme_id, capture_id, anomalies]
+    collection_field: "anomalies"
+    item_schema: "ia/schemas/anomalie.schema.json"
+
+capture_metadata:
+  schema: "ia/schemas/capture-metadata.schema.json"
+  required_fields:
+    - programme_id
+    - capture_id
+    - sequence
+    - mode
+    - ariane_version
+    - structure_version
+    - immutable
+    - files
+
+catalog_contract:
+  root:
+    example:
+      schema_version: "1.0"
+      programmes:
+        - programme_id: "PRG_EXEMPLE"
+          index_path: "programmes/PRG_EXEMPLE/index.json"
+  programme_index:
+    required_fields: [programme_id, captures, structures, current]
+    capture_entry_fields: [capture_id, sequence, mode, path, structure_version]
+    structure_entry_fields: [structure_version, path]
+    current_fields: [available, structure_version, path]
+
+write_sequence:
+  initialisation:
+    - "Vérifier que le chemin de CAPTURE cible n'existe pas."
+    - "Créer les fichiers de la CAPTURE."
+    - "Créer ou mettre à jour l'index du programme."
+    - "Créer ou mettre à jour catalog.json."
+    - "Committer les écritures."
+  incremental:
+    - "Vérifier que le chemin de CAPTURE cible n'existe pas."
+    - "Créer la nouvelle CAPTURE immuable."
+    - "Mettre à jour CURRENT uniquement avec les données structurellement rattachables."
+    - "Mettre à jour l'index du programme et catalog.json."
+    - "Committer les écritures."
+  validate_structure:
+    - "Créer une nouvelle archive structures/{structure_version}/structure.json."
+    - "Mettre à jour CURRENT conformément à VALIDER_STRUCTURE."
+    - "Créer une trace dans validations/ sans modifier les CAPTURE."
+    - "Mettre à jour l'index du programme et catalog.json."
+    - "Committer les écritures."
+
+front_consumption:
+  base_url_default: "https://raw.githubusercontent.com/mkaldiAc/Ariane_capture_data/main"
+  discovery:
+    - "Le front charge catalog.json."
+    - "Il charge ensuite l'index du programme sélectionné."
+    - "Il lit les JSON de CAPTURE, STR et CURRENT à partir des chemins déclarés dans les index."
+  rule: "Le front ne doit jamais découvrir les données en listant les répertoires GitHub ; les index JSON sont le contrat de découverte."
