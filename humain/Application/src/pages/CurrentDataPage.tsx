@@ -1,6 +1,6 @@
 import {useEffect,useMemo,useState} from 'react';
 import type {CSSProperties} from 'react';
-import {AlertTriangle,ChevronDown,ChevronRight,Database,FileText,GitBranch,Link2,LoaderCircle,Search} from 'lucide-react';
+import {AlertTriangle,ChevronDown,ChevronRight,Database,FileText,Funnel,GitBranch,Link2,LoaderCircle,Search} from 'lucide-react';
 import {captureDataService,type CurrentData,type Observation,type PatrimonialObject,type ProgrammeData} from '../services/captureDataService';
 
 type Tab='structure'|'observations'|'anomalies'|'sources'|'relations';
@@ -18,6 +18,17 @@ const matches=(value:unknown,filter:string)=>!filter.trim()||valueText(value).to
 
 function FilterInput({value,onChange,label}:{value:string;onChange:(value:string)=>void;label:string}){
   return <input className="ariane-column-filter" value={value} onChange={e=>onChange(e.target.value)} placeholder="Filtrer…" aria-label={`Filtrer ${label}`}/>;
+}
+
+const activeFilterCount=(filters:Record<string,string>)=>Object.values(filters).filter(value=>value.trim()).length;
+
+function TableFilterMenu({visible,onToggle,count,onClear}:{visible:boolean;onToggle:()=>void;count:number;onClear:()=>void}){
+  return <div className="ariane-table-tools">
+    <button className="ariane-filter-toggle" type="button" onClick={onToggle} aria-expanded={visible}>
+      <Funnel/>{count>0?`Filtres (${count})`:'Filtres'}{visible?<ChevronDown/>:<ChevronRight/>}
+    </button>
+    {count>0&&<button className="ariane-filter-clear" type="button" onClick={onClear}>Effacer les filtres</button>}
+  </div>;
 }
 
 function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObject[];data:CurrentData;onOpenAttributes:(objectId:string)=>void}){
@@ -51,6 +62,7 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
   },[data]);
   const [expanded,setExpanded]=useState<Set<string>>(()=>new Set(children.keys()));
   const [attributesOpen,setAttributesOpen]=useState<Set<string>>(()=>new Set());
+  const [showRepereSource,setShowRepereSource]=useState(false);
 
   useEffect(()=>{setExpanded(new Set(children.keys()));setAttributesOpen(new Set());},[children]);
 
@@ -70,7 +82,20 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
     const next=new Set(seen);next.add(object.object_id);
     const kids=children.get(object.object_id)||[];
     const isExpanded=expanded.has(object.object_id);
-    const capturedAttributes=observationsByObject.get(object.object_id)||[];
+    const capturedAttributes=(observationsByObject.get(object.object_id)||[]).filter(o=>showRepereSource||o.attribute_id.toLowerCase()!=='repere_source');
+    const groupedAttributes=Array.from(capturedAttributes.reduce((groups,o)=>{
+      const value=o.value_normalized??o.value_raw;
+      const unit=o.unit_normalized||o.unit_raw||'—';
+      const key=`${o.attribute_id}\u0000${valueText(value)}\u0000${unit}`;
+      const current=groups.get(key);
+      const sourceLabel=o.page_or_plan?`${o.source_id} (${o.page_or_plan})`:o.source_id;
+      if(current){
+        current.sources.add(sourceLabel);
+      }else{
+        groups.set(key,{attributeId:o.attribute_id,value,unit,sources:new Set([sourceLabel])});
+      }
+      return groups;
+    },new Map<string,{attributeId:string;value:unknown;unit:string;sources:Set<string>}>()).values());
     const areAttributesOpen=attributesOpen.has(object.object_id);
     return <div className="ariane-tree-node" style={{'--depth':depth} as CSSProperties}>
       <div className="ariane-tree-row">
@@ -80,19 +105,19 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
         <span className="ariane-type-badge">{object.object_type}</span>
         <div className="ariane-tree-main"><b>{object.label||object.object_id}</b><code>{object.object_id}</code></div>
         <div className="ariane-tree-meta">
-          <button className="ariane-tree-attribute-button" type="button" onClick={()=>toggleAttributes(object.object_id)} disabled={capturedAttributes.length===0} aria-expanded={capturedAttributes.length?areAttributesOpen:undefined}>
-            {capturedAttributes.length} attr.
+          <button className="ariane-tree-attribute-button" type="button" onClick={()=>toggleAttributes(object.object_id)} disabled={groupedAttributes.length===0} aria-expanded={groupedAttributes.length?areAttributesOpen:undefined}>
+            {groupedAttributes.length} attr.
           </button>
           {(anoCount.get(object.object_id)||0)>0&&<span className="ariane-badge-warn">{anoCount.get(object.object_id)} anomalie(s)</span>}
         </div>
       </div>
-      {areAttributesOpen&&capturedAttributes.length>0&&<div className="ariane-tree-attributes">
-        <div className="ariane-tree-attributes-header"><b>Attributs captés</b><button type="button" onClick={()=>onOpenAttributes(object.object_id)}>Afficher dans l’onglet Attributs</button></div>
+      {areAttributesOpen&&groupedAttributes.length>0&&<div className="ariane-tree-attributes">
+        <div className="ariane-tree-attributes-header"><b>Attributs captés</b><button type="button" onClick={()=>onOpenAttributes(object.object_id)}>Afficher le détail dans l’onglet Attributs</button></div>
         <div className="ariane-tree-attribute-list">
-          {capturedAttributes.map(o=><div key={o.observation_id} className="ariane-tree-attribute-item">
-            <span>{o.attribute_id}</span>
-            <strong>{valueText(o.value_normalized??o.value_raw)}</strong>
-            <small>{o.unit_normalized||o.unit_raw||'—'} · source {o.source_id}</small>
+          {groupedAttributes.map((o,index)=><div key={`${o.attributeId}-${index}`} className="ariane-tree-attribute-item">
+            <span>{o.attributeId}</span>
+            <strong>{valueText(o.value)}</strong>
+            <small>{o.unit} · sources {Array.from(o.sources).join(' · ')}</small>
           </div>)}
         </div>
       </div>}
@@ -103,7 +128,8 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
   return <>
     <div className="ariane-tree-toolbar">
       <span>{objects.length} objet(s)</span>
-      <div><button type="button" onClick={()=>setExpanded(new Set(children.keys()))}>Tout déployer</button><button type="button" onClick={()=>setExpanded(new Set())}>Tout replier</button></div>
+      <label className="ariane-tree-option"><input type="checkbox" checked={showRepereSource} onChange={e=>setShowRepereSource(e.target.checked)}/> Afficher les attributs <code>repere_source</code></label>
+      <div className="ariane-tree-toolbar-actions"><button type="button" onClick={()=>setExpanded(new Set(children.keys()))}>Tout déployer</button><button type="button" onClick={()=>setExpanded(new Set())}>Tout replier</button></div>
     </div>
     <div className="ariane-tree">{roots.map(r=><Node key={r.object_id} object={r}/>)}</div>
   </>;
@@ -118,6 +144,9 @@ export function CurrentDataPage(){
   const [attributeFilters,setAttributeFilters]=useState<AttributeFilters>({object:'',attribute:'',value:'',unit:'',source:'',confidence:''});
   const [sourceFilters,setSourceFilters]=useState<SourceFilters>({id:'',filename:'',type:'',date:'',comment:''});
   const [relationFilters,setRelationFilters]=useState<RelationFilters>({id:'',type:'',source:'',target:'',evidence:'',confidence:''});
+  const [attributeFiltersVisible,setAttributeFiltersVisible]=useState(false);
+  const [sourceFiltersVisible,setSourceFiltersVisible]=useState(false);
+  const [relationFiltersVisible,setRelationFiltersVisible]=useState(false);
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState<string|null>(null);
 
@@ -145,6 +174,7 @@ export function CurrentDataPage(){
     setTab('observations');
     setQuery('');
     setAttributeFilters({object:objectId,attribute:'',value:'',unit:'',source:'',confidence:''});
+    setAttributeFiltersVisible(true);
   };
 
   if(loading&&!data)return <section className="ariane-data panel ariane-empty"><LoaderCircle className="ariane-spin"/><h1>Structures & données courantes</h1><p>Chargement de CURRENT…</p></section>;
@@ -179,10 +209,19 @@ export function CurrentDataPage(){
       <label className="ariane-search"><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Rechercher dans la vue…"/></label>
 
       {tab==='structure'&&<StructureTree objects={q?objects:data.structure.objects} data={data} onOpenAttributes={openObjectAttributes}/>}
-      {tab==='observations'&&<div className="ariane-table-wrap"><table className="ariane-table"><thead><tr><th>Objet</th><th>Attribut</th><th>Valeur</th><th>Unité</th><th>Source</th><th>Confiance</th></tr><tr className="ariane-filter-row"><th><FilterInput label="Objet" value={attributeFilters.object} onChange={value=>setAttributeFilters(f=>({...f,object:value}))}/></th><th><FilterInput label="Attribut" value={attributeFilters.attribute} onChange={value=>setAttributeFilters(f=>({...f,attribute:value}))}/></th><th><FilterInput label="Valeur" value={attributeFilters.value} onChange={value=>setAttributeFilters(f=>({...f,value}))}/></th><th><FilterInput label="Unité" value={attributeFilters.unit} onChange={value=>setAttributeFilters(f=>({...f,unit:value}))}/></th><th><FilterInput label="Source" value={attributeFilters.source} onChange={value=>setAttributeFilters(f=>({...f,source:value}))}/></th><th><FilterInput label="Confiance" value={attributeFilters.confidence} onChange={value=>setAttributeFilters(f=>({...f,confidence:value}))}/></th></tr></thead><tbody>{observations.map(o=><tr key={o.observation_id}><td><code>{o.object_id}</code></td><td>{o.attribute_id}</td><td>{valueText(o.value_normalized??o.value_raw)}</td><td>{o.unit_normalized||o.unit_raw||'—'}</td><td><code>{o.source_id}</code><small>{o.page_or_plan||''}</small></td><td>{o.confidence?.score??'—'}</td></tr>)}</tbody></table></div>}
+      {tab==='observations'&&<div className="ariane-table-section">
+        <TableFilterMenu visible={attributeFiltersVisible} onToggle={()=>setAttributeFiltersVisible(v=>!v)} count={activeFilterCount(attributeFilters)} onClear={()=>setAttributeFilters({object:'',attribute:'',value:'',unit:'',source:'',confidence:''})}/>
+        <div className="ariane-table-wrap"><table className="ariane-table"><thead><tr><th>Objet</th><th>Attribut</th><th>Valeur</th><th>Unité</th><th>Source</th><th>Confiance</th></tr>{attributeFiltersVisible&&<tr className="ariane-filter-row"><th><FilterInput label="Objet" value={attributeFilters.object} onChange={value=>setAttributeFilters(f=>({...f,object:value}))}/></th><th><FilterInput label="Attribut" value={attributeFilters.attribute} onChange={value=>setAttributeFilters(f=>({...f,attribute:value}))}/></th><th><FilterInput label="Valeur" value={attributeFilters.value} onChange={value=>setAttributeFilters(f=>({...f,value}))}/></th><th><FilterInput label="Unité" value={attributeFilters.unit} onChange={value=>setAttributeFilters(f=>({...f,unit:value}))}/></th><th><FilterInput label="Source" value={attributeFilters.source} onChange={value=>setAttributeFilters(f=>({...f,source:value}))}/></th><th><FilterInput label="Confiance" value={attributeFilters.confidence} onChange={value=>setAttributeFilters(f=>({...f,confidence:value}))}/></th></tr>}</thead><tbody>{observations.map(o=><tr key={o.observation_id}><td><code>{o.object_id}</code></td><td>{o.attribute_id}</td><td>{valueText(o.value_normalized??o.value_raw)}</td><td>{o.unit_normalized||o.unit_raw||'—'}</td><td><code>{o.source_id}</code><small>{o.page_or_plan||''}</small></td><td>{o.confidence?.score??'—'}</td></tr>)}</tbody></table></div>
+      </div>}
       {tab==='anomalies'&&<div className="ariane-anomaly-list">{anomalies.map(a=><article key={a.anomaly_id} className="ariane-anomaly"><div><span className="ariane-type-badge">{a.anomaly_type}</span><b>{a.anomaly_id}</b><span className={a.resolution_status==='RESOLUE'?'ariane-badge-ok':'ariane-badge-warn'}>{a.resolution_status||'OUVERTE'}</span></div><p>{a.description}</p><small>{a.object_id&&<>Objet <code>{a.object_id}</code> · </>}{a.source_reference||a.source_id||''}</small></article>)}</div>}
-      {tab==='sources'&&<div className="ariane-table-wrap"><table className="ariane-table"><thead><tr><th>ID</th><th>Fichier</th><th>Type</th><th>Date</th><th>Commentaire</th></tr><tr className="ariane-filter-row"><th><FilterInput label="ID" value={sourceFilters.id} onChange={value=>setSourceFilters(f=>({...f,id:value}))}/></th><th><FilterInput label="Fichier" value={sourceFilters.filename} onChange={value=>setSourceFilters(f=>({...f,filename:value}))}/></th><th><FilterInput label="Type" value={sourceFilters.type} onChange={value=>setSourceFilters(f=>({...f,type:value}))}/></th><th><FilterInput label="Date" value={sourceFilters.date} onChange={value=>setSourceFilters(f=>({...f,date:value}))}/></th><th><FilterInput label="Commentaire" value={sourceFilters.comment} onChange={value=>setSourceFilters(f=>({...f,comment:value}))}/></th></tr></thead><tbody>{sources.map(s=><tr key={s.source_id}><td><code>{s.source_id}</code></td><td>{s.filename}</td><td>{s.document_type||'—'}</td><td>{s.document_date||'—'}</td><td>{s.comment||'—'}</td></tr>)}</tbody></table></div>}
-      {tab==='relations'&&<div className="ariane-table-wrap"><table className="ariane-table"><thead><tr><th>ID</th><th>Type</th><th>Source</th><th>Cible</th><th>Preuve</th><th>Confiance</th></tr><tr className="ariane-filter-row"><th><FilterInput label="ID" value={relationFilters.id} onChange={value=>setRelationFilters(f=>({...f,id:value}))}/></th><th><FilterInput label="Type" value={relationFilters.type} onChange={value=>setRelationFilters(f=>({...f,type:value}))}/></th><th><FilterInput label="Source" value={relationFilters.source} onChange={value=>setRelationFilters(f=>({...f,source:value}))}/></th><th><FilterInput label="Cible" value={relationFilters.target} onChange={value=>setRelationFilters(f=>({...f,target:value}))}/></th><th><FilterInput label="Preuve" value={relationFilters.evidence} onChange={value=>setRelationFilters(f=>({...f,evidence:value}))}/></th><th><FilterInput label="Confiance" value={relationFilters.confidence} onChange={value=>setRelationFilters(f=>({...f,confidence:value}))}/></th></tr></thead><tbody>{relations.map(r=><tr key={r.relation_id}><td><code>{r.relation_id}</code></td><td>{r.relation_type}</td><td><code>{r.source_object_id}</code></td><td><code>{r.target_object_id||r.external_target||'—'}</code></td><td>{r.page_or_plan||'—'}</td><td>{r.confidence_score??'—'}</td></tr>)}</tbody></table></div>}
+      {tab==='sources'&&<div className="ariane-table-section">
+        <TableFilterMenu visible={sourceFiltersVisible} onToggle={()=>setSourceFiltersVisible(v=>!v)} count={activeFilterCount(sourceFilters)} onClear={()=>setSourceFilters({id:'',filename:'',type:'',date:'',comment:''})}/>
+        <div className="ariane-table-wrap"><table className="ariane-table"><thead><tr><th>ID</th><th>Fichier</th><th>Type</th><th>Date</th><th>Commentaire</th></tr>{sourceFiltersVisible&&<tr className="ariane-filter-row"><th><FilterInput label="ID" value={sourceFilters.id} onChange={value=>setSourceFilters(f=>({...f,id:value}))}/></th><th><FilterInput label="Fichier" value={sourceFilters.filename} onChange={value=>setSourceFilters(f=>({...f,filename:value}))}/></th><th><FilterInput label="Type" value={sourceFilters.type} onChange={value=>setSourceFilters(f=>({...f,type:value}))}/></th><th><FilterInput label="Date" value={sourceFilters.date} onChange={value=>setSourceFilters(f=>({...f,date:value}))}/></th><th><FilterInput label="Commentaire" value={sourceFilters.comment} onChange={value=>setSourceFilters(f=>({...f,comment:value}))}/></th></tr>}</thead><tbody>{sources.map(s=><tr key={s.source_id}><td><code>{s.source_id}</code></td><td>{s.filename}</td><td>{s.document_type||'—'}</td><td>{s.document_date||'—'}</td><td>{s.comment||'—'}</td></tr>)}</tbody></table></div>
+      </div>}
+      {tab==='relations'&&<div className="ariane-table-section">
+        <TableFilterMenu visible={relationFiltersVisible} onToggle={()=>setRelationFiltersVisible(v=>!v)} count={activeFilterCount(relationFilters)} onClear={()=>setRelationFilters({id:'',type:'',source:'',target:'',evidence:'',confidence:''})}/>
+        <div className="ariane-table-wrap"><table className="ariane-table"><thead><tr><th>ID</th><th>Type</th><th>Source</th><th>Cible</th><th>Preuve</th><th>Confiance</th></tr>{relationFiltersVisible&&<tr className="ariane-filter-row"><th><FilterInput label="ID" value={relationFilters.id} onChange={value=>setRelationFilters(f=>({...f,id:value}))}/></th><th><FilterInput label="Type" value={relationFilters.type} onChange={value=>setRelationFilters(f=>({...f,type:value}))}/></th><th><FilterInput label="Source" value={relationFilters.source} onChange={value=>setRelationFilters(f=>({...f,source:value}))}/></th><th><FilterInput label="Cible" value={relationFilters.target} onChange={value=>setRelationFilters(f=>({...f,target:value}))}/></th><th><FilterInput label="Preuve" value={relationFilters.evidence} onChange={value=>setRelationFilters(f=>({...f,evidence:value}))}/></th><th><FilterInput label="Confiance" value={relationFilters.confidence} onChange={value=>setRelationFilters(f=>({...f,confidence:value}))}/></th></tr>}</thead><tbody>{relations.map(r=><tr key={r.relation_id}><td><code>{r.relation_id}</code></td><td>{r.relation_type}</td><td><code>{r.source_object_id}</code></td><td><code>{r.target_object_id||r.external_target||'—'}</code></td><td>{r.page_or_plan||'—'}</td><td>{r.confidence_score??'—'}</td></tr>)}</tbody></table></div>
+      </div>}
     </section>
   </div>;
 }
