@@ -169,3 +169,15 @@ Le type de document n'autorise jamais l'IA à sélectionner une valeur métier c
 Une CAPTURE passée n'est jamais modifiée.
 
 Toute évolution du programme est matérialisée par une nouvelle CAPTURE ou une nouvelle version de structure validée, selon la nature de l'évolution.
+
+
+## 15. Persistance Git du démonstrateur
+
+Lorsque l'utilisateur demande explicitement de stocker les résultats dans Git :
+- utiliser uniquement le dépôt `mkaldiAc/Ariane_capture_data` ;
+- respecter strictement `ia/contracts/capture-storage.yaml` ;
+- ne jamais modifier `mkaldiAc/Ariane` pendant l'exécution ;
+- créer une nouvelle CAPTURE uniquement si son chemin cible n'existe pas ;
+- ne jamais réécrire une CAPTURE existante ;
+- mettre à jour uniquement les index techniques et CURRENT lorsque le protocole l'autorise ;
+- créer `capture.json` conformément à `ia/schemas/capture-metadata.schema.json`.
