@@ -4,7 +4,7 @@ Ce dossier constitue le **seul point d'entrée nécessaire à une IA de captatio
 
 L'IA ne doit pas utiliser les ressources du dossier `humain/` pour exécuter une captation. Ces ressources servent à la compréhension, à la gouvernance, aux arbitrages et aux livrables de travail.
 
-Version : **1.4.0**.
+Version : **1.4.0**.\n\nLes champs `version` portés par certaines ressources internes correspondent à leur révision propre et peuvent être antérieurs à la version globale du protocole. La version d'exécution ARIANE faisant autorité est celle de `manifest.yaml` et du fichier `VERSION` racine.
 
 ## Objectif
 
