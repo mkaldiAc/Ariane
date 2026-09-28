@@ -1,4 +1,5 @@
 import {useEffect,useMemo,useState} from 'react';
+import type {CSSProperties} from 'react';
 import {AlertTriangle,Database,FileText,GitBranch,Link2,LoaderCircle,Search} from 'lucide-react';
 import {captureDataService,type CurrentData,type PatrimonialObject,type ProgrammeData} from '../services/captureDataService';
 
@@ -39,7 +40,7 @@ function StructureTree({objects,data}:{objects:PatrimonialObject[];data:CurrentD
     if(seen.has(object.object_id))return null;
     const next=new Set(seen);next.add(object.object_id);
     const kids=children.get(object.object_id)||[];
-    return <div className="ariane-tree-node" style={{'--depth':depth} as React.CSSProperties}>
+    return <div className="ariane-tree-node" style={{'--depth':depth} as CSSProperties}>
       <div className="ariane-tree-row">
         <span className="ariane-type-badge">{object.object_type}</span>
         <div className="ariane-tree-main"><b>{object.label||object.object_id}</b><code>{object.object_id}</code></div>
@@ -90,7 +91,7 @@ export function CurrentDataPage(){
       <div><p className="eyebrow">CURRENT · DONNÉES CONSOLIDÉES</p><h1>{data.structure.structure_version}</h1><p>{programmeId}</p></div>
       <div className="ariane-header-actions">
         {programmes.length>1&&<select value={programmeId} onChange={e=>setProgrammeId(e.target.value)}>{programmes.filter(p=>p.index.current?.available).map(p=><option key={p.index.programme_id}>{p.index.programme_id}</option>)}</select>}
-        <button className="button" onClick={()=>setProgrammeId(v=>v)}>Actualiser</button>
+        <button className="button" onClick={()=>location.reload()}>Actualiser</button>
       </div>
     </section>
 
