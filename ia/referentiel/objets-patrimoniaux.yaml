@@ -184,4 +184,4 @@ forbidden_object_types: [LOT, PCM, "PARTIE COMMUNE", MAISON, IMMEUBLE, BOX, CHAU
 
 source_traceability:
   required_when_available: [document_source, page_or_plan, source_reference, observed_element, identification_mode, confidence]
-  identification_modes: ["Explicite", "Déduit", "Proxy", "Enrichi"]
+  identification_modes: ["EXPLICITE", "DEDUIT", "PROXY", "ENRICHI"]
