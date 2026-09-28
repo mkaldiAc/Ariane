@@ -35,6 +35,7 @@ normative_resources:
   legal_relations: "ia/referentiel/relations-juridiques.yaml"
   attributes_index: "ia/referentiel/attributs/index.yaml"
   execution: "ia/instructions/EXECUTION.md"
+  capture_storage: "ia/contracts/capture-storage.yaml"
   rules:
     - "ia/regles/01-structure-patrimoniale.md"
     - "ia/regles/02-captation-attributs.md"
@@ -62,6 +63,7 @@ principles:
   - "source_anchor localise la preuve documentaire ; il ne doit jamais être recopié automatiquement dans repere_source."
   - "Lorsqu'une zone de circulation intérieure physique (CIR), y compris un simple palier, dessert directement un logement ou un local, cette CIR est obligatoirement son parent principal."
   - "Les niveaux RDC, R+1, R+2, SS-1, etc. sont des localisations et ne justifient jamais à eux seuls la création d'une CIR ; sans circulation physique intermédiaire démontrable, le rattachement direct au BAT reste autorisé."
+  - "Lorsque la sortie est persistée dans Git pour le démonstrateur, l'écriture respecte strictement ia/contracts/capture-storage.yaml."
 
 structure_validation:
   autonomous_ai_validation: false
