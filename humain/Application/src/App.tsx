@@ -1,2 +1,11 @@
-import {useState} from 'react';import {AppShell,type View} from './ui/AppShell';import {GuideCaptation} from './pages/GuideCaptation';import {PlaceholderPage} from './pages/PlaceholderPage';
-export default function App(){const [view,setView]=useState<View>('guide');return <AppShell view={view} onNavigate={setView}>{view==='guide'?<GuideCaptation/>:<PlaceholderPage title={{programmes:'Programmes',captures:'Captations',structures:'Structures',validations:'Validations'}[view]} description="Emplacement préparé pour une prochaine itération de l'application ARIANE."/>}</AppShell>}
+import {useState} from 'react';
+import {AppShell,type View} from './ui/AppShell';
+import {GuideCaptation} from './pages/GuideCaptation';
+import {RepositoryDataPage} from './pages/RepositoryDataPage';
+
+export default function App(){
+  const [view,setView]=useState<View>('guide');
+  return <AppShell view={view} onNavigate={setView}>
+    {view==='guide'?<GuideCaptation/>:<RepositoryDataPage mode={view}/>}
+  </AppShell>;
+}
