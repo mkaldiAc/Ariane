@@ -2,7 +2,7 @@
 
 ARIANE est un référentiel et un protocole de captation patrimoniale standardisée assistée par IA.
 
-Version courante : **1.3.4**.
+Version courante : **1.4.0**.
 
 ## Organisation du dépôt
 
@@ -30,7 +30,8 @@ Il contient :
 - le protocole de captation incrémentale ;
 - les règles de traçabilité ;
 - le score de confiance ;
-- les schémas de sortie.
+- les schémas de sortie ;
+- le contrat de stockage Git du démonstrateur (`ia/contracts/capture-storage.yaml`).
 
 ## `humain/` — espace documentaire et de gouvernance
 
