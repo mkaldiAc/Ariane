@@ -25,7 +25,7 @@ La première vue opérationnelle est **Guide de captation** :
 - scénario CANDIDAT_STRUCTURE → STR-002 → promotion CURRENT ;
 - version HTML autonome à `/guide-captation.html`.
 
-Les vues Programmes, Captations, Structures et Validations sont préparées pour les prochaines itérations.
+Les vues Programmes, Captations, Structures et Validations lisent statiquement le dépôt `mkaldiAc/Ariane_capture_data` via son `catalog.json`. Aucune API IA n'est appelée par le front.
 
 ## Démarrage
 
@@ -48,7 +48,7 @@ Guide HTML : http://localhost:8080/guide-captation.html
 
 ## Authentification
 
-Le mode initial est `VITE_USE_MOCK_DATA=true`. Pour préparer un déploiement interne authentifié, renseigner Azure AD et passer cette variable à `false`.
+La source de données du démonstrateur est configurée par `VITE_CAPTURE_DATA_BASE_URL` et pointe par défaut vers la branche `main` de `mkaldiAc/Ariane_capture_data`.\n\nLe mode initial est `VITE_USE_MOCK_DATA=true`. Pour préparer un déploiement interne authentifié, renseigner Azure AD et passer cette variable à `false`.
 
 ## Architecture UI
 
