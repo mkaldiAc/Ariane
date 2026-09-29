@@ -156,6 +156,14 @@ export type StructureDetail={
   validation:ValidationData|null;
 };
 
+export type StructureCandidate={
+  object:PatrimonialObject;
+  captureIds:string[];
+  firstSequence:number;
+  latestSequence:number;
+  latestCaptureId:string;
+};
+
 export type AttributeReference={
   version:string|null;
   declaredCount:number;
@@ -247,6 +255,51 @@ export const captureDataService={
       validation=null;
     }
     return {entry,structure,validation};
+  },
+  async loadCandidatesForStructure(programme:ProgrammeData,structure:StructureData):Promise<StructureCandidate[]>{
+    const targetIndex=programme.index.structures.findIndex(entry=>entry.structure_version===structure.structure_version);
+    if(targetIndex<0)return [];
+
+    const versionRank=(version:string|null|undefined)=>{
+      if(!version||version==='PROPOSEE')return 0;
+      const index=programme.index.structures.findIndex(entry=>entry.structure_version===version);
+      return index<0?Number.POSITIVE_INFINITY:index+1;
+    };
+
+    const targetRank=targetIndex+1;
+    const existingObjectIds=new Set(structure.objects.map(object=>object.object_id));
+    const captures=await Promise.all(programme.index.captures.map(entry=>this.loadCaptureDetail(entry)));
+    const eligibleCaptures=captures
+      .filter(capture=>versionRank(capture.metadata.structure_version||capture.entry.structure_version)<=targetRank)
+      .sort((a,b)=>a.entry.sequence-b.entry.sequence);
+
+    const byObjectId=new Map<string,StructureCandidate>();
+    eligibleCaptures.forEach(capture=>{
+      capture.candidates.forEach(object=>{
+        if(existingObjectIds.has(object.object_id))return;
+        const current=byObjectId.get(object.object_id);
+        if(current){
+          if(!current.captureIds.includes(capture.entry.capture_id))current.captureIds.push(capture.entry.capture_id);
+          if(capture.entry.sequence>=current.latestSequence){
+            current.object=object;
+            current.latestSequence=capture.entry.sequence;
+            current.latestCaptureId=capture.entry.capture_id;
+          }
+          return;
+        }
+        byObjectId.set(object.object_id,{
+          object,
+          captureIds:[capture.entry.capture_id],
+          firstSequence:capture.entry.sequence,
+          latestSequence:capture.entry.sequence,
+          latestCaptureId:capture.entry.capture_id
+        });
+      });
+    });
+
+    return Array.from(byObjectId.values()).sort((a,b)=>
+      a.firstSequence-b.firstSequence||a.object.object_id.localeCompare(b.object.object_id,'fr',{numeric:true})
+    );
   },
   loadValidation:(programmeId:string,structureVersion:string)=>fetchJson<ValidationData>(
     `programmes/${programmeId}/validations/${structureVersion}.json`
