@@ -76,6 +76,7 @@ function StructureTree({objects,data,onOpenAttributes,onOpenAnomalies}:{objects:
     const map=new Map<string,Anomaly[]>();
     data.anomalies.anomalies.forEach(anomaly=>{
       if(!anomaly.object_id)return;
+      if((anomaly.resolution_status||'').trim().toUpperCase()==='RESOLUE')return;
       const list=map.get(anomaly.object_id)||[];
       list.push(anomaly);
       map.set(anomaly.object_id,list);
@@ -176,9 +177,11 @@ function StructureTree({objects,data,onOpenAttributes,onOpenAnomalies}:{objects:
           <button className="ariane-tree-attribute-button" type="button" onClick={()=>toggleAttributes(object.object_id)} disabled={groupedAttributes.length===0} aria-expanded={groupedAttributes.length?areAttributesOpen:undefined}>
             {groupedAttributes.length} attr.
           </button>
-          <button className="ariane-tree-anomaly-button" type="button" onClick={()=>toggleAnomalies(object.object_id)} disabled={objectAnomalies.length===0} aria-expanded={objectAnomalies.length?areAnomaliesOpen:undefined}>
-            <AlertTriangle/>{objectAnomalies.length} anomalie(s)
-          </button>
+          {objectAnomalies.length>0
+            ?<button className="ariane-tree-anomaly-button" type="button" onClick={()=>toggleAnomalies(object.object_id)} aria-expanded={areAnomaliesOpen}>
+              <AlertTriangle/>{objectAnomalies.length} anomalie(s)
+            </button>
+            :<span className="ariane-tree-anomaly-slot" aria-hidden="true"/>}
         </div>
       </div>
       {areAttributesOpen&&groupedAttributes.length>0&&<div className="ariane-tree-attributes">
