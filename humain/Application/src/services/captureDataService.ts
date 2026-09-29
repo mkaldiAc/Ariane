@@ -164,10 +164,21 @@ export type StructureCandidate={
   latestCaptureId:string;
 };
 
+export type AttributeReferenceItem={
+  attributeId:string;
+  label:string;
+  objects:string[];
+  dataType:string|null;
+  unit:string|null;
+  family:string|null;
+  catalogGroup:string|null;
+};
+
 export type AttributeReference={
   version:string|null;
   declaredCount:number;
   attributeIds:string[];
+  attributes:AttributeReferenceItem[];
 };
 
 const base=config.captureDataBaseUrl.replace(/\/$/,'');
@@ -198,11 +209,40 @@ export const captureDataService={
     const catalogPaths=Array.from(indexText.matchAll(/^\s*-\s+path:\s*"([^"]+)"/gm),match=>match[1]);
     if(catalogPaths.length===0)throw new Error('Aucun catalogue attributaire déclaré dans le référentiel ARIANE.');
     const files=await Promise.all(catalogPaths.map(path=>fetchReferenceText(path)));
-    const ids=new Set<string>();
+    const attributes:AttributeReferenceItem[]=[];
     files.forEach(text=>{
-      for(const match of text.matchAll(/^  ([a-z0-9_]+):\s*$/gm))ids.add(match[1]);
+      const catalogGroup=text.match(/^group:\s*"([^"]+)"/m)?.[1]||null;
+      const lines=text.split(/\r?\n/);
+      let current:AttributeReferenceItem|null=null;
+      const pushCurrent=()=>{if(current)attributes.push(current)};
+      for(const line of lines){
+        const attributeMatch=line.match(/^  ([a-z0-9_]+):\s*$/);
+        if(attributeMatch){
+          pushCurrent();
+          current={attributeId:attributeMatch[1],label:attributeMatch[1],objects:[],dataType:null,unit:null,family:null,catalogGroup};
+          continue;
+        }
+        if(!current)continue;
+        const fieldMatch=line.match(/^    ([a-z_]+):\s*(.*)$/);
+        if(!fieldMatch)continue;
+        const [,field,raw]=fieldMatch;
+        const clean=raw.trim().replace(/^"(.*)"$/,'$1');
+        if(field==='label')current.label=clean;
+        if(field==='objects')current.objects=Array.from(clean.matchAll(/[A-Z][A-Z0-9_]*/g),match=>match[0]);
+        if(field==='data_type')current.dataType=clean||null;
+        if(field==='unit')current.unit=clean||null;
+        if(field==='family'||field==='famille')current.family=clean||null;
+      }
+      pushCurrent();
     });
-    return {version,declaredCount:declaredCount||ids.size,attributeIds:Array.from(ids).sort()};
+    const byId=new Map(attributes.map(attribute=>[attribute.attributeId,attribute]));
+    const canonical=Array.from(byId.values()).sort((a,b)=>a.attributeId.localeCompare(b.attributeId,'fr'));
+    return {
+      version,
+      declaredCount:declaredCount||canonical.length,
+      attributeIds:canonical.map(attribute=>attribute.attributeId),
+      attributes:canonical
+    };
   },
   async loadAllProgrammes():Promise<ProgrammeData[]>{
     const catalog=await this.loadCatalog();
