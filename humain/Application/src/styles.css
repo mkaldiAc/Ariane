@@ -101,3 +101,10 @@
 .ariane-type-badge{border:1px solid #c8d8eb}
 @media(max-width:1050px){.ariane-tree-toolbar{align-items:flex-start;flex-wrap:wrap}.ariane-tree-bulk{order:3;width:100%;flex-wrap:wrap}}
 @media(max-width:767px){.ariane-tree-bulk{align-items:stretch;flex-direction:column}.ariane-tree-bulk select,.ariane-tree-bulk button{width:100%}.ariane-tree-anomalies{margin-left:18px}}
+
+.ariane-kpi-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.ariane-kpi-grid>div{min-width:0}
+.ariane-kpi-grid>div small{grid-column:2;display:block;margin-top:3px;color:#667085;font-size:10px;line-height:1.25}
+.ariane-kpi-grid .ariane-kpi-highlight{background:linear-gradient(135deg,#f8fbff,var(--blue-100));border-color:#c5d5e8;border-top-color:var(--blue-800);box-shadow:0 2px 8px rgb(32 56 100 / 10%)}
+.ariane-kpi-grid .ariane-kpi-highlight svg{color:var(--blue-800)}
+.ariane-kpi-grid .ariane-kpi-highlight b{color:var(--blue-950)}
