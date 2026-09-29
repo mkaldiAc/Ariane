@@ -187,7 +187,7 @@ export const captureDataService={
     const indexText=await fetchReferenceText(indexPath);
     const version=indexText.match(/^version:\s*"([^"]+)"/m)?.[1]||null;
     const declaredCount=Number(indexText.match(/^canonical_attribute_count:\s*(\d+)/m)?.[1]||0);
-    const catalogPaths=Array.from(indexText.matchAll(/^- path:\s*"([^"]+)"/gm),match=>match[1]);
+    const catalogPaths=Array.from(indexText.matchAll(/^\s*-\s+path:\s*"([^"]+)"/gm),match=>match[1]);
     if(catalogPaths.length===0)throw new Error('Aucun catalogue attributaire déclaré dans le référentiel ARIANE.');
     const files=await Promise.all(catalogPaths.map(path=>fetchReferenceText(path)));
     const ids=new Set<string>();
