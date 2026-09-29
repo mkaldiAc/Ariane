@@ -6,6 +6,7 @@ import {
   type CaptureDetail,
   type ProgrammeCurrentMetrics,
   type ProgrammeData,
+  type StructureCandidate,
   type StructureDetail
 } from '../services/captureDataService';
 
@@ -50,7 +51,7 @@ export function ProgrammesPage(){
   const [route,setRoute]=useState<Route>({kind:'programmes'});
   const [captureDetails,setCaptureDetails]=useState<CaptureDetail[]>([]);
   const [structureDetail,setStructureDetail]=useState<StructureDetail|null>(null);
-  const [candidateDetails,setCandidateDetails]=useState<CaptureDetail[]>([]);
+  const [structureCandidates,setStructureCandidates]=useState<StructureCandidate[]>([]);
   const [loading,setLoading]=useState(true);
   const [detailLoading,setDetailLoading]=useState(false);
   const [error,setError]=useState<string|null>(null);
@@ -91,14 +92,12 @@ export function ProgrammesPage(){
     const structureVersion=route.structureVersion;
     const entry=selectedProgramme.index.structures.find(item=>item.structure_version===structureVersion);
     if(!entry)return;
-    let active=true;setDetailLoading(true);setError(null);setStructureDetail(null);setCandidateDetails([]);
-    Promise.all([
-      captureDataService.loadStructureDetail(selectedProgramme.index.programme_id,entry),
-      Promise.all(selectedProgramme.index.captures.map(capture=>captureDataService.loadCaptureDetail(capture)))
-    ]).then(([detail,captures])=>{
+    let active=true;setDetailLoading(true);setError(null);setStructureDetail(null);setStructureCandidates([]);
+    captureDataService.loadStructureDetail(selectedProgramme.index.programme_id,entry).then(async detail=>{
+      const candidates=await captureDataService.loadCandidatesForStructure(selectedProgramme,detail.structure);
       if(!active)return;
       setStructureDetail(detail);
-      setCandidateDetails(captures);
+      setStructureCandidates(candidates);
     }).catch(e=>{if(active)setError(e instanceof Error?e.message:String(e))})
       .finally(()=>{if(active)setDetailLoading(false)});
     return()=>{active=false};
@@ -219,7 +218,7 @@ export function ProgrammesPage(){
       if(detailLoading&&!structureDetail)return <section className="panel ariane-empty"><LoaderCircle className="ariane-spin"/><p>Chargement de la structure…</p></section>;
       if(!structureDetail)return <section className="panel ariane-empty"><h2>Structure introuvable</h2></section>;
       const typeCounts=Array.from(structureDetail.structure.objects.reduce((map,object)=>map.set(object.object_type,(map.get(object.object_type)||0)+1),new Map<string,number>()).entries()).sort((a,b)=>b[1]-a[1]);
-      const candidates=candidateDetails.flatMap(capture=>capture.candidates);
+      const candidates=structureCandidates;
       return <>
         <section className="panel ariane-data-header"><div><p className="eyebrow">STRUCTURE VALIDÉE</p><h1>{structureDetail.entry.structure_version}</h1><p>{selectedProgramme.index.programme_id}</p></div>{selectedProgramme.index.current.structure_version===structureDetail.entry.structure_version&&<span className="ariane-badge-ok">CURRENT</span>}</section>
         <section className="ariane-detail-kpis">
@@ -230,7 +229,7 @@ export function ProgrammesPage(){
         <section className="ariane-structure-detail-grid">
           <article className="panel ariane-validation-summary"><h2>Principales métriques</h2><div className="ariane-type-counts">{typeCounts.map(([type,count])=><span key={type}><b>{type}</b>{count}</span>)}</div></article>
           <button type="button" className="panel ariane-navigation-card ariane-candidate-card" onClick={()=>navigate({kind:'candidates',programmeId:selectedProgramme.index.programme_id,structureVersion:structureDetail.entry.structure_version})}>
-            <Layers3/><h2>Candidats structure</h2><p>{candidates.length} objet(s) candidat(s) disponibles pour étudier une future structure.</p><ChevronRight/>
+            <Layers3/><h2>Candidats structure</h2><p>{candidates.length} objet(s) candidat(s) non intégré(s) disponible(s) à cette version de structure.</p><ChevronRight/>
           </button>
         </section>
         <section className="panel ariane-validation">
@@ -247,11 +246,11 @@ export function ProgrammesPage(){
     })()}
 
     {route.kind==='candidates'&&selectedProgramme&&(()=>{
-      const candidates=candidateDetails.flatMap(capture=>capture.candidates.map(object=>({captureId:capture.entry.capture_id,object})));
+      const candidates=structureCandidates;
       return <>
-        <section className="panel ariane-data-header"><div><p className="eyebrow">CANDIDATS STRUCTURE</p><h1>Objets candidats</h1><p>À examiner pour une future évolution de {route.structureVersion}.</p></div><span className="ariane-count-pill">{candidates.length}</span></section>
-        {detailLoading?<section className="panel ariane-empty"><LoaderCircle className="ariane-spin"/></section>:candidates.length===0?<section className="panel ariane-empty"><Layers3/><h2>Aucun candidat structure</h2><p>Aucun fichier <code>objets_candidats.json</code> n’est déclaré dans les captations actuelles de ce programme.</p></section>:
-        <section className="ariane-candidate-list">{candidates.map(({captureId,object})=><article className="panel" key={captureId+'-'+object.object_id}><span className="ariane-type-badge">{object.object_type}</span><div><b>{object.label||object.object_id}</b><code>{object.object_id}</code><small>Captation {captureId} · parent {object.parent_object_id||'non défini'}</small></div></article>)}</section>}
+        <section className="panel ariane-data-header"><div><p className="eyebrow">CANDIDATS STRUCTURE</p><h1>Objets candidats</h1><p>Candidats non intégrés disponibles au moment de {route.structureVersion}.</p></div><span className="ariane-count-pill">{candidates.length}</span></section>
+        {detailLoading?<section className="panel ariane-empty"><LoaderCircle className="ariane-spin"/></section>:candidates.length===0?<section className="panel ariane-empty"><Layers3/><h2>Aucun candidat structure</h2><p>Aucun candidat non intégré n’était disponible pour cette version de structure.</p></section>:
+        <section className="ariane-candidate-list">{candidates.map(candidate=><article className="panel" key={candidate.object.object_id}><span className="ariane-type-badge">{candidate.object.object_type}</span><div><b>{candidate.object.label||candidate.object.object_id}</b><code>{candidate.object.object_id}</code><small>Détecté dans {candidate.captureIds.join(', ')} · parent {candidate.object.parent_object_id||'non défini'}</small></div></article>)}</section>}
       </>;
     })()}
   </div>;
