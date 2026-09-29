@@ -3,7 +3,7 @@ import type {CSSProperties} from 'react';
 import {AlertTriangle,ChevronDown,ChevronRight,Database,FileText,Funnel,Gauge,GitBranch,Link2,ListChecks,LoaderCircle,Search} from 'lucide-react';
 import {captureDataService,type Anomaly,type AttributeReference,type CurrentData,type Observation,type PatrimonialObject,type ProgrammeData} from '../services/captureDataService';
 
-type Tab='structure'|'observations'|'anomalies'|'sources'|'relations';
+type Tab='structure'|'observations'|'reference'|'anomalies'|'sources'|'relations';
 type AttributeFilters={objectType:string;object:string;attribute:string;value:string;unit:string;source:string;confidence:string};
 type SourceFilters={id:string;filename:string;type:string;date:string;comment:string};
 type RelationFilters={id:string;type:string;source:string;target:string;evidence:string;confidence:string};
@@ -242,6 +242,7 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
   const [attributeFiltersVisible,setAttributeFiltersVisible]=useState(false);
   const [sourceFiltersVisible,setSourceFiltersVisible]=useState(false);
   const [relationFiltersVisible,setRelationFiltersVisible]=useState(false);
+  const [referenceStatus,setReferenceStatus]=useState<'all'|'captured'|'missing'>('all');
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState<string|null>(null);
 
@@ -264,21 +265,53 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
     return()=>{active=false};
   },[programmeId,programmes]);
 
+  const capturedAttributeIds=useMemo(()=>new Set(
+    (data?.observations.observations||[]).map(observation=>observation.attribute_id.trim())
+  ),[data]);
+
+  const observationCountByAttribute=useMemo(()=>{
+    const counts=new Map<string,number>();
+    (data?.observations.observations||[]).forEach(observation=>{
+      const attributeId=observation.attribute_id.trim();
+      counts.set(attributeId,(counts.get(attributeId)||0)+1);
+    });
+    return counts;
+  },[data]);
+
   const attributeCoverage=useMemo(()=>{
     const total=attributeReference?.declaredCount||0;
     if(!data||!attributeReference)return {uniqueCaptured:null as number|null,total,coverage:null as number|null};
     const canonical=new Set(attributeReference.attributeIds);
-    const captured=new Set(
-      data.observations.observations
-        .map(observation=>observation.attribute_id.trim())
-        .filter(attributeId=>canonical.has(attributeId))
-    );
+    const captured=new Set(Array.from(capturedAttributeIds).filter(attributeId=>canonical.has(attributeId)));
     return {
       uniqueCaptured:captured.size,
       total,
       coverage:total>0?(captured.size/total)*100:null
     };
-  },[data,attributeReference]);
+  },[data,attributeReference,capturedAttributeIds]);
+
+  const referenceFamilies=useMemo(()=>uniqueValues(
+    (attributeReference?.attributes||[]).map(attribute=>attribute.family)
+  ),[attributeReference]);
+
+  const referenceRows=useMemo(()=>{
+    if(!attributeReference)return [];
+    return attributeReference.attributes.filter(attribute=>{
+      const captured=capturedAttributeIds.has(attribute.attributeId);
+      if(referenceStatus==='captured'&&!captured)return false;
+      if(referenceStatus==='missing'&&captured)return false;
+      if(!q)return true;
+      return [
+        attribute.attributeId,
+        attribute.label,
+        attribute.family,
+        attribute.objects.join(' '),
+        attribute.dataType,
+        attribute.unit,
+        captured?'capté':'non capté'
+      ].some(value=>String(value||'').toLowerCase().includes(q));
+    });
+  },[attributeReference,capturedAttributeIds,referenceStatus,q]);
 
   const objectById=useMemo(()=>new Map((data?.structure.objects||[]).map(object=>[object.object_id,object])),[data]);
   const q=query.trim().toLowerCase();
@@ -356,28 +389,75 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
       </div>
     </section>
 
-    <section className="ariane-kpi-grid">
-      <div className="panel"><GitBranch/><b>{data.structure.objects.length}</b><span>objets</span></div>
-      <div className="panel"><Database/><b>{data.observations.observations.length}</b><span>observations</span></div>
-      <div className="panel ariane-kpi-highlight"><ListChecks/><b>{attributeCoverage.uniqueCaptured??'—'}</b><span>attributs uniques captés</span>{attributeCoverage.total>0&&<small>sur {attributeCoverage.total} attributs canoniques</small>}</div>
-      <div className="panel ariane-kpi-highlight"><Gauge/><b>{attributeCoverage.coverage===null?'—':`${attributeCoverage.coverage.toFixed(1)} %`}</b><span>couverture du référentiel</span>{attributeReference?.version&&<small>référentiel v{attributeReference.version}</small>}</div>
-      <div className="panel"><AlertTriangle/><b>{data.anomalies.anomalies.length}</b><span>anomalies</span></div>
-      <div className="panel"><FileText/><b>{data.sources.sources.length}</b><span>sources</span></div>
-      <div className="panel"><Link2/><b>{data.relations.relations.length}</b><span>relations</span></div>
+    <section className="ariane-current-navigation">
+      <button type="button" className={`ariane-nav-kpi ${tab==='structure'?'is-active':''}`} onClick={()=>{setTab('structure');setQuery('')}}>
+        <GitBranch/><span><strong>Structure</strong><b>{data.structure.objects.length}</b><small>objets</small></span>
+      </button>
+
+      <article className="ariane-attribute-nav">
+        <header><Database/><strong>Attributs</strong></header>
+        <div>
+          <button type="button" className={tab==='observations'?'is-active':''} onClick={()=>{setTab('observations');setQuery('')}}>
+            <Database/><span><b>{data.observations.observations.length}</b><small>observations</small></span>
+          </button>
+          <button type="button" className={tab==='reference'?'is-active':''} onClick={()=>{setTab('reference');setReferenceStatus('all');setQuery('')}}>
+            <ListChecks/><span><b>{attributeCoverage.uniqueCaptured??'—'}</b><small>attributs uniques captés</small></span>
+          </button>
+          <button type="button" className={tab==='reference'?'is-active':''} onClick={()=>{setTab('reference');setReferenceStatus('all');setQuery('')}}>
+            <Gauge/><span><b>{attributeCoverage.coverage===null?'—':`${attributeCoverage.coverage.toFixed(1)} %`}</b><small>couverture du référentiel</small></span>
+          </button>
+        </div>
+      </article>
+
+      <button type="button" className={`ariane-nav-kpi ${tab==='anomalies'?'is-active':''}`} onClick={()=>{setTab('anomalies');setQuery('')}}>
+        <AlertTriangle/><span><strong>Anomalies</strong><b>{data.anomalies.anomalies.length}</b><small>anomalies</small></span>
+      </button>
+      <button type="button" className={`ariane-nav-kpi ${tab==='sources'?'is-active':''}`} onClick={()=>{setTab('sources');setQuery('')}}>
+        <FileText/><span><strong>Sources</strong><b>{data.sources.sources.length}</b><small>sources</small></span>
+      </button>
+      <button type="button" className={`ariane-nav-kpi ${tab==='relations'?'is-active':''}`} onClick={()=>{setTab('relations');setQuery('')}}>
+        <Link2/><span><strong>Relations</strong><b>{data.relations.relations.length}</b><small>relations</small></span>
+      </button>
     </section>
 
     <section className="panel ariane-explorer">
-      <div className="ariane-tabs">
-        <button aria-current={tab==='structure'?'page':undefined} onClick={()=>setTab('structure')}>Structure</button>
-        <button aria-current={tab==='observations'?'page':undefined} onClick={()=>setTab('observations')}>Attributs</button>
-        <button aria-current={tab==='anomalies'?'page':undefined} onClick={()=>setTab('anomalies')}>Anomalies</button>
-        <button aria-current={tab==='sources'?'page':undefined} onClick={()=>setTab('sources')}>Sources</button>
-        <button aria-current={tab==='relations'?'page':undefined} onClick={()=>setTab('relations')}>Relations</button>
+      <div className="ariane-view-heading">
+        <div>
+          <p className="eyebrow">DONNÉES COURANTES</p>
+          <h2>{tab==='structure'?'Structure':tab==='observations'?'Observations captées':tab==='reference'?'Référentiel des attributs':tab==='anomalies'?'Anomalies':tab==='sources'?'Sources':'Relations'}</h2>
+          {tab==='reference'&&<p>{attributeCoverage.uniqueCaptured??0} attribut(s) capté(s) sur {attributeCoverage.total||0} · couverture {attributeCoverage.coverage===null?'—':`${attributeCoverage.coverage.toFixed(1)} %`}</p>}
+        </div>
+        {tab==='reference'&&<div className="ariane-reference-status-filter">
+          <label>Statut
+            <select value={referenceStatus} onChange={e=>setReferenceStatus(e.target.value as 'all'|'captured'|'missing')}>
+              <option value="all">Tous les attributs</option>
+              <option value="captured">Captés</option>
+              <option value="missing">Non captés</option>
+            </select>
+          </label>
+        </div>}
       </div>
 
-      <label className="ariane-search"><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Rechercher dans la vue…"/></label>
+      <label className="ariane-search"><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={tab==='reference'?'Rechercher dans le référentiel…':'Rechercher dans la vue…'}/></label>
 
       {tab==='structure'&&<StructureTree objects={q?objects:data.structure.objects} data={data} onOpenAttributes={openObjectAttributes} onOpenAnomalies={openObjectAnomalies}/>}
+
+      {tab==='reference'&&<div className="ariane-reference-view">
+        {!attributeReference?<section className="ariane-empty"><LoaderCircle className="ariane-spin"/><p>Chargement du référentiel attributaire…</p></section>:
+        referenceFamilies.length>0
+          ?<div className="ariane-reference-groups">{referenceFamilies.map(family=>{
+            const rows=referenceRows.filter(attribute=>attribute.family===family);
+            if(rows.length===0)return null;
+            return <section key={family} className="ariane-reference-family"><header><h3>{family}</h3><span>{rows.length} attribut(s)</span></header><div className="ariane-table-wrap"><table className="ariane-table ariane-reference-table"><thead><tr><th>Attribut</th><th>Libellé</th><th>Objets</th><th>Type</th><th>Unité</th><th>Statut</th><th>Observations</th></tr></thead><tbody>{rows.map(attribute=>{
+              const captured=capturedAttributeIds.has(attribute.attributeId);
+              return <tr key={attribute.attributeId}><td><code>{attribute.attributeId}</code></td><td>{attribute.label}</td><td>{attribute.objects.join(', ')||'—'}</td><td>{attribute.dataType||'—'}</td><td>{attribute.unit||'—'}</td><td><span className={captured?'ariane-reference-captured':'ariane-reference-missing'}>{captured?'Capté':'Non capté'}</span></td><td>{observationCountByAttribute.get(attribute.attributeId)||0}</td></tr>;
+            })}</tbody></table></div></section>;
+          })}</div>
+          :<div className="ariane-table-wrap"><table className="ariane-table ariane-reference-table"><thead><tr><th>Attribut</th><th>Libellé</th><th>Objets</th><th>Type</th><th>Unité</th><th>Statut</th><th>Observations</th></tr></thead><tbody>{referenceRows.map(attribute=>{
+            const captured=capturedAttributeIds.has(attribute.attributeId);
+            return <tr key={attribute.attributeId}><td><code>{attribute.attributeId}</code></td><td>{attribute.label}</td><td>{attribute.objects.join(', ')||'—'}</td><td>{attribute.dataType||'—'}</td><td>{attribute.unit||'—'}</td><td><span className={captured?'ariane-reference-captured':'ariane-reference-missing'}>{captured?'Capté':'Non capté'}</span></td><td>{observationCountByAttribute.get(attribute.attributeId)||0}</td></tr>;
+          })}</tbody></table></div>}
+      </div>}
 
       {tab==='observations'&&<div className="ariane-table-section">
         <TableFilterMenu visible={attributeFiltersVisible} onToggle={()=>setAttributeFiltersVisible(v=>!v)} count={activeFilterCount(attributeFilters)} onClear={()=>setAttributeFilters(emptyAttributeFilters())}/>
