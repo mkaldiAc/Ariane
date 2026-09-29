@@ -91,6 +91,38 @@ export type CurrentData={
   relations:{programme_id:string;relations:Relation[]};
 };
 
+export type CaptureMetadata={
+  programme_id:string;
+  capture_id:string;
+  sequence:number;
+  mode:string;
+  ariane_version:string;
+  structure_version:string|null;
+  immutable:boolean;
+  capture_date?:string|null;
+  captured_at?:string|null;
+  created_at?:string|null;
+  date?:string|null;
+  status?:string|null;
+  files:{
+    sources?:string|null;
+    structure_proposee?:string|null;
+    objets_candidats?:string|null;
+    observations?:string|null;
+    relations?:string|null;
+    anomalies?:string|null;
+  };
+};
+
+export type CaptureDetail={
+  entry:CaptureEntry;
+  metadata:CaptureMetadata;
+  sources:Source[];
+  candidates:PatrimonialObject[];
+};
+
+export type StructureData={programme_id:string;structure_version:string;objects:PatrimonialObject[]};
+
 export type ValidationData={
   validation_id:string;
   programme_id:string;
@@ -104,10 +136,24 @@ export type ValidationData={
   requested_changes?:string[];
   applied_changes?:Array<Record<string,unknown>>;
   not_applied_changes?:Array<Record<string,unknown>>;
-  promoted_to_current?:Record<string,number>;
+  candidate_handling?:Array<Record<string,unknown>>;
+  promoted_to_current?:Record<string,unknown>;
   resolved_current_anomaly_ids?:string[];
+  current_anomalies_updated?:unknown[];
   historical_captures_modified?:boolean;
   autonomous_ai_validation?:boolean;
+};
+
+export type ProgrammeCurrentMetrics={
+  objects:number;
+  observations:number;
+  structureVersion:string|null;
+};
+
+export type StructureDetail={
+  entry:StructureEntry;
+  structure:StructureData;
+  validation:ValidationData|null;
 };
 
 const base=config.captureDataBaseUrl.replace(/\/$/,'');
@@ -140,6 +186,39 @@ export const captureDataService={
       fetchJson<CurrentData['relations']>(`${root}/relations.json`)
     ]);
     return {structure,observations,anomalies,sources,relations};
+  },
+  async loadCurrentMetrics(programme:ProgrammeData):Promise<ProgrammeCurrentMetrics>{
+    if(!programme.index.current?.available)return {objects:0,observations:0,structureVersion:null};
+    const root=programme.index.current.path;
+    const [structure,observations]=await Promise.all([
+      fetchJson<CurrentData['structure']>(`${root}/structure.json`),
+      fetchJson<CurrentData['observations']>(`${root}/observations.json`)
+    ]);
+    return {
+      objects:structure.objects.length,
+      observations:observations.observations.length,
+      structureVersion:structure.structure_version
+    };
+  },
+  async loadCaptureDetail(entry:CaptureEntry):Promise<CaptureDetail>{
+    const metadata=await fetchJson<CaptureMetadata>(`${entry.path}/capture.json`);
+    const sources=metadata.files.sources
+      ?(await fetchJson<{sources:Source[]}>(`${entry.path}/${metadata.files.sources}`)).sources
+      :[];
+    const candidates=metadata.files.objets_candidats
+      ?(await fetchJson<{objects:PatrimonialObject[]}>(`${entry.path}/${metadata.files.objets_candidats}`)).objects
+      :[];
+    return {entry,metadata,sources,candidates};
+  },
+  async loadStructureDetail(programmeId:string,entry:StructureEntry):Promise<StructureDetail>{
+    const structure=await fetchJson<StructureData>(`${entry.path}/structure.json`);
+    let validation:ValidationData|null=null;
+    try{
+      validation=await this.loadValidation(programmeId,entry.structure_version);
+    }catch{
+      validation=null;
+    }
+    return {entry,structure,validation};
   },
   loadValidation:(programmeId:string,structureVersion:string)=>fetchJson<ValidationData>(
     `programmes/${programmeId}/validations/${structureVersion}.json`
