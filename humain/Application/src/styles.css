@@ -143,3 +143,16 @@
 @media(max-width:1250px){.ariane-current-navigation{grid-template-columns:repeat(3,1fr)}.ariane-attribute-nav{grid-column:span 2}}
 @media(max-width:900px){.ariane-current-navigation{grid-template-columns:1fr 1fr}.ariane-attribute-nav{grid-column:1/-1}}
 @media(max-width:650px){.ariane-current-navigation{grid-template-columns:1fr}.ariane-attribute-nav{grid-column:auto}.ariane-attribute-nav>div{grid-template-columns:1fr}.ariane-attribute-nav button{border-right:0;border-bottom:1px solid rgb(255 255 255 / 18%)}.ariane-attribute-nav button:last-child{border-bottom:0}.ariane-view-heading{align-items:flex-start;flex-direction:column}.ariane-reference-status-filter{width:100%}.ariane-reference-status-filter select{width:100%}}
+
+/* Primary clickable areas in application body */
+.ariane-navigation-card,.ariane-capture-card,.ariane-structure-card{background:var(--blue-950);border-color:var(--blue-900);color:#fff}
+.ariane-navigation-card h2,.ariane-capture-card h2,.ariane-structure-card h2{color:#fff}
+.ariane-navigation-card p,.ariane-capture-card dt,.ariane-structure-card span{color:#d7e3f3}
+.ariane-navigation-card>svg:first-child,.ariane-capture-card header>svg:first-child,.ariane-structure-card>svg:first-child{color:#fff}
+.ariane-navigation-card>svg:last-child,.ariane-capture-card header>svg:last-child,.ariane-structure-card>svg:last-child{color:#d7e3f3}
+.ariane-capture-card dl div{background:rgb(255 255 255 / 8%)}
+.ariane-navigation-card:hover,.ariane-capture-card:hover,.ariane-structure-card:hover{background:var(--blue-800);color:#fff}
+.ariane-programme-actions button{background:var(--blue-950);color:#fff;border-bottom-color:rgb(255 255 255 / 16%)}
+.ariane-programme-actions button:first-child{background:var(--blue-950)}
+.ariane-programme-actions button>small{color:#d7e3f3}.ariane-programme-actions button>svg{color:#d7e3f3}
+.ariane-programme-actions button:hover{background:var(--blue-800);color:#fff}
