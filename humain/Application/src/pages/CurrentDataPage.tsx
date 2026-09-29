@@ -158,9 +158,9 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
   </>;
 }
 
-export function CurrentDataPage(){
+export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?:string}={}){
   const [programmes,setProgrammes]=useState<ProgrammeData[]>([]);
-  const [programmeId,setProgrammeId]=useState('');
+  const [programmeId,setProgrammeId]=useState(requestedProgrammeId||'');
   const [data,setData]=useState<CurrentData|null>(null);
   const [tab,setTab]=useState<Tab>('structure');
   const [query,setQuery]=useState('');
@@ -176,9 +176,10 @@ export function CurrentDataPage(){
   useEffect(()=>{let active=true;captureDataService.loadAllProgrammes().then(items=>{
     if(!active)return;
     setProgrammes(items);
+    if(requestedProgrammeId){setProgrammeId(requestedProgrammeId);return;}
     const first=items.find(p=>p.index.current?.available);
     if(first)setProgrammeId(first.index.programme_id);
-  }).catch(e=>setError(e instanceof Error?e.message:String(e))).finally(()=>setLoading(false));return()=>{active=false}},[]);
+  }).catch(e=>setError(e instanceof Error?e.message:String(e))).finally(()=>setLoading(false));return()=>{active=false}},[requestedProgrammeId]);
 
   useEffect(()=>{if(!programmeId)return;const programme=programmes.find(p=>p.index.programme_id===programmeId);if(!programme)return;
     let active=true;setLoading(true);setError(null);
@@ -252,7 +253,7 @@ export function CurrentDataPage(){
     <section className="panel ariane-data-header ariane-current-header">
       <div><p className="eyebrow">CURRENT · DONNÉES CONSOLIDÉES</p><h1>{data.structure.structure_version}</h1><p>{programmeId}</p></div>
       <div className="ariane-header-actions">
-        {programmes.length>1&&<select value={programmeId} onChange={e=>setProgrammeId(e.target.value)}>{programmes.filter(p=>p.index.current?.available).map(p=><option key={p.index.programme_id}>{p.index.programme_id}</option>)}</select>}
+        {!requestedProgrammeId&&programmes.length>1&&<select value={programmeId} onChange={e=>setProgrammeId(e.target.value)}>{programmes.filter(p=>p.index.current?.available).map(p=><option key={p.index.programme_id}>{p.index.programme_id}</option>)}</select>}
         <button className="button" onClick={()=>location.reload()}>Actualiser</button>
       </div>
     </section>
