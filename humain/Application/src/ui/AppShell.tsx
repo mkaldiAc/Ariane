@@ -1,14 +1,11 @@
 import type {ReactNode} from 'react';
-import {BookOpen,Boxes,CheckCircle2,Database,GitBranch,Menu,Network,UserRound} from 'lucide-react';
+import {BookOpen,Database,Menu,Network,UserRound} from 'lucide-react';
 
-export type View='guide'|'programmes'|'captures'|'structures'|'validations';
+export type View='programmes'|'guide';
 
 const nav=[
-  [BookOpen,'Guide de captation','guide'],
-  [Database,'Programmes','programmes'],
-  [Boxes,'Captations','captures'],
-  [GitBranch,'Données courantes','structures'],
-  [CheckCircle2,'Validations','validations']
+  [Database,'Programme','programmes'],
+  [BookOpen,'Guide de captation','guide']
 ] as const;
 
 const Brand=()=> <div className="aiguillon-brand"><span className="aiguillon-brand__mark"><Network/></span><span>ARIANE<small>CAPTATION PATRIMONIALE</small></span></div>;
