@@ -265,6 +265,8 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
     return()=>{active=false};
   },[programmeId,programmes]);
 
+  const q=query.trim().toLowerCase();
+
   const capturedAttributeIds=useMemo(()=>new Set(
     (data?.observations.observations||[]).map(observation=>observation.attribute_id.trim())
   ),[data]);
@@ -314,7 +316,6 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
   },[attributeReference,capturedAttributeIds,referenceStatus,q]);
 
   const objectById=useMemo(()=>new Map((data?.structure.objects||[]).map(object=>[object.object_id,object])),[data]);
-  const q=query.trim().toLowerCase();
   const objects=useMemo(()=>!data?[]:data.structure.objects.filter(o=>!q||[o.object_id,o.object_type,o.label].some(v=>String(v||'').toLowerCase().includes(q))),[data,q]);
 
   const attributeFilterOptions=useMemo(()=>({
