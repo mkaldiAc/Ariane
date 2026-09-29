@@ -1,7 +1,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import type {CSSProperties} from 'react';
-import {AlertTriangle,ChevronDown,ChevronRight,Database,FileText,Funnel,GitBranch,Link2,LoaderCircle,Search} from 'lucide-react';
-import {captureDataService,type Anomaly,type CurrentData,type Observation,type PatrimonialObject,type ProgrammeData} from '../services/captureDataService';
+import {AlertTriangle,ChevronDown,ChevronRight,Database,FileText,Funnel,Gauge,GitBranch,Link2,ListChecks,LoaderCircle,Search} from 'lucide-react';
+import {captureDataService,type Anomaly,type AttributeReference,type CurrentData,type Observation,type PatrimonialObject,type ProgrammeData} from '../services/captureDataService';
 
 type Tab='structure'|'observations'|'anomalies'|'sources'|'relations';
 type AttributeFilters={objectType:string;object:string;attribute:string;value:string;unit:string;source:string;confidence:string};
@@ -230,6 +230,7 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
   const [programmes,setProgrammes]=useState<ProgrammeData[]>([]);
   const [programmeId,setProgrammeId]=useState(requestedProgrammeId||'');
   const [data,setData]=useState<CurrentData|null>(null);
+  const [attributeReference,setAttributeReference]=useState<AttributeReference|null>(null);
   const [tab,setTab]=useState<Tab>('structure');
   const [query,setQuery]=useState('');
   const [attributeFilters,setAttributeFilters]=useState<AttributeFilters>(emptyAttributeFilters);
@@ -240,6 +241,11 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
   const [relationFiltersVisible,setRelationFiltersVisible]=useState(false);
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState<string|null>(null);
+
+  useEffect(()=>{let active=true;
+    captureDataService.loadAttributeReference().then(reference=>{if(active)setAttributeReference(reference)}).catch(()=>{if(active)setAttributeReference(null)});
+    return()=>{active=false};
+  },[]);
 
   useEffect(()=>{let active=true;captureDataService.loadAllProgrammes().then(items=>{
     if(!active)return;
@@ -254,6 +260,22 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
     captureDataService.loadCurrent(programme).then(v=>{if(active)setData(v)}).catch(e=>{if(active)setError(e instanceof Error?e.message:String(e))}).finally(()=>{if(active)setLoading(false)});
     return()=>{active=false};
   },[programmeId,programmes]);
+
+  const attributeCoverage=useMemo(()=>{
+    const total=attributeReference?.declaredCount||0;
+    if(!data||!attributeReference)return {uniqueCaptured:null as number|null,total,coverage:null as number|null};
+    const canonical=new Set(attributeReference.attributeIds);
+    const captured=new Set(
+      data.observations.observations
+        .map(observation=>observation.attribute_id.trim())
+        .filter(attributeId=>canonical.has(attributeId))
+    );
+    return {
+      uniqueCaptured:captured.size,
+      total,
+      coverage:total>0?(captured.size/total)*100:null
+    };
+  },[data,attributeReference]);
 
   const objectById=useMemo(()=>new Map((data?.structure.objects||[]).map(object=>[object.object_id,object])),[data]);
   const q=query.trim().toLowerCase();
@@ -334,6 +356,8 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
     <section className="ariane-kpi-grid">
       <div className="panel"><GitBranch/><b>{data.structure.objects.length}</b><span>objets</span></div>
       <div className="panel"><Database/><b>{data.observations.observations.length}</b><span>observations</span></div>
+      <div className="panel ariane-kpi-highlight"><ListChecks/><b>{attributeCoverage.uniqueCaptured??'—'}</b><span>attributs uniques captés</span>{attributeCoverage.total>0&&<small>sur {attributeCoverage.total} attributs canoniques</small>}</div>
+      <div className="panel ariane-kpi-highlight"><Gauge/><b>{attributeCoverage.coverage===null?'—':`${attributeCoverage.coverage.toFixed(1)} %`}</b><span>couverture du référentiel</span>{attributeReference?.version&&<small>référentiel v{attributeReference.version}</small>}</div>
       <div className="panel"><AlertTriangle/><b>{data.anomalies.anomalies.length}</b><span>anomalies</span></div>
       <div className="panel"><FileText/><b>{data.sources.sources.length}</b><span>sources</span></div>
       <div className="panel"><Link2/><b>{data.relations.relations.length}</b><span>relations</span></div>
