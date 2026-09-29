@@ -189,7 +189,7 @@ export function ProgrammesPage(){
       {detailLoading?<section className="panel ariane-empty"><LoaderCircle className="ariane-spin"/><p>Chargement des captations…</p></section>:
       <section className="ariane-capture-grid">{captureDetails.map(capture=><button className="panel ariane-capture-card" type="button" key={capture.entry.capture_id} onClick={()=>navigate({kind:'capture',programmeId:selectedProgramme.index.programme_id,captureId:capture.entry.capture_id})}>
         <header><Boxes/><div><p className="eyebrow">CAPTURE #{capture.entry.sequence}</p><h2>{capture.entry.capture_id}</h2></div><ChevronRight/></header>
-        <dl><div><dt>Date de captation</dt><dd>{formatDate(captureDate(capture))}</dd></div><div><dt>Documents mobilisés</dt><dd>{capture.sources.length}</dd></div><div><dt>Mode</dt><dd>{capture.entry.mode}</dd></div><div><dt>Statut</dt><dd>{capture.metadata.status||capture.metadata.immutable?'Terminée':'En cours'}</dd></div></dl>
+        <dl><div><dt>Date de captation</dt><dd>{formatDate(captureDate(capture))}</dd></div><div><dt>Documents mobilisés</dt><dd>{capture.sources.length}</dd></div><div><dt>Mode</dt><dd>{capture.entry.mode}</dd></div><div><dt>Statut</dt><dd>{capture.metadata.status||(capture.metadata.immutable?'Terminée':'En cours')}</dd></div></dl>
       </button>)}</section>}
     </>}
 
@@ -198,7 +198,7 @@ export function ProgrammesPage(){
       if(detailLoading&&!capture)return <section className="panel ariane-empty"><LoaderCircle className="ariane-spin"/><p>Chargement de la captation…</p></section>;
       if(!capture)return <section className="panel ariane-empty"><h2>Captation introuvable</h2></section>;
       return <>
-        <section className="panel ariane-data-header"><div><p className="eyebrow">CAPTATION</p><h1>{capture.entry.capture_id}</h1><p>{selectedProgramme.index.programme_id}</p></div><span className="ariane-badge-ok">{capture.metadata.status||capture.metadata.immutable?'Terminée':'En cours'}</span></section>
+        <section className="panel ariane-data-header"><div><p className="eyebrow">CAPTATION</p><h1>{capture.entry.capture_id}</h1><p>{selectedProgramme.index.programme_id}</p></div><span className="ariane-badge-ok">{capture.metadata.status||(capture.metadata.immutable?'Terminée':'En cours')}</span></section>
         <section className="ariane-detail-kpis">
           <div className="panel"><CalendarDays/><b>{formatDate(captureDate(capture))}</b><span>Date de captation</span></div>
           <div className="panel"><FileText/><b>{capture.sources.length}</b><span>documents</span></div>
