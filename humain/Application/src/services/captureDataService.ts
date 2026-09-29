@@ -156,7 +156,14 @@ export type StructureDetail={
   validation:ValidationData|null;
 };
 
+export type AttributeReference={
+  version:string|null;
+  declaredCount:number;
+  attributeIds:string[];
+};
+
 const base=config.captureDataBaseUrl.replace(/\/$/,'');
+const referenceBase=config.referenceDataBaseUrl.replace(/\/$/,'');
 const fetchJson=async<T>(path:string):Promise<T>=>{
   const url=`${base}/${path.replace(/^\//,'')}?v=${Date.now()}`;
   const response=await fetch(url,{cache:'no-store'});
@@ -164,10 +171,31 @@ const fetchJson=async<T>(path:string):Promise<T>=>{
   return response.json() as Promise<T>;
 };
 
+const fetchReferenceText=async(path:string):Promise<string>=>{
+  const url=`${referenceBase}/${path.replace(/^\//,'')}?v=${Date.now()}`;
+  const response=await fetch(url,{cache:'no-store'});
+  if(!response.ok)throw new Error(`Impossible de charger le référentiel ${path} (${response.status})`);
+  return response.text();
+};
+
 export const captureDataService={
   loadJson:<T>(path:string)=>fetchJson<T>(path),
   loadCatalog:()=>fetchJson<CaptureCatalog>('catalog.json'),
   loadProgrammeIndex:(path:string)=>fetchJson<ProgrammeIndex>(path),
+  async loadAttributeReference():Promise<AttributeReference>{
+    const indexPath='ia/referentiel/attributs/index.yaml';
+    const indexText=await fetchReferenceText(indexPath);
+    const version=indexText.match(/^version:\s*"([^"]+)"/m)?.[1]||null;
+    const declaredCount=Number(indexText.match(/^canonical_attribute_count:\s*(\d+)/m)?.[1]||0);
+    const catalogPaths=Array.from(indexText.matchAll(/^- path:\s*"([^"]+)"/gm),match=>match[1]);
+    if(catalogPaths.length===0)throw new Error('Aucun catalogue attributaire déclaré dans le référentiel ARIANE.');
+    const files=await Promise.all(catalogPaths.map(path=>fetchReferenceText(path)));
+    const ids=new Set<string>();
+    files.forEach(text=>{
+      for(const match of text.matchAll(/^  ([a-z0-9_]+):\s*$/gm))ids.add(match[1]);
+    });
+    return {version,declaredCount:declaredCount||ids.size,attributeIds:Array.from(ids).sort()};
+  },
   async loadAllProgrammes():Promise<ProgrammeData[]>{
     const catalog=await this.loadCatalog();
     return Promise.all(catalog.programmes.map(async programme=>({
