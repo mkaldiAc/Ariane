@@ -1,7 +1,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {AlertTriangle,ChevronDown,ChevronRight,Database,FileText,Funnel,GitBranch,Link2,LoaderCircle,Search} from 'lucide-react';
-import {captureDataService,type CurrentData,type Observation,type PatrimonialObject,type ProgrammeData} from '../services/captureDataService';
+import {captureDataService,type Anomaly,type CurrentData,type Observation,type PatrimonialObject,type ProgrammeData} from '../services/captureDataService';
 
 type Tab='structure'|'observations'|'anomalies'|'sources'|'relations';
 type AttributeFilters={objectType:string;object:string;attribute:string;value:string;unit:string;source:string;confidence:string};
@@ -48,7 +48,7 @@ function TableFilterMenu({visible,onToggle,count,onClear}:{visible:boolean;onTog
   </div>;
 }
 
-function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObject[];data:CurrentData;onOpenAttributes:(objectId:string)=>void}){
+function StructureTree({objects,data,onOpenAttributes,onOpenAnomalies}:{objects:PatrimonialObject[];data:CurrentData;onOpenAttributes:(objectId:string)=>void;onOpenAnomalies:(objectId:string)=>void}){
   const byId=useMemo(()=>new Map(objects.map(o=>[o.object_id,o])),[objects]);
   const children=useMemo(()=>{
     const map=new Map<string,PatrimonialObject[]>();
@@ -72,16 +72,48 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
     for(const list of map.values())list.sort((a,b)=>a.attribute_id.localeCompare(b.attribute_id,'fr'));
     return map;
   },[data]);
-  const anoCount=useMemo(()=>{
-    const map=new Map<string,number>();
-    data.anomalies.anomalies.forEach(a=>{if(a.object_id)map.set(a.object_id,(map.get(a.object_id)||0)+1)});
+  const anomaliesByObject=useMemo(()=>{
+    const map=new Map<string,Anomaly[]>();
+    data.anomalies.anomalies.forEach(anomaly=>{
+      if(!anomaly.object_id)return;
+      const list=map.get(anomaly.object_id)||[];
+      list.push(anomaly);
+      map.set(anomaly.object_id,list);
+    });
     return map;
   },[data]);
   const [expanded,setExpanded]=useState<Set<string>>(()=>new Set(children.keys()));
   const [attributesOpen,setAttributesOpen]=useState<Set<string>>(()=>new Set());
+  const [anomaliesOpen,setAnomaliesOpen]=useState<Set<string>>(()=>new Set());
   const [showRepereSource,setShowRepereSource]=useState(false);
+  const [bulkType,setBulkType]=useState('');
 
-  useEffect(()=>{setExpanded(new Set(children.keys()));setAttributesOpen(new Set());},[children]);
+  const repereObjectCount=useMemo(()=>new Set(
+    data.observations.observations.filter(isRepereSource).map(observation=>observation.object_id)
+  ).size,[data]);
+
+  const visibleObservationsByObject=useMemo(()=>{
+    const map=new Map<string,Observation[]>();
+    for(const [objectId,list] of observationsByObject){
+      map.set(objectId,showRepereSource?list:list.filter(observation=>!isRepereSource(observation)));
+    }
+    return map;
+  },[observationsByObject,showRepereSource]);
+
+  const collapsibleTypes=useMemo(()=>{
+    const counts=new Map<string,number>();
+    objects.forEach(object=>{
+      if((children.get(object.object_id)||[]).length===0)return;
+      counts.set(object.object_type,(counts.get(object.object_type)||0)+1);
+    });
+    return Array.from(counts.entries()).sort((a,b)=>a[0].localeCompare(b[0],'fr'));
+  },[objects,children]);
+
+  useEffect(()=>{setExpanded(new Set(children.keys()));setAttributesOpen(new Set());setAnomaliesOpen(new Set());},[children]);
+  useEffect(()=>{
+    if(bulkType&&collapsibleTypes.some(([type])=>type===bulkType))return;
+    setBulkType(collapsibleTypes[0]?.[0]||'');
+  },[bulkType,collapsibleTypes]);
 
   const toggleExpanded=(objectId:string)=>setExpanded(current=>{
     const next=new Set(current);
@@ -95,13 +127,27 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
     return next;
   });
 
+  const toggleAnomalies=(objectId:string)=>setAnomaliesOpen(current=>{
+    const next=new Set(current);
+    if(next.has(objectId))next.delete(objectId);else next.add(objectId);
+    return next;
+  });
+
+  const setTypeExpanded=(objectType:string,shouldExpand:boolean)=>setExpanded(current=>{
+    const next=new Set(current);
+    objects.forEach(object=>{
+      if(object.object_type!==objectType||(children.get(object.object_id)||[]).length===0)return;
+      if(shouldExpand)next.add(object.object_id);else next.delete(object.object_id);
+    });
+    return next;
+  });
+
   const Node=({object,depth=0,seen=new Set<string>()}:{object:PatrimonialObject;depth?:number;seen?:Set<string>})=>{
     if(seen.has(object.object_id))return null;
     const next=new Set(seen);next.add(object.object_id);
     const kids=children.get(object.object_id)||[];
     const isExpanded=expanded.has(object.object_id);
-    const allCapturedAttributes=observationsByObject.get(object.object_id)||[];
-    const visibleCapturedAttributes=showRepereSource?allCapturedAttributes:allCapturedAttributes.filter(observation=>!isRepereSource(observation));
+    const visibleCapturedAttributes=visibleObservationsByObject.get(object.object_id)||[];
     const groupedAttributes=Array.from(visibleCapturedAttributes.reduce((groups,observation)=>{
       const value=observation.value_normalized??observation.value_raw;
       const unit=observation.unit_normalized||observation.unit_raw||'—';
@@ -115,7 +161,9 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
       }
       return groups;
     },new Map<string,{attributeId:string;value:unknown;unit:string;sources:Set<string>}>()).values());
+    const objectAnomalies=anomaliesByObject.get(object.object_id)||[];
     const areAttributesOpen=attributesOpen.has(object.object_id);
+    const areAnomaliesOpen=anomaliesOpen.has(object.object_id);
 
     return <div className="ariane-tree-node" style={{'--depth':depth} as CSSProperties}>
       <div className="ariane-tree-row">
@@ -128,7 +176,9 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
           <button className="ariane-tree-attribute-button" type="button" onClick={()=>toggleAttributes(object.object_id)} disabled={groupedAttributes.length===0} aria-expanded={groupedAttributes.length?areAttributesOpen:undefined}>
             {groupedAttributes.length} attr.
           </button>
-          {(anoCount.get(object.object_id)||0)>0&&<span className="ariane-badge-warn">{anoCount.get(object.object_id)} anomalie(s)</span>}
+          <button className="ariane-tree-anomaly-button" type="button" onClick={()=>toggleAnomalies(object.object_id)} disabled={objectAnomalies.length===0} aria-expanded={objectAnomalies.length?areAnomaliesOpen:undefined}>
+            <AlertTriangle/>{objectAnomalies.length} anomalie(s)
+          </button>
         </div>
       </div>
       {areAttributesOpen&&groupedAttributes.length>0&&<div className="ariane-tree-attributes">
@@ -141,20 +191,38 @@ function StructureTree({objects,data,onOpenAttributes}:{objects:PatrimonialObjec
           </div>)}
         </div>
       </div>}
+      {areAnomaliesOpen&&objectAnomalies.length>0&&<div className="ariane-tree-anomalies">
+        <div className="ariane-tree-attributes-header"><b>Anomalies rattachées</b><button type="button" onClick={()=>onOpenAnomalies(object.object_id)}>Afficher dans l’onglet Anomalies</button></div>
+        <div className="ariane-tree-anomaly-list">
+          {objectAnomalies.map(anomaly=><article key={anomaly.anomaly_id}>
+            <div><span className="ariane-badge-warn">{anomaly.anomaly_type}</span><code>{anomaly.anomaly_id}</code><span>{anomaly.resolution_status||'OUVERTE'}</span></div>
+            <p>{anomaly.description}</p>
+            <small>{anomaly.source_reference||anomaly.source_id||'Source non renseignée'}</small>
+          </article>)}
+        </div>
+      </div>}
       {isExpanded&&kids.map(k=><Node key={k.object_id} object={k} depth={depth+1} seen={next}/>)}
     </div>;
   };
 
   return <>
     <div className="ariane-tree-toolbar">
-      <span>{objects.length} objet(s)</span>
+      <div className="ariane-tree-toolbar-summary"><b>{objects.length}</b><span>objet(s)</span></div>
       <label className="ariane-tree-option">
-        <input type="checkbox" checked={showRepereSource} onChange={e=>setShowRepereSource(e.currentTarget.checked)}/>
-        <span>Afficher les attributs <code>repere_source</code></span>
+        <input type="checkbox" checked={showRepereSource} onChange={e=>setShowRepereSource(e.target.checked)}/>
+        <span>Afficher <code>repere_source</code> <small>({repereObjectCount} objets)</small></span>
+        <strong className={showRepereSource?'is-visible':'is-hidden'}>{showRepereSource?'Affichés':'Masqués'}</strong>
       </label>
+      <div className="ariane-tree-bulk">
+        <select value={bulkType} onChange={e=>setBulkType(e.target.value)} aria-label="Type d’objet à déployer ou replier">
+          {collapsibleTypes.map(([type,count])=><option key={type} value={type}>{type} · {count}</option>)}
+        </select>
+        <button type="button" disabled={!bulkType} onClick={()=>setTypeExpanded(bulkType,true)}>Déployer le type</button>
+        <button type="button" disabled={!bulkType} onClick={()=>setTypeExpanded(bulkType,false)}>Replier le type</button>
+      </div>
       <div className="ariane-tree-toolbar-actions"><button type="button" onClick={()=>setExpanded(new Set(children.keys()))}>Tout déployer</button><button type="button" onClick={()=>setExpanded(new Set())}>Tout replier</button></div>
     </div>
-    <div className="ariane-tree">{roots.map(r=><Node key={r.object_id} object={r}/>)}</div>
+    <div className="ariane-tree" key={showRepereSource?'repere-visible':'repere-hidden'}>{roots.map(r=><Node key={r.object_id} object={r}/>)}</div>
   </>;
 }
 
@@ -245,6 +313,11 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
     setAttributeFiltersVisible(true);
   };
 
+  const openObjectAnomalies=(objectId:string)=>{
+    setTab('anomalies');
+    setQuery(objectId);
+  };
+
   if(loading&&!data)return <section className="ariane-data panel ariane-empty"><LoaderCircle className="ariane-spin"/><h1>Structures & données courantes</h1><p>Chargement de CURRENT…</p></section>;
   if(error&&!data)return <section className="ariane-data panel ariane-empty"><h1>Structures & données courantes</h1><p className="ariane-error">{error}</p></section>;
   if(!data)return <section className="ariane-data panel ariane-empty"><h1>Structures & données courantes</h1><p>Aucun CURRENT disponible.</p></section>;
@@ -277,7 +350,7 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
 
       <label className="ariane-search"><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Rechercher dans la vue…"/></label>
 
-      {tab==='structure'&&<StructureTree objects={q?objects:data.structure.objects} data={data} onOpenAttributes={openObjectAttributes}/>}
+      {tab==='structure'&&<StructureTree objects={q?objects:data.structure.objects} data={data} onOpenAttributes={openObjectAttributes} onOpenAnomalies={openObjectAnomalies}/>}
 
       {tab==='observations'&&<div className="ariane-table-section">
         <TableFilterMenu visible={attributeFiltersVisible} onToggle={()=>setAttributeFiltersVisible(v=>!v)} count={activeFilterCount(attributeFilters)} onClear={()=>setAttributeFilters(emptyAttributeFilters())}/>
