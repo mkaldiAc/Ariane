@@ -185,7 +185,7 @@ function StructureTree({objects,data,onOpenAttributes,onOpenAnomalies}:{objects:
         </div>
       </div>
       {areAttributesOpen&&groupedAttributes.length>0&&<div className="ariane-tree-attributes">
-        <div className="ariane-tree-attributes-header"><b>Attributs captés</b><button type="button" onClick={()=>onOpenAttributes(object.object_id)}>Afficher le détail dans l’onglet Attributs</button></div>
+        <div className="ariane-tree-attributes-header"><b>Attributs captés</b><button type="button" onClick={()=>onOpenAttributes(object.object_id)}>Afficher les observations</button></div>
         <div className="ariane-tree-attribute-list">
           {groupedAttributes.map((attribute,index)=><div key={`${attribute.attributeId}-${index}`} className="ariane-tree-attribute-item">
             <span>{attribute.attributeId}</span>
@@ -195,7 +195,7 @@ function StructureTree({objects,data,onOpenAttributes,onOpenAnomalies}:{objects:
         </div>
       </div>}
       {areAnomaliesOpen&&objectAnomalies.length>0&&<div className="ariane-tree-anomalies">
-        <div className="ariane-tree-attributes-header"><b>Anomalies rattachées</b><button type="button" onClick={()=>onOpenAnomalies(object.object_id)}>Afficher dans l’onglet Anomalies</button></div>
+        <div className="ariane-tree-attributes-header"><b>Anomalies rattachées</b><button type="button" onClick={()=>onOpenAnomalies(object.object_id)}>Afficher les anomalies</button></div>
         <div className="ariane-tree-anomaly-list">
           {objectAnomalies.map(anomaly=><article key={anomaly.anomaly_id}>
             <div><span className="ariane-badge-warn">{anomaly.anomaly_type}</span><code>{anomaly.anomaly_id}</code><span>{anomaly.resolution_status||'OUVERTE'}</span></div>
@@ -292,9 +292,12 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
     };
   },[data,attributeReference,capturedAttributeIds]);
 
-  const referenceFamilies=useMemo(()=>uniqueValues(
-    (attributeReference?.attributes||[]).map(attribute=>attribute.family)
-  ),[attributeReference]);
+  const referenceFamilies=useMemo(()=>{
+    const attributes=attributeReference?.attributes||[];
+    const named=uniqueValues(attributes.map(attribute=>attribute.family));
+    if(named.length===0)return [];
+    return attributes.some(attribute=>!attribute.family)?[...named,'Sans famille']:named;
+  },[attributeReference]);
 
   const referenceRows=useMemo(()=>{
     if(!attributeReference)return [];
@@ -447,7 +450,7 @@ export function CurrentDataPage({programmeId:requestedProgrammeId}:{programmeId?
         {!attributeReference?<section className="ariane-empty"><LoaderCircle className="ariane-spin"/><p>Chargement du référentiel attributaire…</p></section>:
         referenceFamilies.length>0
           ?<div className="ariane-reference-groups">{referenceFamilies.map(family=>{
-            const rows=referenceRows.filter(attribute=>attribute.family===family);
+            const rows=referenceRows.filter(attribute=>family==='Sans famille'?!attribute.family:attribute.family===family);
             if(rows.length===0)return null;
             return <section key={family} className="ariane-reference-family"><header><h3>{family}</h3><span>{rows.length} attribut(s)</span></header><div className="ariane-table-wrap"><table className="ariane-table ariane-reference-table"><thead><tr><th>Attribut</th><th>Libellé</th><th>Objets</th><th>Type</th><th>Unité</th><th>Statut</th><th>Observations</th></tr></thead><tbody>{rows.map(attribute=>{
               const captured=capturedAttributeIds.has(attribute.attributeId);
