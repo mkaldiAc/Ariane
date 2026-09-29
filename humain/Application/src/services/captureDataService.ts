@@ -137,7 +137,7 @@ export type ValidationData={
   applied_changes?:Array<Record<string,unknown>>;
   not_applied_changes?:Array<Record<string,unknown>>;
   candidate_handling?:Array<Record<string,unknown>>;
-  promoted_to_current?:Record<string,unknown>;
+  promoted_to_current?:Record<string,number|string>;
   resolved_current_anomaly_ids?:string[];
   current_anomalies_updated?:unknown[];
   historical_captures_modified?:boolean;
