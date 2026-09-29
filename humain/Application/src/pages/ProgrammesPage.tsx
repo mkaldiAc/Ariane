@@ -77,7 +77,7 @@ export function ProgrammesPage(){
   useEffect(()=>{
     if(route.kind!=='captures'&&route.kind!=='capture')return;
     if(!selectedProgramme)return;
-    let active=true;setDetailLoading(true);setError(null);
+    let active=true;setDetailLoading(true);setError(null);setCaptureDetails([]);
     Promise.all(selectedProgramme.index.captures.map(entry=>captureDataService.loadCaptureDetail(entry)))
       .then(items=>{if(active)setCaptureDetails(items)})
       .catch(e=>{if(active)setError(e instanceof Error?e.message:String(e))})
@@ -91,7 +91,7 @@ export function ProgrammesPage(){
     const structureVersion=route.structureVersion;
     const entry=selectedProgramme.index.structures.find(item=>item.structure_version===structureVersion);
     if(!entry)return;
-    let active=true;setDetailLoading(true);setError(null);
+    let active=true;setDetailLoading(true);setError(null);setStructureDetail(null);setCandidateDetails([]);
     Promise.all([
       captureDataService.loadStructureDetail(selectedProgramme.index.programme_id,entry),
       Promise.all(selectedProgramme.index.captures.map(capture=>captureDataService.loadCaptureDetail(capture)))
