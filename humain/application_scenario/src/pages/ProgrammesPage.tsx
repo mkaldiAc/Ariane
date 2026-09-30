@@ -1,7 +1,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import {ArrowLeft,Boxes,CalendarDays,ChevronRight,Clipboard,Database,ExternalLink,FileText,GitBranch,Layers3,LoaderCircle,Plus,X} from 'lucide-react';
 import {CurrentDataPage} from './CurrentDataPage';
-import {buildInitialisationPrompt,normalizeArianeId} from '../execution/promptBuilders';
+import {buildIncrementalPrompt,buildInitialisationPrompt,normalizeArianeId} from '../execution/promptBuilders';
 import {config} from '../config';
 import {
   captureDataService,
@@ -61,6 +61,9 @@ export function ProgrammesPage(){
   const [newProgrammeName,setNewProgrammeName]=useState('');
   const [initialCaptureName,setInitialCaptureName]=useState('APD_PLAN');
   const [promptCopied,setPromptCopied]=useState(false);
+  const [incrementalProgrammeId,setIncrementalProgrammeId]=useState<string|null>(null);
+  const [incrementalCaptureName,setIncrementalCaptureName]=useState('');
+  const [incrementalPromptCopied,setIncrementalPromptCopied]=useState(false);
 
   useEffect(()=>{let active=true;setLoading(true);
     captureDataService.loadAllProgrammes().then(async items=>{
@@ -125,6 +128,29 @@ export function ProgrammesPage(){
     if(openChat&&!chatWindow)window.open(config.chatgptUrl,'_blank','noopener,noreferrer');
   };
 
+  const openIncremental=(programmeId:string)=>{
+    setIncrementalProgrammeId(current=>current===programmeId?null:programmeId);
+    setIncrementalCaptureName('');
+    setIncrementalPromptCopied(false);
+  };
+
+  const copyIncrementalPrompt=async(programme:ProgrammeData,openChat=false)=>{
+    const captureId=normalizeArianeId(incrementalCaptureName);
+    const structureVersion=programme.index.current.structure_version;
+    const captureAlreadyExists=programme.index.captures.some(capture=>capture.capture_id===captureId);
+    if(!captureId||!structureVersion||captureAlreadyExists)return;
+    const prompt=buildIncrementalPrompt({
+      programmeId:programme.index.programme_id,
+      captureId,
+      structureVersion
+    });
+    const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
+    await navigator.clipboard.writeText(prompt);
+    setIncrementalPromptCopied(true);
+    window.setTimeout(()=>setIncrementalPromptCopied(false),1600);
+    if(openChat&&!chatWindow)window.open(config.chatgptUrl,'_blank','noopener,noreferrer');
+  };
+
   const breadcrumbItems=():BreadcrumbItem[]=>{
     const base:BreadcrumbItem[]=[{label:'Programmes',route:route.kind==='programmes'?undefined:{kind:'programmes'}}];
     if(!selectedProgramme)return base;
@@ -165,7 +191,7 @@ export function ProgrammesPage(){
         <div><p className="eyebrow">ARIANE · PROGRAMMES</p><h1>Programmes</h1><p>Accédez aux données courantes, aux captations et aux structures validées de chaque programme.</p></div>
         <div className="ariane-programmes-header-actions">
           <span className="ariane-count-pill">{programmes.length} programme(s)</span>
-          <button type="button" className="button ariane-new-programme-button" onClick={()=>setNewProgrammeOpen(value=>!value)}>
+          <button type="button" className="button button-action ariane-new-programme-button" onClick={()=>setNewProgrammeOpen(value=>!value)}>
             {newProgrammeOpen?<X/>:<Plus/>}{newProgrammeOpen?'Fermer':'Nouveau programme'}
           </button>
         </div>
@@ -189,15 +215,46 @@ export function ProgrammesPage(){
         {programmeAlreadyExists&&<p className="ariane-new-programme-warning">Ce programme existe déjà dans ARIANE. Utilisez une captation incrémentale depuis sa fiche programme.</p>}
         <div className="ariane-new-programme-actions">
           <p><b>Étape suivante :</b> ouvrez ChatGPT, joignez les documents du jeu initial, collez le prompt puis envoyez.</p>
-          <button type="button" className="button" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(false)}><Clipboard/>{promptCopied?'Prompt copié':'Copier le prompt'}</button>
-          <button type="button" className="button ariane-primary-action" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
+          <button type="button" className="button button-action" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(false)}><Clipboard/>{promptCopied?'Prompt copié':'Copier le prompt'}</button>
+          <button type="button" className="button button-action" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
         </div>
       </section>}
       <section className="ariane-programme-grid">
         {programmes.map(programme=>{
           const current=metrics[programme.index.programme_id];
-          return <article className="panel ariane-programme-card" key={programme.index.programme_id}>
-            <header><Database/><div><p className="eyebrow">PROGRAMME</p><h2>{programme.index.programme_id}</h2></div></header>
+          const programmeId=programme.index.programme_id;
+          const incrementalOpen=incrementalProgrammeId===programmeId;
+          const incrementalCaptureId=normalizeArianeId(incrementalCaptureName);
+          const currentStructureVersion=programme.index.current.structure_version;
+          const incrementalCaptureExists=programme.index.captures.some(capture=>capture.capture_id===incrementalCaptureId);
+          const incrementalReady=Boolean(incrementalCaptureId&&currentStructureVersion&&!incrementalCaptureExists);
+          return <article className="panel ariane-programme-card" key={programmeId}>
+            <header>
+              <Database/>
+              <div><p className="eyebrow">PROGRAMME</p><h2>{programmeId}</h2></div>
+              <button type="button" className="button button-action ariane-incremental-launcher" onClick={()=>openIncremental(programmeId)}>
+                {incrementalOpen?<X/>:<Plus/>}{incrementalOpen?'Fermer':'Nouvelle captation'}
+              </button>
+            </header>
+            {incrementalOpen&&<section className="ariane-incremental-panel">
+              <div className="ariane-incremental-heading">
+                <div><h3>Captation incrémentale</h3><p>Le programme et la structure courante sont renseignés automatiquement.</p></div>
+                <span>Structure : <code>{currentStructureVersion||'Aucune structure validée'}</code></span>
+              </div>
+              {!currentStructureVersion?<p className="ariane-new-programme-warning">Une captation incrémentale nécessite une structure CURRENT validée. Validez d’abord la structure initiale.</p>:<>
+                <label>
+                  <span>Nom de la nouvelle captation</span>
+                  <input autoFocus value={incrementalCaptureName} onChange={event=>setIncrementalCaptureName(event.target.value)} placeholder="Ex. PC"/>
+                  <small>Identifiant généré : <code>{incrementalCaptureId||'—'}</code></small>
+                </label>
+                {incrementalCaptureExists&&<p className="ariane-new-programme-warning">Cet identifiant de captation existe déjà pour ce programme.</p>}
+                <div className="ariane-incremental-actions">
+                  <p><b>Étape suivante :</b> joignez uniquement les nouveaux documents dans ChatGPT, collez le prompt puis envoyez.</p>
+                  <button type="button" className="button button-action" disabled={!incrementalReady} onClick={()=>void copyIncrementalPrompt(programme,false)}><Clipboard/>{incrementalPromptCopied?'Prompt copié':'Copier le prompt'}</button>
+                  <button type="button" className="button button-action" disabled={!incrementalReady} onClick={()=>void copyIncrementalPrompt(programme,true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
+                </div>
+              </>}
+            </section>}
             <div className="ariane-programme-actions">
               <button type="button" onClick={()=>navigate({kind:'current',programmeId:programme.index.programme_id})}>
                 <span><Database/><b>Données courantes</b></span>
