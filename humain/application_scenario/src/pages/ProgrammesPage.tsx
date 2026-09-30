@@ -1,6 +1,7 @@
 import {useEffect,useMemo,useState} from 'react';
-import {ArrowLeft,Boxes,CalendarDays,ChevronRight,Database,FileText,GitBranch,Layers3,LoaderCircle} from 'lucide-react';
+import {ArrowLeft,Boxes,CalendarDays,ChevronRight,Clipboard,Database,ExternalLink,FileText,GitBranch,Layers3,LoaderCircle,Plus,X} from 'lucide-react';
 import {CurrentDataPage} from './CurrentDataPage';
+import {buildInitialisationPrompt,normalizeArianeId} from '../execution/promptBuilders';
 import {
   captureDataService,
   type CaptureDetail,
@@ -55,6 +56,10 @@ export function ProgrammesPage(){
   const [loading,setLoading]=useState(true);
   const [detailLoading,setDetailLoading]=useState(false);
   const [error,setError]=useState<string|null>(null);
+  const [newProgrammeOpen,setNewProgrammeOpen]=useState(false);
+  const [newProgrammeName,setNewProgrammeName]=useState('');
+  const [initialCaptureName,setInitialCaptureName]=useState('APD_PLAN');
+  const [promptCopied,setPromptCopied]=useState(false);
 
   useEffect(()=>{let active=true;setLoading(true);
     captureDataService.loadAllProgrammes().then(async items=>{
@@ -104,6 +109,20 @@ export function ProgrammesPage(){
   },[route,selectedProgramme]);
 
   const navigate=(next:Route)=>{setError(null);setRoute(next)};
+  const newProgrammeId=normalizeArianeId(newProgrammeName);
+  const initialCaptureId=normalizeArianeId(initialCaptureName);
+  const programmeAlreadyExists=programmes.some(programme=>programme.index.programme_id===newProgrammeId);
+  const initialisationReady=Boolean(newProgrammeId&&initialCaptureId&&!programmeAlreadyExists);
+
+  const copyInitialisationPrompt=async(openChat=false)=>{
+    if(!initialisationReady)return;
+    const prompt=buildInitialisationPrompt({programmeId:newProgrammeId,captureId:initialCaptureId});
+    const chatWindow=openChat?window.open('https://chatgpt.com/','_blank','noopener,noreferrer'):null;
+    await navigator.clipboard.writeText(prompt);
+    setPromptCopied(true);
+    window.setTimeout(()=>setPromptCopied(false),1600);
+    if(openChat&&!chatWindow)window.open('https://chatgpt.com/','_blank','noopener,noreferrer');
+  };
 
   const breadcrumbItems=():BreadcrumbItem[]=>{
     const base:BreadcrumbItem[]=[{label:'Programmes',route:route.kind==='programmes'?undefined:{kind:'programmes'}}];
@@ -143,8 +162,36 @@ export function ProgrammesPage(){
     {route.kind==='programmes'&&<>
       <section className="panel ariane-data-header">
         <div><p className="eyebrow">ARIANE · PROGRAMMES</p><h1>Programmes</h1><p>Accédez aux données courantes, aux captations et aux structures validées de chaque programme.</p></div>
-        <span className="ariane-count-pill">{programmes.length} programme(s)</span>
+        <div className="ariane-programmes-header-actions">
+          <span className="ariane-count-pill">{programmes.length} programme(s)</span>
+          <button type="button" className="button ariane-new-programme-button" onClick={()=>setNewProgrammeOpen(value=>!value)}>
+            {newProgrammeOpen?<X/>:<Plus/>}{newProgrammeOpen?'Fermer':'Nouveau programme'}
+          </button>
+        </div>
       </section>
+      {newProgrammeOpen&&<section className="panel ariane-new-programme">
+        <header>
+          <div><h2>Initialiser un nouveau programme</h2><p>Renseignez uniquement les informations nécessaires. ARIANE construit le prompt technique.</p></div>
+        </header>
+        <div className="ariane-new-programme-form">
+          <label>
+            <span>Nom du programme</span>
+            <input autoFocus value={newProgrammeName} onChange={event=>setNewProgrammeName(event.target.value)} placeholder="Ex. Brécé Le Grand Domaine"/>
+            <small>Identifiant généré : <code>{newProgrammeId||'—'}</code></small>
+          </label>
+          <label>
+            <span>Nom de la captation initiale</span>
+            <input value={initialCaptureName} onChange={event=>setInitialCaptureName(event.target.value)} placeholder="APD_PLAN"/>
+            <small>Identifiant généré : <code>{initialCaptureId||'—'}</code></small>
+          </label>
+        </div>
+        {programmeAlreadyExists&&<p className="ariane-new-programme-warning">Ce programme existe déjà dans ARIANE. Utilisez une captation incrémentale depuis sa fiche programme.</p>}
+        <div className="ariane-new-programme-actions">
+          <p><b>Étape suivante :</b> ouvrez ChatGPT, joignez les documents du jeu initial, collez le prompt puis envoyez.</p>
+          <button type="button" className="button" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(false)}><Clipboard/>{promptCopied?'Prompt copié':'Copier le prompt'}</button>
+          <button type="button" className="button ariane-primary-action" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
+        </div>
+      </section>}
       <section className="ariane-programme-grid">
         {programmes.map(programme=>{
           const current=metrics[programme.index.programme_id];
