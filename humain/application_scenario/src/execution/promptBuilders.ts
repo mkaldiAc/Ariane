@@ -15,7 +15,8 @@ L'interdiction de modifier des fichiers pendant le contrôle préalable cesse un
 Si une ressource normative obligatoire ne peut pas être chargée, ou si l'accès nécessaire à la persistance demandée n'est pas disponible, n'exécute aucune écriture et indique précisément le blocage.
 `.trim();
 
-const buildStandaloneScenario=(scenario:string)=>[
+const buildStandaloneScenario=(scenarioName:string,scenario:string)=>[
+  `ARIANE · SCÉNARIO : ${scenarioName}`,
   prompts.preflight.trim(),
   standaloneTransition,
   scenario.trim()
@@ -28,6 +29,7 @@ export const buildInitialisationPrompt=({
   programmeId:string;
   captureId:string;
 })=>buildStandaloneScenario(
+  'INITIALISATION_PROGRAMME',
   prompts.initial
     .replaceAll('<PROGRAMME_ID>',programmeId)
     .replaceAll('<CAPTURE_ID_INITIAL>',captureId)
@@ -43,6 +45,7 @@ export const buildIncrementalPrompt=({
   captureId:string;
   structureVersion:string;
 })=>buildStandaloneScenario(
+  'CAPTATION_INCREMENTALE',
   prompts.incremental
     .replaceAll('<PROGRAMME_ID>',programmeId)
     .replaceAll('<CAPTURE_ID_N>',captureId)
