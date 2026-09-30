@@ -10,4 +10,5 @@
 - Tableau : corps en 15,6 px, alternance de bleus légers et espace carte latéral à droite.
 - Focus clavier visible, libellés accessibles pour actions icône, page active annoncée et animations neutralisées avec `prefers-reduced-motion`.
 
-- Actions opérationnelles homogènes : les actions de même niveau fonctionnel utilisent le composant `.button-action` (fond `--blue-800`, texte blanc, survol `--blue-950`). Une différence de destination (copier, ouvrir un outil, fermer un panneau) ne justifie pas une couleur différente ; réserver les variations colorées aux états, alertes ou actions destructives.
+- Actions opérationnelles homogènes : les actions de même niveau fonctionnel utilisent le composant `.button-action`, avec le même comportement que les blocs de navigation principaux : fond `--blue-950`, texte et icônes blancs, survol `--blue-800`. Une différence de destination (copier, ouvrir un outil, fermer un panneau) ne justifie pas une couleur différente ; réserver les variations colorées aux états, alertes ou actions destructives.
+- Panneaux d'action contextuels : les formulaires ouverts par une action utilisent `.action-panel` et le token `--action-panel-bg` (`#dfeaf8`), légèrement plus foncé que `--blue-100`. Tous les panneaux d'un même niveau d'interaction partagent ce fond afin de matérialiser une même famille fonctionnelle.
