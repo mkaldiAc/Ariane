@@ -2,6 +2,7 @@ import {useEffect,useMemo,useState} from 'react';
 import {ArrowLeft,Boxes,CalendarDays,ChevronRight,Clipboard,Database,ExternalLink,FileText,GitBranch,Layers3,LoaderCircle,Plus,X} from 'lucide-react';
 import {CurrentDataPage} from './CurrentDataPage';
 import {buildInitialisationPrompt,normalizeArianeId} from '../execution/promptBuilders';
+import {config} from '../config';
 import {
   captureDataService,
   type CaptureDetail,
@@ -117,11 +118,11 @@ export function ProgrammesPage(){
   const copyInitialisationPrompt=async(openChat=false)=>{
     if(!initialisationReady)return;
     const prompt=buildInitialisationPrompt({programmeId:newProgrammeId,captureId:initialCaptureId});
-    const chatWindow=openChat?window.open('https://chatgpt.com/','_blank','noopener,noreferrer'):null;
+    const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
     await navigator.clipboard.writeText(prompt);
     setPromptCopied(true);
     window.setTimeout(()=>setPromptCopied(false),1600);
-    if(openChat&&!chatWindow)window.open('https://chatgpt.com/','_blank','noopener,noreferrer');
+    if(openChat&&!chatWindow)window.open(config.chatgptUrl,'_blank','noopener,noreferrer');
   };
 
   const breadcrumbItems=():BreadcrumbItem[]=>{
