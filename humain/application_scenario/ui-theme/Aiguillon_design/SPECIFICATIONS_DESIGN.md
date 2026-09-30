@@ -9,3 +9,5 @@
 - Bleu pour structure/navigation; teal et rouge réservés aux données et états.
 - Tableau : corps en 15,6 px, alternance de bleus légers et espace carte latéral à droite.
 - Focus clavier visible, libellés accessibles pour actions icône, page active annoncée et animations neutralisées avec `prefers-reduced-motion`.
+
+- Actions opérationnelles homogènes : les actions de même niveau fonctionnel utilisent le composant `.button-action` (fond `--blue-800`, texte blanc, survol `--blue-950`). Une différence de destination (copier, ouvrir un outil, fermer un panneau) ne justifie pas une couleur différente ; réserver les variations colorées aux états, alertes ou actions destructives.
