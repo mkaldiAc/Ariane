@@ -32,3 +32,19 @@ export const buildInitialisationPrompt=({
     .replaceAll('<PROGRAMME_ID>',programmeId)
     .replaceAll('<CAPTURE_ID_INITIAL>',captureId)
 );
+
+
+export const buildIncrementalPrompt=({
+  programmeId,
+  captureId,
+  structureVersion
+}:{
+  programmeId:string;
+  captureId:string;
+  structureVersion:string;
+})=>buildStandaloneScenario(
+  prompts.incremental
+    .replaceAll('<PROGRAMME_ID>',programmeId)
+    .replaceAll('<CAPTURE_ID_N>',captureId)
+    .replaceAll('<STR_COURANTE>',structureVersion)
+);
