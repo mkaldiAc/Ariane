@@ -15,12 +15,21 @@ L'interdiction de modifier des fichiers pendant le contrôle préalable cesse un
 Si une ressource normative obligatoire ne peut pas être chargée, ou si l'accès nécessaire à la persistance demandée n'est pas disponible, n'exécute aucune écriture et indique précisément le blocage.
 `.trim();
 
-const buildStandaloneScenario=(scenarioName:string,scenario:string)=>[
+const documentRequiredGate=`
+CONTRÔLE DOCUMENTAIRE OBLIGATOIRE
+Vérifie avant toute autre opération qu'au moins un document exploitable est joint à ce message.
+Si aucun document n'est joint, si les pièces jointes sont inaccessibles ou si aucune n'est exploitable, arrête immédiatement ce scénario et indique simplement que le jeu documentaire requis est absent ou inexploitable.
+Dans ce cas, ne poursuis pas le chargement du référentiel ARIANE et n'engage aucune autre opération.
+Si au moins un document exploitable est présent, poursuis immédiatement.
+`.trim();
+
+const buildStandaloneScenario=(scenarioName:string,scenario:string,{documentsRequired=true}:{documentsRequired?:boolean}={})=>[
   `ARIANE · SCÉNARIO : ${scenarioName}`,
+  documentsRequired?documentRequiredGate:null,
   prompts.preflight.trim(),
   standaloneTransition,
   scenario.trim()
-].join('\n\n---\n\n');
+].filter(Boolean).join('\n\n---\n\n');
 
 export const buildInitialisationPrompt=({
   programmeId,
