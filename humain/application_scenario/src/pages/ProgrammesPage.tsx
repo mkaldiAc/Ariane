@@ -124,6 +124,7 @@ export function ProgrammesPage(){
     const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
     await navigator.clipboard.writeText(prompt);
     setPromptCopied(true);
+    setNewProgrammeOpen(false);
     window.setTimeout(()=>setPromptCopied(false),1600);
     if(openChat&&!chatWindow)window.open(config.chatgptUrl,'_blank','noopener,noreferrer');
   };
@@ -147,6 +148,7 @@ export function ProgrammesPage(){
     const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
     await navigator.clipboard.writeText(prompt);
     setIncrementalPromptCopied(true);
+    setIncrementalProgrammeId(null);
     window.setTimeout(()=>setIncrementalPromptCopied(false),1600);
     if(openChat&&!chatWindow)window.open(config.chatgptUrl,'_blank','noopener,noreferrer');
   };
@@ -196,7 +198,7 @@ export function ProgrammesPage(){
           </button>
         </div>
       </section>
-      {newProgrammeOpen&&<section className="panel ariane-new-programme">
+      {newProgrammeOpen&&<section className="panel action-panel ariane-new-programme">
         <header>
           <div><h2>Initialiser un nouveau programme</h2><p>Renseignez uniquement les informations nécessaires. ARIANE construit le prompt technique.</p></div>
         </header>
@@ -236,7 +238,7 @@ export function ProgrammesPage(){
                 {incrementalOpen?<X/>:<Plus/>}{incrementalOpen?'Fermer':'Nouvelle captation'}
               </button>
             </header>
-            {incrementalOpen&&<section className="ariane-incremental-panel">
+            {incrementalOpen&&<section className="action-panel ariane-incremental-panel">
               <div className="ariane-incremental-heading">
                 <div><h3>Captation incrémentale</h3><p>Le programme et la structure courante sont renseignés automatiquement.</p></div>
                 <span>Structure : <code>{currentStructureVersion||'Aucune structure validée'}</code></span>
