@@ -36,7 +36,8 @@ td{line-height:1.25;padding-top:9px!important;padding-bottom:9px!important}
 
 
 /* Shared operational action button */
-.button-action{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--blue-800);border-radius:var(--radius-sm);padding:7px 12px;background:var(--blue-800);color:#fff;font-weight:600;transition:background .15s,border-color .15s,box-shadow .15s}
-.button-action:hover:not(:disabled){background:var(--blue-950);border-color:var(--blue-950);box-shadow:0 2px 7px rgb(32 56 100 / 22%)}
+.button-action{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--blue-900);border-radius:var(--radius-sm);padding:7px 12px;background:var(--blue-950);color:#fff!important;font-weight:600;transition:background .15s,border-color .15s,box-shadow .15s}
+.button-action:hover:not(:disabled){background:var(--blue-800);border-color:var(--blue-800);box-shadow:0 2px 7px rgb(32 56 100 / 22%)}
 .button-action:disabled{opacity:.45;cursor:not-allowed}
-.button-action svg{width:17px;height:17px}
+.button-action svg{width:17px;height:17px;color:#fff!important;stroke:currentColor}
+.action-panel{background:var(--action-panel-bg)!important;color:var(--text)!important;border-color:var(--border-strong)!important}
