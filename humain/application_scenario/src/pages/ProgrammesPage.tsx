@@ -35,6 +35,30 @@ const formatDate=(value:string|null|undefined)=>{
   return Number.isNaN(date.getTime())?value:new Intl.DateTimeFormat('fr-FR',{dateStyle:'medium'}).format(date);
 };
 
+const writePromptToClipboard=async(text:string)=>{
+  if(navigator.clipboard?.writeText){
+    try{
+      await navigator.clipboard.writeText(text);
+      return;
+    }catch{
+      // Fallback below for browsers that refuse Clipboard API access.
+    }
+  }
+
+  const textarea=document.createElement('textarea');
+  textarea.value=text;
+  textarea.setAttribute('readonly','');
+  textarea.style.position='fixed';
+  textarea.style.opacity='0';
+  textarea.style.pointerEvents='none';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  const copied=document.execCommand('copy');
+  document.body.removeChild(textarea);
+  if(!copied)throw new Error('clipboard-write-failed');
+};
+
 function Breadcrumb({items,onNavigate,onBack}:{items:BreadcrumbItem[];onNavigate:(route:Route)=>void;onBack?:()=>void}){
   return <div className="panel ariane-programme-breadcrumb">
     {onBack&&<button type="button" className="ariane-breadcrumb-back" onClick={onBack}><ArrowLeft/>Retour</button>}
@@ -61,9 +85,11 @@ export function ProgrammesPage(){
   const [newProgrammeName,setNewProgrammeName]=useState('');
   const [initialCaptureName,setInitialCaptureName]=useState('APD_PLAN');
   const [promptCopied,setPromptCopied]=useState(false);
+  const [initialClipboardError,setInitialClipboardError]=useState<string|null>(null);
   const [incrementalProgrammeId,setIncrementalProgrammeId]=useState<string|null>(null);
   const [incrementalCaptureName,setIncrementalCaptureName]=useState('');
   const [incrementalPromptCopied,setIncrementalPromptCopied]=useState(false);
+  const [incrementalClipboardError,setIncrementalClipboardError]=useState<string|null>(null);
 
   useEffect(()=>{let active=true;setLoading(true);
     captureDataService.loadAllProgrammes().then(async items=>{
@@ -120,19 +146,29 @@ export function ProgrammesPage(){
 
   const copyInitialisationPrompt=async(openChat=false)=>{
     if(!initialisationReady)return;
+    setInitialClipboardError(null);
     const prompt=buildInitialisationPrompt({programmeId:newProgrammeId,captureId:initialCaptureId});
+    const copyPromise=writePromptToClipboard(prompt);
     const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
-    await navigator.clipboard.writeText(prompt);
-    setPromptCopied(true);
-    setNewProgrammeOpen(false);
-    window.setTimeout(()=>setPromptCopied(false),1600);
-    if(openChat&&!chatWindow)window.open(config.chatgptUrl,'_blank','noopener,noreferrer');
+    try{
+      await copyPromise;
+      setPromptCopied(true);
+      setNewProgrammeOpen(false);
+      window.setTimeout(()=>setPromptCopied(false),1600);
+      if(openChat&&!chatWindow)setError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
+    }catch{
+      if(chatWindow&&!chatWindow.closed)chatWindow.close();
+      setInitialClipboardError(window.isSecureContext
+        ? 'Chrome n’a pas autorisé la copie. Autorisez l’accès au presse-papiers pour cette application puis réessayez.'
+        : 'La copie nécessite une connexion HTTPS. Ouvrez l’application via son URL sécurisée puis réessayez.');
+    }
   };
 
   const openIncremental=(programmeId:string)=>{
     setIncrementalProgrammeId(current=>current===programmeId?null:programmeId);
     setIncrementalCaptureName('');
     setIncrementalPromptCopied(false);
+    setIncrementalClipboardError(null);
   };
 
   const copyIncrementalPrompt=async(programme:ProgrammeData,openChat=false)=>{
@@ -145,12 +181,21 @@ export function ProgrammesPage(){
       captureId,
       structureVersion
     });
+    setIncrementalClipboardError(null);
+    const copyPromise=writePromptToClipboard(prompt);
     const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
-    await navigator.clipboard.writeText(prompt);
-    setIncrementalPromptCopied(true);
-    setIncrementalProgrammeId(null);
-    window.setTimeout(()=>setIncrementalPromptCopied(false),1600);
-    if(openChat&&!chatWindow)window.open(config.chatgptUrl,'_blank','noopener,noreferrer');
+    try{
+      await copyPromise;
+      setIncrementalPromptCopied(true);
+      setIncrementalProgrammeId(null);
+      window.setTimeout(()=>setIncrementalPromptCopied(false),1600);
+      if(openChat&&!chatWindow)setError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
+    }catch{
+      if(chatWindow&&!chatWindow.closed)chatWindow.close();
+      setIncrementalClipboardError(window.isSecureContext
+        ? 'Chrome n’a pas autorisé la copie. Autorisez l’accès au presse-papiers pour cette application puis réessayez.'
+        : 'La copie nécessite une connexion HTTPS. Ouvrez l’application via son URL sécurisée puis réessayez.');
+    }
   };
 
   const breadcrumbItems=():BreadcrumbItem[]=>{
@@ -215,6 +260,7 @@ export function ProgrammesPage(){
           </label>
         </div>
         {programmeAlreadyExists&&<p className="ariane-new-programme-warning">Ce programme existe déjà dans ARIANE. Utilisez une captation incrémentale depuis sa fiche programme.</p>}
+        {initialClipboardError&&<p className="ariane-new-programme-warning">{initialClipboardError}</p>}
         <div className="ariane-new-programme-actions">
           <p><b>Étape suivante :</b> ouvrez ChatGPT, joignez les documents du jeu initial, collez le prompt puis envoyez.</p>
           <button type="button" className="button button-action" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(false)}><Clipboard/>{promptCopied?'Prompt copié':'Copier le prompt'}</button>
@@ -250,6 +296,7 @@ export function ProgrammesPage(){
                   <small>Identifiant généré : <code>{incrementalCaptureId||'—'}</code></small>
                 </label>
                 {incrementalCaptureExists&&<p className="ariane-new-programme-warning">Cet identifiant de captation existe déjà pour ce programme.</p>}
+                {incrementalClipboardError&&<p className="ariane-new-programme-warning">{incrementalClipboardError}</p>}
                 <div className="ariane-incremental-actions">
                   <p><b>Étape suivante :</b> joignez uniquement les nouveaux documents dans ChatGPT, collez le prompt puis envoyez.</p>
                   <button type="button" className="button button-action" disabled={!incrementalReady} onClick={()=>void copyIncrementalPrompt(programme,false)}><Clipboard/>{incrementalPromptCopied?'Prompt copié':'Copier le prompt'}</button>
