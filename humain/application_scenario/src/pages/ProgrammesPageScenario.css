@@ -1,0 +1,48 @@
+/* Scenario-specific programme actions; generic button colors come from design_aiguillon .button-action. */
+.ariane-new-programme .button-action{
+  background:var(--blue-800)!important;
+  border-color:var(--blue-800)!important;
+  color:#fff!important;
+}
+.ariane-new-programme .button-action:hover:not(:disabled){
+  background:var(--blue-950)!important;
+  border-color:var(--blue-950)!important;
+}
+
+.ariane-programme-card>header>div{min-width:0;flex:1}
+.ariane-incremental-launcher{margin-left:auto;white-space:nowrap;flex:none}
+.ariane-incremental-panel{
+  display:grid;gap:12px;padding:14px 16px;
+  border-top:1px solid var(--border-strong);
+  background:var(--blue-100)
+}
+.ariane-incremental-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.ariane-incremental-heading h3{margin:0;color:var(--blue-950)}
+.ariane-incremental-heading p{margin:3px 0 0;color:var(--text-muted);font-size:12px}
+.ariane-incremental-heading>span{
+  flex:none;padding:5px 8px;border-radius:999px;
+  background:#fff;color:var(--blue-950);font-size:11px;font-weight:700
+}
+.ariane-incremental-panel label{display:grid;gap:6px}
+.ariane-incremental-panel label>span{font-weight:700;color:var(--blue-950)}
+.ariane-incremental-panel input{
+  width:100%;box-sizing:border-box;padding:9px 11px;
+  border:1px solid var(--border-strong);border-radius:7px;
+  background:#fff;color:var(--text);font:inherit
+}
+.ariane-incremental-panel small{color:var(--text-muted)}
+.ariane-incremental-panel code{color:var(--blue-950)}
+.ariane-incremental-actions{
+  display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;
+  padding-top:9px;border-top:1px solid #cbd9ea
+}
+.ariane-incremental-actions p{margin:0 auto 0 0;max-width:520px;color:var(--text-muted);font-size:11px}
+.ariane-incremental-actions button{flex:none}
+@media(max-width:767px){
+  .ariane-programme-card>header{align-items:flex-start;flex-wrap:wrap}
+  .ariane-incremental-launcher{width:100%;margin-left:0}
+  .ariane-incremental-heading{flex-direction:column}
+  .ariane-incremental-actions{align-items:stretch;flex-direction:column}
+  .ariane-incremental-actions p{margin:0 0 3px}
+  .ariane-incremental-actions button{width:100%}
+}
