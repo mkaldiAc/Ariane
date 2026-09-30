@@ -1,20 +1,11 @@
 /* Scenario-specific programme actions; generic button colors come from design_aiguillon .button-action. */
-.ariane-new-programme .button-action{
-  background:var(--blue-800)!important;
-  border-color:var(--blue-800)!important;
-  color:#fff!important;
-}
-.ariane-new-programme .button-action:hover:not(:disabled){
-  background:var(--blue-950)!important;
-  border-color:var(--blue-950)!important;
-}
 
 .ariane-programme-card>header>div{min-width:0;flex:1}
 .ariane-incremental-launcher{margin-left:auto;white-space:nowrap;flex:none}
 .ariane-incremental-panel{
   display:grid;gap:12px;padding:14px 16px;
   border-top:1px solid var(--border-strong);
-  background:var(--blue-100)
+  background:var(--action-panel-bg)
 }
 .ariane-incremental-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .ariane-incremental-heading h3{margin:0;color:var(--blue-950)}
@@ -45,4 +36,30 @@
   .ariane-incremental-actions{align-items:stretch;flex-direction:column}
   .ariane-incremental-actions p{margin:0 0 3px}
   .ariane-incremental-actions button{width:100%}
+}
+
+
+.ariane-new-programme.action-panel{
+  background:var(--action-panel-bg)!important;
+  color:var(--text)!important;
+  border-color:var(--border-strong)!important;
+}
+.ariane-new-programme.action-panel header h2,
+.ariane-new-programme.action-panel .ariane-new-programme-form label>span{
+  color:var(--blue-950)!important;
+}
+.ariane-new-programme.action-panel header p,
+.ariane-new-programme.action-panel .ariane-new-programme-form small,
+.ariane-new-programme.action-panel .ariane-new-programme-actions p{
+  color:var(--text-muted)!important;
+}
+.ariane-new-programme.action-panel .ariane-new-programme-form code{
+  color:var(--blue-950)!important;
+  background:#fff!important;
+}
+.ariane-new-programme.action-panel .ariane-new-programme-actions{
+  border-top-color:#cbd9ea!important;
+}
+.ariane-incremental-panel.action-panel{
+  background:var(--action-panel-bg)!important;
 }
