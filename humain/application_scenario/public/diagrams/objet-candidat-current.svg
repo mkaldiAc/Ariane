@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560">
+<style>.t{font:700 22px 'Segoe UI',Arial;fill:#203864}.h{font:700 18px 'Segoe UI',Arial;fill:#14213d}.s{font:15px 'Segoe UI',Arial;fill:#5e6a7d}.box{fill:#fff;stroke:#c9d2de;stroke-width:2}.cap{fill:#eaf1fb;stroke:#3560a4}.cur{fill:#e7f7ed;stroke:#137a55}.wait{fill:#fff1dd;stroke:#a85c00}.a{stroke:#679ad1;stroke-width:4;fill:none;marker-end:url(#m)}</style>
+<defs><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#679ad1"/></marker></defs>
+<rect width="1400" height="560" rx="24" fill="#f4f6f9"/><text x="55" y="55" class="t">Objet candidat : de CAPTURE à CURRENT</text>
+<rect x="55" y="110" width="380" height="330" rx="14" class="box cap"/><text x="85" y="150" class="t">CAPTURE_003</text>
+<text x="85" y="195" class="h">CAV_003 · CANDIDAT_STRUCTURE</text><text x="105" y="230" class="s">OBS_surface = 4,2 m²</text><text x="105" y="260" class="s">OBS_matériau = béton</text><text x="105" y="290" class="s">REL_parent pressenti = BAT_001</text><text x="105" y="320" class="s">ANOMALIE = OBJET_STRUCTURE_ABSENT</text>
+<rect x="95" y="350" width="300" height="55" rx="9" class="wait"/><text x="115" y="384" class="h">EN_ATTENTE_RATTACHEMENT_STRUCTUREL</text>
+<path d="M435 275 H555" class="a"/>
+<rect x="555" y="165" width="290" height="220" rx="14" class="box wait"/><text x="590" y="205" class="t">Décision humaine</text><text x="590" y="245" class="s">Accepter CAV_003</text><text x="590" y="275" class="s">Parent = BAT_001</text><text x="590" y="305" class="s">Cible = STR-002</text><text x="590" y="345" class="h">VALIDER_STRUCTURE</text>
+<path d="M845 275 H965" class="a"/>
+<rect x="965" y="110" width="380" height="330" rx="14" class="box cur"/><text x="995" y="150" class="t">CURRENT après STR-002</text><text x="995" y="195" class="h">Structure : CAV_003 intégrée</text><text x="1015" y="230" class="s">Même observation_id</text><text x="1015" y="260" class="s">Même relation_id</text><text x="1015" y="290" class="s">Même capture_id + source_id</text><text x="1015" y="320" class="s">Aucune recaptation</text><text x="1015" y="350" class="s">Anomalie CURRENT = RESOLUE</text><text x="1015" y="395" class="h">CAPTURE_003 reste inchangée</text>
+</svg>

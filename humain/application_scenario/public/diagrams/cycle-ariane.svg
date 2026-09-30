@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="520" viewBox="0 0 1400 520">
+<style>.t{font:700 22px 'Segoe UI',Arial;fill:#203864}.s{font:15px 'Segoe UI',Arial;fill:#5e6a7d}.b{fill:#fff;stroke:#c9d2de;stroke-width:2}.blue{fill:#eaf1fb;stroke:#3560a4}.green{fill:#e7f7ed;stroke:#137a55}.orange{fill:#fff1dd;stroke:#a85c00}.a{stroke:#679ad1;stroke-width:4;fill:none;marker-end:url(#m)}</style>
+<defs><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#679ad1"/></marker></defs>
+<rect width="1400" height="520" rx="24" fill="#f4f6f9"/>
+<text x="55" y="55" class="t">Cycle ARIANE — captation, validation et consolidation</text>
+<rect x="55" y="105" width="210" height="115" rx="12" class="b blue"/><text x="85" y="150" class="t">Documents</text><text x="85" y="180" class="s">Jeu documentaire N</text>
+<path d="M265 162 H340" class="a"/>
+<rect x="340" y="105" width="220" height="115" rx="12" class="b blue"/><text x="370" y="150" class="t">CAPTURE N</text><text x="370" y="180" class="s">Historique immuable</text>
+<path d="M560 162 H635" class="a"/>
+<rect x="635" y="105" width="220" height="115" rx="12" class="b orange"/><text x="665" y="150" class="t">Revue humaine</text><text x="665" y="180" class="s">Décision explicite</text>
+<path d="M855 162 H930" class="a"/>
+<rect x="930" y="105" width="200" height="115" rx="12" class="b green"/><text x="960" y="150" class="t">STR-xxx</text><text x="960" y="180" class="s">Structure validée</text>
+<path d="M1130 162 H1205" class="a"/>
+<rect x="1205" y="105" width="150" height="115" rx="12" class="b green"/><text x="1228" y="150" class="t">CURRENT</text><text x="1228" y="180" class="s">Consolidé</text>
+<rect x="340" y="300" width="310" height="125" rx="12" class="b orange"/><text x="370" y="342" class="t">CANDIDAT_STRUCTURE</text><text x="370" y="374" class="s">Objet absent de la STR courante</text><text x="370" y="400" class="s">Données conservées en attente</text>
+<path d="M450 220 V300" class="a"/>
+<path d="M650 362 H785" class="a"/>
+<rect x="785" y="300" width="300" height="125" rx="12" class="b green"/><text x="815" y="342" class="t">VALIDER_STRUCTURE</text><text x="815" y="374" class="s">Création STR suivante</text><text x="815" y="400" class="s">Promotion déterministe vers CURRENT</text>
+<path d="M1085 362 H1280 V220" class="a"/>
+</svg>

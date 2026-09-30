@@ -1,0 +1,25 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARIANE — Guide de captation</title><link rel="stylesheet" href="/theme/tokens.css"><link rel="stylesheet" href="/theme/shell.css"><link rel="stylesheet" href="/theme/components.css"><link rel="stylesheet" href="/guide.css"></head><body><aside class="doc-side"><h1>ARIANE</h1><p>Guide de captation · 1.4.0</p><a href="#modele">Modèle</a><a href="#init">Initialisation</a><a href="#validation">Validation</a><a href="#increment">Incrémental</a><a href="#audit">Audit</a></aside><main class="doc-main"><section id="modele"><h2>Captation de bout en bout</h2><div class="flow"><b>Documents</b><span>→</span><b>ChatGPT</b><span>→</span><b>CAPTURE Git</b><span>→</span><b>Front statique</b></div><img class="diagram" src="/diagrams/cycle-ariane.svg" alt="Cycle ARIANE complet"><p class="note">Le référentiel est dans <code>mkaldiAc/Ariane/ia</code>. Les résultats sont écrits uniquement dans <code>mkaldiAc/Ariane_capture_data</code> selon <code>ia/contracts/capture-storage.yaml</code>.</p></section><section id="init"><h2>1. Initialisation</h2><pre>MODE: INITIALISATION_PROGRAMME
+programme_id: &lt;PROGRAMME_ID&gt;
+capture_id: &lt;CAPTURE_ID_INITIAL&gt;
+
+Charge strictement le référentiel ia/ du dépôt mkaldiAc/Ariane, y compris le contrat de stockage.
+Analyse les documents joints.
+Produis SOURCES, STRUCTURE_PROPOSEE, OBSERVATIONS, RELATIONS et ANOMALIES.
+Persiste la CAPTURE immuable dans :
+programmes/&lt;PROGRAMME_ID&gt;/captures/&lt;CAPTURE_ID_INITIAL&gt;/
+Puis mets à jour index.json et catalog.json.
+Ne valide jamais la structure de ta propre initiative.</pre></section><section id="validation"><h2>2. Validation humaine</h2><pre>action: VALIDER_STRUCTURE
+human_approval: true
+programme_id: &lt;PROGRAMME_ID&gt;
+source_structure_version: PROPOSEE
+target_structure_version: STR-001
+requested_changes: []
+
+Crée STR-001, archive-la, initialise CURRENT et ne modifie aucune CAPTURE.</pre></section><section id="increment"><h2>3. Captation incrémentale</h2><pre>MODE: CAPTATION_INCREMENTALE
+programme_id: &lt;PROGRAMME_ID&gt;
+capture_id: &lt;CAPTURE_ID_N&gt;
+structure_version: &lt;STR_COURANTE&gt;
+
+Charge current/structure.json.
+La structure validée est intangible.
+Crée une nouvelle CAPTURE immuable et mets à jour CURRENT uniquement avec les données autorisées.</pre></section><section id="audit"><h2>4. Visualiser et auditer</h2><p>Recharge l'application ARIANE : elle lit <code>catalog.json</code> et les index de programme directement depuis le dépôt de données. Les vues Programmes, Captations, Structures et Validations se mettent à jour sans modification du code du front.</p></section></main></body></html>
