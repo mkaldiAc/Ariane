@@ -17,7 +17,7 @@
 .ariane-evolution-zone header p{margin:2px 0 0;color:var(--text-muted);font-size:11px}
 .ariane-evolution-zone header>span{display:grid;place-items:center;min-width:30px;height:30px;padding:0 8px;border-radius:999px;background:#fff;color:var(--blue-950);font-weight:700}
 .ariane-evolution-list{display:grid;gap:5px;max-height:62vh;overflow:auto;padding:8px;background:#f8fbff}
-.ariane-evolution-list article{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:9px;align-items:center;padding:9px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:grab}
+.ariane-evolution-list article{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:9px;align-items:center;padding:9px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:grab}
 .ariane-evolution-list article:active{cursor:grabbing}
 .ariane-evolution-list article>svg{width:15px;color:#8a96a8}
 .ariane-evolution-list article>div{min-width:0}
@@ -27,6 +27,9 @@
 .ariane-evolution-list article small{margin-top:2px;color:var(--text-muted);font-size:10px}
 .ariane-evolution-list article.is-added{border-color:#8fb9a6;background:#eef8f3}
 .ariane-evolution-list article.is-removed{border-color:#e2b7b2;background:#fff3f1}
+.ariane-evolution-item-action{display:grid;place-items:center;width:29px;height:29px;padding:0;border:1px solid var(--border-strong);border-radius:50%;background:#fff;color:var(--blue-900);cursor:pointer}
+.ariane-evolution-item-action:hover{background:var(--blue-950);border-color:var(--blue-950);color:#fff}
+.ariane-evolution-item-action svg{width:14px!important;color:currentColor!important}
 .ariane-evolution-empty{padding:24px;text-align:center;color:var(--text-muted);font-size:12px}
 .ariane-evolution-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 15px}
 .ariane-evolution-footer p{margin:0;color:var(--text-muted);font-size:12px}
