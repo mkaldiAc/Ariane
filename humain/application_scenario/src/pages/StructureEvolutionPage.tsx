@@ -1,5 +1,5 @@
-import {useEffect,useMemo,useState} from 'react';
-import {ArrowLeft,Check,Clipboard,ExternalLink,GitBranch,GripVertical,LoaderCircle,RotateCcw,X} from 'lucide-react';
+import {useEffect,useMemo,useState,type DragEvent} from 'react';
+import {ArrowLeft,ArrowRight,Check,Clipboard,ExternalLink,GitBranch,GripVertical,LoaderCircle,RotateCcw,X} from 'lucide-react';
 import {buildStructureValidationPrompt} from '../execution/promptBuilders';
 import {captureDataService,type PatrimonialObject,type ProgrammeData,type StructureCandidate} from '../services/captureDataService';
 import {chatLaunchErrorMessage,clipboardErrorMessage,copyPromptAndMaybeOpenChat} from '../utils/promptActions';
@@ -101,6 +101,28 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
 
   const targetIds=useMemo(()=>new Set(targetObjects.map(object=>object.object_id)),[targetObjects]);
 
+  const orderedTargetObjects=useMemo(()=>{
+    const byParent=new Map<string|null,PatrimonialObject[]>();
+    targetObjects.forEach(object=>{
+      const parent=object.parent_object_id&&targetObjects.some(item=>item.object_id===object.parent_object_id)
+        ?object.parent_object_id
+        :null;
+      const list=byParent.get(parent)||[];
+      list.push(object);
+      byParent.set(parent,list);
+    });
+    byParent.forEach(list=>list.sort((a,b)=>objectLabel(a).localeCompare(objectLabel(b),'fr',{numeric:true})));
+    const ordered:Array<{object:PatrimonialObject;depth:number}>=[];
+    const visit=(parent:string|null,depth:number)=>{
+      (byParent.get(parent)||[]).forEach(object=>{
+        ordered.push({object,depth});
+        visit(object.object_id,depth+1);
+      });
+    };
+    visit(null,0);
+    return ordered;
+  },[targetObjects]);
+
   const orphanTargetObjects=useMemo(
     ()=>targetObjects.filter(object=>object.parent_object_id&&!targetIds.has(object.parent_object_id)),
     [targetObjects,targetIds]
@@ -141,7 +163,7 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     });
   };
 
-  const onDrop=(zone:'target'|'available',event:React.DragEvent)=>{
+  const onDrop=(zone:'target'|'available',event:DragEvent)=>{
     event.preventDefault();
     try{
       const payload=JSON.parse(event.dataTransfer.getData('application/json')) as DragPayload;
@@ -157,7 +179,7 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     }
   };
 
-  const dragStart=(event:React.DragEvent,payload:DragPayload)=>{
+  const dragStart=(event:DragEvent,payload:DragPayload)=>{
     event.dataTransfer.effectAllowed='move';
     event.dataTransfer.setData('application/json',JSON.stringify(payload));
   };
@@ -224,12 +246,13 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
       <section className="panel ariane-evolution-zone ariane-evolution-target" onDragOver={event=>event.preventDefault()} onDrop={event=>onDrop('target',event)}>
         <header><div><GitBranch/><div><h2>Structure cible</h2><p>Structure CURRENT conservée + candidats acceptés</p></div></div><span>{targetObjects.length}</span></header>
         <div className="ariane-evolution-list">
-          {targetObjects.map(object=>{
+          {orderedTargetObjects.map(({object,depth})=>{
             const isCandidate=acceptedCandidateIds.has(object.object_id);
-            return <article key={object.object_id} draggable onDragStart={event=>dragStart(event,{kind:isCandidate?'candidate':'existing',objectId:object.object_id})} className={isCandidate?'is-added':''}>
+            return <article key={object.object_id} style={{marginLeft:`${Math.min(depth,8)*14}px`}} draggable onDragStart={event=>dragStart(event,{kind:isCandidate?'candidate':'existing',objectId:object.object_id})} className={isCandidate?'is-added':''}>
               <GripVertical/>
               <span className="ariane-type-badge">{object.object_type}</span>
               <div><b>{objectLabel(object)}</b><code>{object.object_id}</code><small>Parent : {object.parent_object_id||'racine'}{isCandidate?' · candidat ajouté':''}</small></div>
+              <button type="button" className="ariane-evolution-item-action" aria-label={isCandidate?'Retirer ce candidat de la structure cible':'Retirer cet objet de la structure cible'} onClick={()=>isCandidate?removeCandidate(object.object_id):removeExisting(object.object_id)}><ArrowRight/></button>
             </article>;
           })}
         </div>
@@ -242,11 +265,13 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
             <GripVertical/>
             <span className="ariane-type-badge">{candidate.object.object_type}</span>
             <div><b>{objectLabel(candidate.object)}</b><code>{candidate.object.object_id}</code><small>Parent : {candidate.object.parent_object_id||'racine'} · détecté dans {candidate.captureIds.join(', ')}</small></div>
+            <button type="button" className="ariane-evolution-item-action" aria-label="Ajouter ce candidat à la structure cible" onClick={()=>addCandidate(candidate.object.object_id)}><ArrowLeft/></button>
           </article>)}
           {removedExisting.map(object=><article key={object.object_id} draggable onDragStart={event=>dragStart(event,{kind:'removed',objectId:object.object_id})} className="is-removed">
             <GripVertical/>
             <span className="ariane-type-badge">{object.object_type}</span>
             <div><b>{objectLabel(object)}</b><code>{object.object_id}</code><small>Retiré de la structure cible · glissez à gauche pour annuler</small></div>
+            <button type="button" className="ariane-evolution-item-action" aria-label="Réintégrer cet objet à la structure cible" onClick={()=>restoreExisting(object.object_id)}><ArrowLeft/></button>
           </article>)}
           {availableCandidates.length===0&&removedExisting.length===0&&<p className="ariane-evolution-empty">Aucun élément hors structure cible.</p>}
         </div>
