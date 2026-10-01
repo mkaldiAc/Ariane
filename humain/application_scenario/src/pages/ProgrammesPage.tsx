@@ -191,7 +191,8 @@ export function ProgrammesPage(){
   const backRoute=():Route|undefined=>{
     if(route.kind==='programmes')return undefined;
     if(route.kind==='programme')return {kind:'programmes'};
-    if(route.kind==='current'||route.kind==='captures'||route.kind==='structures'||route.kind==='evolve')return {kind:'programme',programmeId:route.programmeId};
+    if(route.kind==='evolve')return {kind:'programmes'};
+    if(route.kind==='current'||route.kind==='captures'||route.kind==='structures')return {kind:'programme',programmeId:route.programmeId};
     if(route.kind==='capture')return {kind:'captures',programmeId:route.programmeId};
     if(route.kind==='structure')return {kind:'structures',programmeId:route.programmeId};
     if(route.kind==='candidates')return {kind:'structure',programmeId:route.programmeId,structureVersion:route.structureVersion};
@@ -258,7 +259,7 @@ export function ProgrammesPage(){
                 <button type="button" className="button button-action ariane-incremental-launcher" onClick={()=>openIncremental(programmeId)}>
                   {incrementalOpen?<X/>:<Plus/>}{incrementalOpen?'Fermer':'Nouvelle captation'}
                 </button>
-                <button type="button" className="button button-action" disabled={!currentStructureVersion} onClick={()=>navigate({kind:'evolve',programmeId})}>
+                <button type="button" className="button button-action" disabled={!currentStructureVersion} onClick={()=>{setIncrementalProgrammeId(null);setNewProgrammeOpen(false);navigate({kind:'evolve',programmeId})}}>
                   <GitBranch/>Faire évoluer structure patrimoniale
                 </button>
               </div>
