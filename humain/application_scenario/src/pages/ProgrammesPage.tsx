@@ -1,8 +1,9 @@
 import {useEffect,useMemo,useState} from 'react';
 import {ArrowLeft,Boxes,CalendarDays,ChevronRight,Clipboard,Database,ExternalLink,FileText,GitBranch,Layers3,LoaderCircle,Plus,X} from 'lucide-react';
 import {CurrentDataPage} from './CurrentDataPage';
+import {StructureEvolutionPage} from './StructureEvolutionPage';
 import {buildIncrementalPrompt,buildInitialisationPrompt,normalizeArianeId} from '../execution/promptBuilders';
-import {config} from '../config';
+import {chatLaunchErrorMessage,clipboardErrorMessage,copyPromptAndMaybeOpenChat} from '../utils/promptActions';
 import {
   captureDataService,
   type CaptureDetail,
@@ -20,7 +21,8 @@ type Route=
   |{kind:'capture';programmeId:string;captureId:string}
   |{kind:'structures';programmeId:string}
   |{kind:'structure';programmeId:string;structureVersion:string}
-  |{kind:'candidates';programmeId:string;structureVersion:string};
+  |{kind:'candidates';programmeId:string;structureVersion:string}
+  |{kind:'evolve';programmeId:string};
 
 type BreadcrumbItem={label:string;route?:Route};
 
@@ -33,67 +35,6 @@ const formatDate=(value:string|null|undefined)=>{
   if(!value)return 'Non renseignée';
   const date=new Date(value);
   return Number.isNaN(date.getTime())?value:new Intl.DateTimeFormat('fr-FR',{dateStyle:'medium'}).format(date);
-};
-
-const writePromptToClipboard=async(text:string)=>{
-  if(navigator.clipboard?.writeText){
-    try{
-      await navigator.clipboard.writeText(text);
-      return;
-    }catch{
-      // Best-effort fallback for browsers refusing the modern Clipboard API.
-    }
-  }
-
-  const textarea=document.createElement('textarea');
-  textarea.value=text;
-  textarea.setAttribute('readonly','');
-  textarea.style.position='fixed';
-  textarea.style.opacity='0';
-  textarea.style.pointerEvents='none';
-  document.body.appendChild(textarea);
-  textarea.focus();
-  textarea.select();
-  const copied=document.execCommand('copy');
-  document.body.removeChild(textarea);
-  if(!copied)throw new Error('clipboard-write-failed');
-};
-
-const copyPromptAndMaybeOpenChat=async(text:string,openChat:boolean)=>{
-  /*
-   * Start the clipboard write while the click still owns transient user activation.
-   * When ChatGPT must be opened, reserve a blank tab synchronously so popup blocking
-   * can be detected without using "noopener", which intentionally makes window.open()
-   * return null even when the tab did open.
-   */
-  const copyPromise=writePromptToClipboard(text);
-  const chatWindow=openChat?window.open('about:blank','_blank'):null;
-  const popupBlocked=openChat&&chatWindow===null;
-
-  try{
-    await copyPromise;
-  }catch(error){
-    if(chatWindow&&!chatWindow.closed)chatWindow.close();
-    throw error;
-  }
-
-  let navigationFailed=false;
-  if(chatWindow){
-    if(chatWindow.closed){
-      navigationFailed=true;
-    }else{
-      try{
-        const targetUrl=new URL(config.chatgptUrl,window.location.href).href;
-        chatWindow.opener=null;
-        chatWindow.location.replace(targetUrl);
-      }catch{
-        navigationFailed=true;
-        if(!chatWindow.closed)chatWindow.close();
-      }
-    }
-  }
-
-  return {popupBlocked,navigationFailed};
 };
 
 function Breadcrumb({items,onNavigate,onBack}:{items:BreadcrumbItem[];onNavigate:(route:Route)=>void;onBack?:()=>void}){
@@ -192,12 +133,9 @@ export function ProgrammesPage(){
       setPromptCopied(true);
       setNewProgrammeOpen(false);
       window.setTimeout(()=>setPromptCopied(false),1600);
-      if(launch.popupBlocked)setChatLaunchError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
-      else if(launch.navigationFailed)setChatLaunchError('Le prompt a bien été copié, mais l’ouverture de ChatGPT n’a pas pu être finalisée.');
+      setChatLaunchError(chatLaunchErrorMessage(launch));
     }catch{
-      setInitialClipboardError(window.isSecureContext
-        ? 'Chrome n’a pas autorisé la copie. Autorisez l’accès au presse-papiers pour cette application puis réessayez.'
-        : 'La copie nécessite une connexion HTTPS. Ouvrez l’application via son URL sécurisée puis réessayez.');
+      setInitialClipboardError(clipboardErrorMessage());
     }
   };
 
@@ -226,12 +164,9 @@ export function ProgrammesPage(){
       setIncrementalPromptCopied(true);
       setIncrementalProgrammeId(null);
       window.setTimeout(()=>setIncrementalPromptCopied(false),1600);
-      if(launch.popupBlocked)setChatLaunchError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
-      else if(launch.navigationFailed)setChatLaunchError('Le prompt a bien été copié, mais l’ouverture de ChatGPT n’a pas pu être finalisée.');
+      setChatLaunchError(chatLaunchErrorMessage(launch));
     }catch{
-      setIncrementalClipboardError(window.isSecureContext
-        ? 'Chrome n’a pas autorisé la copie. Autorisez l’accès au presse-papiers pour cette application puis réessayez.'
-        : 'La copie nécessite une connexion HTTPS. Ouvrez l’application via son URL sécurisée puis réessayez.');
+      setIncrementalClipboardError(clipboardErrorMessage());
     }
   };
 
@@ -244,6 +179,7 @@ export function ProgrammesPage(){
     if(route.kind==='capture')base.push({label:'Captations',route:{kind:'captures',programmeId:route.programmeId}},{label:route.captureId});
     if(route.kind==='structures')base.push({label:'Structures validées'});
     if(route.kind==='structure')base.push({label:'Structures validées',route:{kind:'structures',programmeId:route.programmeId}},{label:route.structureVersion});
+    if(route.kind==='evolve')base.push({label:'Faire évoluer structure patrimoniale'});
     if(route.kind==='candidates')base.push(
       {label:'Structures validées',route:{kind:'structures',programmeId:route.programmeId}},
       {label:route.structureVersion,route:{kind:'structure',programmeId:route.programmeId,structureVersion:route.structureVersion}},
@@ -255,7 +191,7 @@ export function ProgrammesPage(){
   const backRoute=():Route|undefined=>{
     if(route.kind==='programmes')return undefined;
     if(route.kind==='programme')return {kind:'programmes'};
-    if(route.kind==='current'||route.kind==='captures'||route.kind==='structures')return {kind:'programme',programmeId:route.programmeId};
+    if(route.kind==='current'||route.kind==='captures'||route.kind==='structures'||route.kind==='evolve')return {kind:'programme',programmeId:route.programmeId};
     if(route.kind==='capture')return {kind:'captures',programmeId:route.programmeId};
     if(route.kind==='structure')return {kind:'structures',programmeId:route.programmeId};
     if(route.kind==='candidates')return {kind:'structure',programmeId:route.programmeId,structureVersion:route.structureVersion};
@@ -318,9 +254,14 @@ export function ProgrammesPage(){
             <header>
               <Database/>
               <div><p className="eyebrow">PROGRAMME</p><h2>{programmeId}</h2></div>
-              <button type="button" className="button button-action ariane-incremental-launcher" onClick={()=>openIncremental(programmeId)}>
-                {incrementalOpen?<X/>:<Plus/>}{incrementalOpen?'Fermer':'Nouvelle captation'}
-              </button>
+              <div className="ariane-programme-scenario-actions">
+                <button type="button" className="button button-action ariane-incremental-launcher" onClick={()=>openIncremental(programmeId)}>
+                  {incrementalOpen?<X/>:<Plus/>}{incrementalOpen?'Fermer':'Nouvelle captation'}
+                </button>
+                <button type="button" className="button button-action" disabled={!currentStructureVersion} onClick={()=>navigate({kind:'evolve',programmeId})}>
+                  <GitBranch/>Faire évoluer structure patrimoniale
+                </button>
+              </div>
             </header>
             {incrementalOpen&&<section className="action-panel ariane-incremental-panel">
               <div className="ariane-incremental-heading">
@@ -374,6 +315,12 @@ export function ProgrammesPage(){
     </>}
 
     {route.kind==='current'&&selectedProgramme&&<CurrentDataPage programmeId={selectedProgramme.index.programme_id}/>}
+
+    {route.kind==='evolve'&&selectedProgramme&&<StructureEvolutionPage
+      programme={selectedProgramme}
+      onBack={()=>navigate({kind:'programmes'})}
+      onChatLaunchError={setChatLaunchError}
+    />}
 
     {route.kind==='captures'&&selectedProgramme&&<>
       <section className="panel ariane-data-header"><div><p className="eyebrow">CAPTATIONS</p><h1>Captations réalisées</h1><p>{selectedProgramme.index.programme_id}</p></div><span className="ariane-count-pill">{selectedProgramme.index.captures.length}</span></section>
