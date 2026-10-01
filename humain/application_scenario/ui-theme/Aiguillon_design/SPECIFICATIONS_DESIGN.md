@@ -14,3 +14,6 @@
 - Panneaux d'action contextuels : les formulaires ouverts par une action utilisent `.action-panel` et le token `--action-panel-bg` (`#dfeaf8`), légèrement plus foncé que `--blue-100`. Tous les panneaux d'un même niveau d'interaction partagent ce fond afin de matérialiser une même famille fonctionnelle.
 
 - Les propriétés de couleur des `.button-action` sont prioritaires sur les styles locaux historiques : fond, bordure, texte et icône utilisent les couleurs du composant avec priorité afin d'éviter qu'un contexte d'écran ne produise une variante visuelle involontaire.
+
+- Workspaces de décision humaine : lorsqu'une interface compare un état courant et des éléments candidats, utiliser deux zones clairement identifiées, l'état cible à gauche et les éléments hors cible à droite. Le drag-and-drop peut être proposé, mais chaque déplacement doit disposer d'une action bouton équivalente pour l'accessibilité et le tactile. Les changements doivent être récapitulés dans une étape de confirmation avant toute action externe.
+- Hiérarchie patrimoniale : lorsqu'une structure est manipulée, préserver visuellement la profondeur parent/enfant et bloquer la validation si un objet cible référence un parent absent.
