@@ -41,7 +41,7 @@ const writePromptToClipboard=async(text:string)=>{
       await navigator.clipboard.writeText(text);
       return;
     }catch{
-      // Fallback below for browsers that refuse Clipboard API access.
+      // Best-effort fallback for browsers refusing the modern Clipboard API.
     }
   }
 
@@ -57,6 +57,43 @@ const writePromptToClipboard=async(text:string)=>{
   const copied=document.execCommand('copy');
   document.body.removeChild(textarea);
   if(!copied)throw new Error('clipboard-write-failed');
+};
+
+const copyPromptAndMaybeOpenChat=async(text:string,openChat:boolean)=>{
+  /*
+   * Start the clipboard write while the click still owns transient user activation.
+   * When ChatGPT must be opened, reserve a blank tab synchronously so popup blocking
+   * can be detected without using "noopener", which intentionally makes window.open()
+   * return null even when the tab did open.
+   */
+  const copyPromise=writePromptToClipboard(text);
+  const chatWindow=openChat?window.open('about:blank','_blank'):null;
+  const popupBlocked=openChat&&chatWindow===null;
+
+  try{
+    await copyPromise;
+  }catch(error){
+    if(chatWindow&&!chatWindow.closed)chatWindow.close();
+    throw error;
+  }
+
+  let navigationFailed=false;
+  if(chatWindow){
+    if(chatWindow.closed){
+      navigationFailed=true;
+    }else{
+      try{
+        const targetUrl=new URL(config.chatgptUrl,window.location.href).href;
+        chatWindow.opener=null;
+        chatWindow.location.replace(targetUrl);
+      }catch{
+        navigationFailed=true;
+        if(!chatWindow.closed)chatWindow.close();
+      }
+    }
+  }
+
+  return {popupBlocked,navigationFailed};
 };
 
 function Breadcrumb({items,onNavigate,onBack}:{items:BreadcrumbItem[];onNavigate:(route:Route)=>void;onBack?:()=>void}){
@@ -81,6 +118,7 @@ export function ProgrammesPage(){
   const [loading,setLoading]=useState(true);
   const [detailLoading,setDetailLoading]=useState(false);
   const [error,setError]=useState<string|null>(null);
+  const [chatLaunchError,setChatLaunchError]=useState<string|null>(null);
   const [newProgrammeOpen,setNewProgrammeOpen]=useState(false);
   const [newProgrammeName,setNewProgrammeName]=useState('');
   const [initialCaptureName,setInitialCaptureName]=useState('APD_PLAN');
@@ -138,7 +176,7 @@ export function ProgrammesPage(){
     return()=>{active=false};
   },[route,selectedProgramme]);
 
-  const navigate=(next:Route)=>{setError(null);setRoute(next)};
+  const navigate=(next:Route)=>{setError(null);setChatLaunchError(null);setRoute(next)};
   const newProgrammeId=normalizeArianeId(newProgrammeName);
   const initialCaptureId=normalizeArianeId(initialCaptureName);
   const programmeAlreadyExists=programmes.some(programme=>programme.index.programme_id===newProgrammeId);
@@ -147,17 +185,16 @@ export function ProgrammesPage(){
   const copyInitialisationPrompt=async(openChat=false)=>{
     if(!initialisationReady)return;
     setInitialClipboardError(null);
+    setChatLaunchError(null);
     const prompt=buildInitialisationPrompt({programmeId:newProgrammeId,captureId:initialCaptureId});
-    const copyPromise=writePromptToClipboard(prompt);
-    const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
     try{
-      await copyPromise;
+      const launch=await copyPromptAndMaybeOpenChat(prompt,openChat);
       setPromptCopied(true);
       setNewProgrammeOpen(false);
       window.setTimeout(()=>setPromptCopied(false),1600);
-      if(openChat&&!chatWindow)setError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
+      if(launch.popupBlocked)setChatLaunchError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
+      else if(launch.navigationFailed)setChatLaunchError('Le prompt a bien été copié, mais l’ouverture de ChatGPT n’a pas pu être finalisée.');
     }catch{
-      if(chatWindow&&!chatWindow.closed)chatWindow.close();
       setInitialClipboardError(window.isSecureContext
         ? 'Chrome n’a pas autorisé la copie. Autorisez l’accès au presse-papiers pour cette application puis réessayez.'
         : 'La copie nécessite une connexion HTTPS. Ouvrez l’application via son URL sécurisée puis réessayez.');
@@ -169,6 +206,7 @@ export function ProgrammesPage(){
     setIncrementalCaptureName('');
     setIncrementalPromptCopied(false);
     setIncrementalClipboardError(null);
+    setChatLaunchError(null);
   };
 
   const copyIncrementalPrompt=async(programme:ProgrammeData,openChat=false)=>{
@@ -182,16 +220,15 @@ export function ProgrammesPage(){
       structureVersion
     });
     setIncrementalClipboardError(null);
-    const copyPromise=writePromptToClipboard(prompt);
-    const chatWindow=openChat?window.open(config.chatgptUrl,'_blank','noopener,noreferrer'):null;
+    setChatLaunchError(null);
     try{
-      await copyPromise;
+      const launch=await copyPromptAndMaybeOpenChat(prompt,openChat);
       setIncrementalPromptCopied(true);
       setIncrementalProgrammeId(null);
       window.setTimeout(()=>setIncrementalPromptCopied(false),1600);
-      if(openChat&&!chatWindow)setError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
+      if(launch.popupBlocked)setChatLaunchError('Le prompt a bien été copié, mais Chrome a bloqué l’ouverture du nouvel onglet ChatGPT.');
+      else if(launch.navigationFailed)setChatLaunchError('Le prompt a bien été copié, mais l’ouverture de ChatGPT n’a pas pu être finalisée.');
     }catch{
-      if(chatWindow&&!chatWindow.closed)chatWindow.close();
       setIncrementalClipboardError(window.isSecureContext
         ? 'Chrome n’a pas autorisé la copie. Autorisez l’accès au presse-papiers pour cette application puis réessayez.'
         : 'La copie nécessite une connexion HTTPS. Ouvrez l’application via son URL sécurisée puis réessayez.');
@@ -232,13 +269,14 @@ export function ProgrammesPage(){
     <Breadcrumb items={breadcrumbItems()} onNavigate={navigate} onBack={back?()=>navigate(back):undefined}/>
 
     {error&&<section className="panel ariane-programme-error"><p className="ariane-error">{error}</p></section>}
+    {chatLaunchError&&<section className="panel ariane-programme-error"><p className="ariane-error">{chatLaunchError}</p></section>}
 
     {route.kind==='programmes'&&<>
       <section className="panel ariane-data-header">
         <div><p className="eyebrow">ARIANE · PROGRAMMES</p><h1>Programmes</h1><p>Accédez aux données courantes, aux captations et aux structures validées de chaque programme.</p></div>
         <div className="ariane-programmes-header-actions">
           <span className="ariane-count-pill">{programmes.length} programme(s)</span>
-          <button type="button" className="button button-action ariane-new-programme-button" onClick={()=>setNewProgrammeOpen(value=>!value)}>
+          <button type="button" className="button button-action ariane-new-programme-button" onClick={()=>{setNewProgrammeOpen(value=>!value);setInitialClipboardError(null);setChatLaunchError(null)}}>
             {newProgrammeOpen?<X/>:<Plus/>}{newProgrammeOpen?'Fermer':'Nouveau programme'}
           </button>
         </div>
