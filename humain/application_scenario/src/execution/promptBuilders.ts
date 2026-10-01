@@ -60,3 +60,46 @@ export const buildIncrementalPrompt=({
     .replaceAll('<CAPTURE_ID_N>',captureId)
     .replaceAll('<STR_COURANTE>',structureVersion)
 );
+
+
+const yamlString=(value:string)=>JSON.stringify(value);
+
+export const buildStructureValidationPrompt=({
+  programmeId,
+  sourceStructureVersion,
+  targetStructureVersion,
+  approvedCandidateObjectIds,
+  requestedChanges
+}:{
+  programmeId:string;
+  sourceStructureVersion:string;
+  targetStructureVersion:string;
+  approvedCandidateObjectIds:string[];
+  requestedChanges:string[];
+})=>{
+  const approvedCandidatesBlock=approvedCandidateObjectIds.length
+    ?`approved_candidate_object_ids:\n${approvedCandidateObjectIds.map(id=>`  - ${id}`).join('\n')}`
+    :'approved_candidate_object_ids: []';
+  const requestedChangesBlock=requestedChanges.length
+    ?`requested_changes:\n${requestedChanges.map(change=>`  - ${yamlString(change)}`).join('\n')}`
+    :'requested_changes: []';
+
+  const scenario=prompts.validateCandidate
+    .replaceAll('<PROGRAMME_ID>',programmeId)
+    .replaceAll('<STR_COURANTE>',sourceStructureVersion)
+    .replaceAll('<STR_CIBLE>',targetStructureVersion)
+    .replace(
+      /approved_candidate_object_ids:\n\s*- <OBJECT_ID_CANDIDAT>/,
+      approvedCandidatesBlock
+    )
+    .replace(
+      /requested_changes:\n\s*- "<CORRECTION_EXPLICITEMENT_VALIDEE_PAR_L_HUMAIN>"/,
+      requestedChangesBlock
+    );
+
+  return buildStandaloneScenario(
+    'VALIDER_STRUCTURE',
+    scenario,
+    {documentsRequired:false}
+  );
+};
