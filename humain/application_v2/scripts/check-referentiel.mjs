@@ -13,7 +13,7 @@ const norm=path=>readFileSync(resolve(root,path),'utf8');
 const snapshot=path=>JSON.parse(readFileSync(resolve(app,'src/referentiel',path),'utf8'));
 const gitBlob=content=>{
   const buf=Buffer.from(content,'utf8');
-  return createHash('sha1').update(Buffer.from('blob '+buf.length+'\\0')).update(buf).digest('hex');
+  return createHash('sha1').update(Buffer.concat([Buffer.from('blob '+buf.length),Buffer.from([0])])).update(buf).digest('hex');
 };
 const verifyHash=(path,expected)=>{
   const actual=gitBlob(norm(path));
@@ -29,6 +29,7 @@ verifyHash('ia/manifest.yaml',metadata.source_manifest_blob_sha);
 verifyHash('ia/referentiel/objets-patrimoniaux.yaml',metadata.source_objects_blob_sha);
 verifyHash('ia/referentiel/attributs/index.yaml',metadata.source_attribute_index_blob_sha);
 for(const [path,sha] of Object.entries(metadata.source_attribute_catalog_blob_shas))verifyHash(path,sha);
+for(const [path,sha] of Object.entries(metadata.source_normative_blob_shas))verifyHash(path,sha);
 
 const objectsYaml=norm('ia/referentiel/objets-patrimoniaux.yaml');
 const objects={};
