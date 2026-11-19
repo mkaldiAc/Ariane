@@ -1,4 +1,5 @@
 import {config} from '../config';
+import attributeSnapshot from '../referentiel/attributs-patrimoniaux.json';
 
 export type CatalogProgram={programme_id:string;index_path:string};
 export type CaptureCatalog={schema_version:string;ariane_version:string;programmes:CatalogProgram[]};
@@ -111,6 +112,7 @@ export type CaptureMetadata={
     observations?:string|null;
     relations?:string|null;
     anomalies?:string|null;
+    propositions_structure?:string|null;
   };
 };
 
@@ -119,6 +121,7 @@ export type CaptureDetail={
   metadata:CaptureMetadata;
   sources:Source[];
   candidates:PatrimonialObject[];
+  proposals:StructureProposal[];
 };
 
 export type StructureData={programme_id:string;structure_version:string;objects:PatrimonialObject[]};
@@ -156,6 +159,25 @@ export type StructureDetail={
   validation:ValidationData|null;
 };
 
+export type StructureProposal={
+  proposal_id:string;
+  programme_id:string;
+  capture_id:string;
+  operation:'AJOUT'|'RETRAIT'|'MODIFIER_PARENT'|'REINTEGRATION';
+  qualification_status:'IDENTIFIEE'|'A_QUALIFIER';
+  object_id?:string|null;
+  object_type?:string|null;
+  from_parent_object_id?:string|null;
+  to_parent_object_id?:string|null;
+  source_id:string;
+  source_anchor?:string|null;
+  anomaly_id?:string|null;
+  description:string;
+  evidence?:string|null;
+  legacy?:boolean;
+};
+export type HistoricalObject={object:PatrimonialObject;structureVersions:string[]};
+
 export type StructureCandidate={
   object:PatrimonialObject;
   captureIds:string[];
@@ -182,19 +204,11 @@ export type AttributeReference={
 };
 
 const base=config.captureDataBaseUrl.replace(/\/$/,'');
-const referenceBase=config.referenceDataBaseUrl.replace(/\/$/,'');
 const fetchJson=async<T>(path:string):Promise<T>=>{
-  const url=`${base}/${path.replace(/^\//,'')}?v=${Date.now()}`;
+  const url=`${base}/${path.replace(/^\\//,'')}?v=${Date.now()}`;
   const response=await fetch(url,{cache:'no-store'});
   if(!response.ok)throw new Error(`Impossible de charger ${path} (${response.status})`);
   return response.json() as Promise<T>;
-};
-
-const fetchReferenceText=async(path:string):Promise<string>=>{
-  const url=`${referenceBase}/${path.replace(/^\//,'')}?v=${Date.now()}`;
-  const response=await fetch(url,{cache:'no-store'});
-  if(!response.ok)throw new Error(`Impossible de charger le référentiel ${path} (${response.status})`);
-  return response.text();
 };
 
 export const captureDataService={
@@ -202,46 +216,13 @@ export const captureDataService={
   loadCatalog:()=>fetchJson<CaptureCatalog>('catalog.json'),
   loadProgrammeIndex:(path:string)=>fetchJson<ProgrammeIndex>(path),
   async loadAttributeReference():Promise<AttributeReference>{
-    const indexPath='ia/referentiel/attributs/index.yaml';
-    const indexText=await fetchReferenceText(indexPath);
-    const version=indexText.match(/^version:\s*"([^"]+)"/m)?.[1]||null;
-    const declaredCount=Number(indexText.match(/^canonical_attribute_count:\s*(\d+)/m)?.[1]||0);
-    const catalogPaths=Array.from(indexText.matchAll(/^\s*-\s+path:\s*"([^"]+)"/gm),match=>match[1]);
-    if(catalogPaths.length===0)throw new Error('Aucun catalogue attributaire déclaré dans le référentiel ARIANE.');
-    const files=await Promise.all(catalogPaths.map(path=>fetchReferenceText(path)));
-    const attributes:AttributeReferenceItem[]=[];
-    files.forEach(text=>{
-      const catalogGroup=text.match(/^group:\s*"([^"]+)"/m)?.[1]||null;
-      const lines=text.split(/\r?\n/);
-      let current:AttributeReferenceItem|null=null;
-      const pushCurrent=()=>{if(current)attributes.push(current)};
-      for(const line of lines){
-        const attributeMatch=line.match(/^  ([a-z0-9_]+):\s*$/);
-        if(attributeMatch){
-          pushCurrent();
-          current={attributeId:attributeMatch[1],label:attributeMatch[1],objects:[],dataType:null,unit:null,family:null,catalogGroup};
-          continue;
-        }
-        if(!current)continue;
-        const fieldMatch=line.match(/^    ([a-z_]+):\s*(.*)$/);
-        if(!fieldMatch)continue;
-        const [,field,raw]=fieldMatch;
-        const clean=raw.trim().replace(/^"(.*)"$/,'$1');
-        if(field==='label')current.label=clean;
-        if(field==='objects')current.objects=Array.from(clean.matchAll(/[A-Z][A-Z0-9_]*/g),match=>match[0]);
-        if(field==='data_type')current.dataType=clean||null;
-        if(field==='unit')current.unit=clean||null;
-        if(field==='family'||field==='famille')current.family=clean||null;
-      }
-      pushCurrent();
-    });
-    const byId=new Map(attributes.map(attribute=>[attribute.attributeId,attribute]));
-    const canonical=Array.from(byId.values()).sort((a,b)=>a.attributeId.localeCompare(b.attributeId,'fr'));
+    // Catalogue embarqué, dérivé du référentiel normatif ia/ sur main lors de la maintenance.
+    const attributes:AttributeReferenceItem[]=attributeSnapshot.attributes;
     return {
-      version,
-      declaredCount:declaredCount||canonical.length,
-      attributeIds:canonical.map(attribute=>attribute.attributeId),
-      attributes:canonical
+      version:attributeSnapshot.source_version,
+      declaredCount:attributeSnapshot.declaredCount,
+      attributeIds:attributes.map(attribute=>attribute.attributeId),
+      attributes
     };
   },
   async loadAllProgrammes():Promise<ProgrammeData[]>{
@@ -284,7 +265,10 @@ export const captureDataService={
     const candidates=metadata.files.objets_candidats
       ?(await fetchJson<{objects:PatrimonialObject[]}>(`${entry.path}/${metadata.files.objets_candidats}`)).objects
       :[];
-    return {entry,metadata,sources,candidates};
+    const proposals=metadata.files.propositions_structure
+      ?(await fetchJson<{proposals:StructureProposal[]}>(`${entry.path}/${metadata.files.propositions_structure}`)).proposals
+      :[];
+    return {entry,metadata,sources,candidates,proposals};
   },
   async loadStructureDetail(programmeId:string,entry:StructureEntry):Promise<StructureDetail>{
     const structure=await fetchJson<StructureData>(`${entry.path}/structure.json`);
@@ -340,6 +324,49 @@ export const captureDataService={
     return Array.from(byObjectId.values()).sort((a,b)=>
       a.firstSequence-b.firstSequence||a.object.object_id.localeCompare(b.object.object_id,'fr',{numeric:true})
     );
+  },
+  async loadHistoricalObjects(programme:ProgrammeData,current:StructureData):Promise<HistoricalObject[]>{
+    const structures=await Promise.all(programme.index.structures.map(entry=>
+      fetchJson<StructureData>(`${entry.path}/structure.json`)
+    ));
+    const active=new Set(current.objects.map(object=>object.object_id));
+    const grouped=new Map<string,HistoricalObject>();
+    structures.forEach(structure=>structure.objects.forEach(object=>{
+      if(active.has(object.object_id))return;
+      const existing=grouped.get(object.object_id);
+      if(existing){
+        existing.object=object;
+        if(!existing.structureVersions.includes(structure.structure_version))
+          existing.structureVersions.push(structure.structure_version);
+      }else grouped.set(object.object_id,{object,structureVersions:[structure.structure_version]});
+    }));
+    return [...grouped.values()].sort((a,b)=>a.object.object_id.localeCompare(b.object.object_id,'fr',{numeric:true}));
+  },
+  async loadStructureProposals(programme:ProgrammeData):Promise<StructureProposal[]>{
+    const captures=await Promise.all(programme.index.captures.map(entry=>this.loadCaptureDetail(entry)));
+    const proposals:StructureProposal[]=[];
+    await Promise.all(captures.map(async capture=>{
+      proposals.push(...capture.proposals);
+      // Compatibilité de lecture : les anciennes anomalies restent des écarts à qualifier,
+      // jamais des objets arbitrairement sélectionnés pour retrait.
+      if(capture.proposals.length||!capture.metadata.files.anomalies)return;
+      const data=await fetchJson<{anomalies:Anomaly[]}>(`${capture.entry.path}/${capture.metadata.files.anomalies}`);
+      for(const anomaly of data.anomalies){
+        const quantityMismatch=anomaly.anomaly_type==='INCOHERENCE_STRUCTURE'
+          &&/\b\d+\s+(?:places?|locaux?|objets?)\b/i.test(anomaly.description)
+          &&/\b(?:contre|tandis que|alors que)\b/i.test(anomaly.description);
+        if(!quantityMismatch)continue;
+        proposals.push({
+          proposal_id:`LEGACY_${capture.entry.capture_id}_${anomaly.anomaly_id}`,
+          programme_id:programme.index.programme_id,capture_id:capture.entry.capture_id,
+          operation:'RETRAIT',qualification_status:'A_QUALIFIER',object_id:null,
+          source_id:anomaly.source_id||'SOURCE_HISTORIQUE_NON_PRECISEE',
+          source_anchor:anomaly.source_reference||null,anomaly_id:anomaly.anomaly_id,
+          description:anomaly.description,legacy:true
+        });
+      }
+    }));
+    return proposals.sort((a,b)=>a.capture_id.localeCompare(b.capture_id,'fr')||a.proposal_id.localeCompare(b.proposal_id,'fr'));
   },
   loadValidation:(programmeId:string,structureVersion:string)=>fetchJson<ValidationData>(
     `programmes/${programmeId}/validations/${structureVersion}.json`
