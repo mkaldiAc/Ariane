@@ -217,6 +217,8 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
   const changes:StructureChange[]=[
     ...approvedCandidateIds.map(id=>({
       operation:'AJOUT' as const,object_id:id,
+      to_parent_object_id:targetObjects.find(object=>object.object_id===id)?.parent_object_id||null,
+      justification:parentOverrides[id]?humanJustification.trim():undefined,
       source_proposal_ids:approvedProposalByObject[id]?[approvedProposalByObject[id]]:undefined
     })),
     ...removedIds.map(id=>({
@@ -226,9 +228,10 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     })),
     ...reinsertedIds.map(id=>({
       operation:'REINTEGRATION' as const,object_id:id,
-      to_parent_object_id:targetObjects.find(object=>object.object_id===id)?.parent_object_id||null
+      to_parent_object_id:targetObjects.find(object=>object.object_id===id)?.parent_object_id||null,
+      justification:parentOverrides[id]?humanJustification.trim():undefined
     })),
-    ...changedParents.map(object=>({
+    ...changedParents.filter(object=>!acceptedCandidateIds.has(object.object_id)&&!reintegratedIds.has(object.object_id)).map(object=>({
       operation:'MODIFIER_PARENT' as const,object_id:object.object_id,
       from_parent_object_id:(
         currentById.get(object.object_id)||candidatesById.get(object.object_id)?.object||historicalById.get(object.object_id)?.object

@@ -77,7 +77,9 @@ export const canReparent=(objects:PatrimonialObject[],objectId:string,parentId:s
   if(!object)return [{objectId,message:'Objet inconnu'}];
   if(!parent)return [{objectId,message:'Nouveau parent absent de la structure cible'}];
   if(object.object_type==='PRG')return [{objectId,message:'La racine PRG ne peut pas changer de parent'}];
-  return validateStructure(objects.map(item=>item.object_id===objectId?{...item,parent_object_id:parentId}:item));
+  const previous=new Set(validateStructure(objects).map(issue=>issue.objectId+'|'+issue.message));
+  const proposed=objects.map(item=>item.object_id===objectId?{...item,parent_object_id:parentId}:item);
+  return validateStructure(proposed).filter(issue=>!previous.has(issue.objectId+'|'+issue.message));
 };
 
 export const parentNeedsPhysicalVerification=(objectType:string,parentType:string)=>
