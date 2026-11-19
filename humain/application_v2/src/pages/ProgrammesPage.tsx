@@ -341,7 +341,8 @@ export function ProgrammesPage(){
         <section className="ariane-detail-kpis">
           <div className="panel"><CalendarDays/><b>{formatDate(captureDate(capture))}</b><span>Date de captation</span></div>
           <div className="panel"><FileText/><b>{capture.sources.length}</b><span>documents</span></div>
-          <div className="panel"><Layers3/><b>{capture.candidates.length}</b><span>candidats structure</span></div>
+          <div className="panel"><Layers3/><b>{capture.candidates.length}</b><span>candidats d'ajout</span></div>
+          <div className="panel"><GitBranch/><b>{capture.proposals.length}</b><span>propositions structurelles</span></div>
         </section>
         <section className="panel ariane-document-list"><h2>Documents mobilisés</h2>{capture.sources.map(source=><article key={source.source_id}><FileText/><div><b>{source.filename}</b><span>{source.document_type||'Type non renseigné'} · {source.document_date||'date non renseignée'}</span></div><code>{source.source_id}</code></article>)}</section>
       </>;

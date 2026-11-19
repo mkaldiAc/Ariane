@@ -94,8 +94,6 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     ?{...object,parent_object_id:parentOverrides[object.object_id]}
     :object),[currentObjects,candidates,historicalObjects,removedExistingIds,acceptedCandidateIds,reintegratedIds,parentOverrides]);
 
-  const targetIds=useMemo(()=>new Set(targetObjects.map(object=>object.object_id)),[targetObjects]);
-
   const orderedTargetObjects=useMemo(()=>{
     const byParent=new Map<string|null,PatrimonialObject[]>();
     targetObjects.forEach(object=>{
@@ -120,7 +118,7 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
 
 
   const structureIssues=useMemo(()=>validateStructure(targetObjects),[targetObjects]);
-  const availableCandidates=candidates.filter(candidate=>!acceptedCandidateIds.has(candidate.object.object_id));
+  const availableCandidates=candidates.filter(candidate=>!acceptedCandidateIds.has(candidate.object.object_id)&&!historicalById.has(candidate.object.object_id));
   const removedExisting=currentObjects.filter(object=>removedExistingIds.has(object.object_id));
   const archivedAvailable=historicalObjects.filter(item=>!reintegratedIds.has(item.object.object_id));
   const reinserted=historicalObjects.filter(item=>reintegratedIds.has(item.object.object_id));
@@ -174,6 +172,7 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
 
   const addCandidate=(objectId:string)=>{
     if(!candidatesById.has(objectId))return;
+    if(historicalById.has(objectId)){reintegrateHistorical(objectId);return}
     setAcceptedCandidateIds(previous=>new Set(previous).add(objectId));
   };
 
@@ -313,10 +312,10 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
             const isCandidate=acceptedCandidateIds.has(object.object_id);
             const isReintegrated=reintegratedIds.has(object.object_id);
             const editable=moveObjectId===object.object_id;
-            const parents=targetObjects.filter(parent=>
+            const parents=editable?targetObjects.filter(parent=>
               parent.object_id!==object.object_id&&allowedParentTypes(object.object_type).includes(parent.object_type)
               &&canReparent(targetObjects,object.object_id,parent.object_id).length===0
-            );
+            ):[];
             return <article key={object.object_id} style={{marginLeft:`${Math.min(depth,8)*14}px`}}
               draggable onDragStart={event=>dragStart(event,{kind:isCandidate?'candidate':isReintegrated?'historical':'existing',objectId:object.object_id})}
               onDragOver={event=>{event.preventDefault();event.stopPropagation()}}
