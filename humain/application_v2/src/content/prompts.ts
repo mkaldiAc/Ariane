@@ -57,6 +57,10 @@ Les documents joints constituent le nouveau jeu documentaire.
 Charge la structure validée depuis mkaldiAc/Ariane_capture_data/programmes/<PROGRAMME_ID>/current/structure.json.
 Exécute strictement ARIANE. La structure validée est intangible.
 Crée une nouvelle CAPTURE immuable conformément à ia/contracts/capture-storage.yaml.
+Documente les propositions non exécutoires AJOUT, RETRAIT, MODIFIER_PARENT et REINTEGRATION dans propositions_structure.json quand les sources démontrent ces écarts.
+Une simple différence de comptage (21 places contre 22, par exemple) donne une proposition RETRAIT A_QUALIFIER, sans choix arbitraire d'object_id. Une absence de mention n'est pas une preuve de suppression.
+Si un objet historiquement retiré est identifié dans les archives STR, propose REINTEGRATION sous le même object_id.
+Ne modifie jamais la STR validée, même si une proposition te paraît certaine.
 Si un objet absent est démontré, conserve-le comme CANDIDAT_STRUCTURE avec ses observations et relations EN_ATTENTE_RATTACHEMENT_STRUCTUREL et l'anomalie OBJET_STRUCTURE_ABSENT.
 Ne le promeus jamais dans CURRENT pendant cette captation.
 Mets à jour CURRENT uniquement avec les données autorisées, puis les index techniques.
@@ -71,8 +75,13 @@ approved_candidate_object_ids:
   - <OBJECT_ID_CANDIDAT>
 requested_changes:
   - "<CORRECTION_EXPLICITEMENT_VALIDEE_PAR_L_HUMAIN>"
+changes: []
 
 Exécute strictement cette décision humaine.
+Contrôle chaque opération approuvée par l'humain dans changes, sans en inventer, ajouter ou omettre.
+Vérifie chaque parent autorisé, l'absence de cycle, la priorité physique des CIR et la validité de la structure cible complète.
+Un retrait est une sortie de CURRENT, pas un effacement des CAPTURE ou des anciennes STR ; une réintégration conserve l'object_id historique et récupère les observations et relations éligibles depuis toutes les CAPTURE.
+Refuse toute modification non conforme ou non explicitement approuvée sans écriture partielle.
 Crée la nouvelle STR sans modifier les CAPTURE.
 Promeus vers CURRENT uniquement les observations et relations déjà captées qui deviennent rattachables, sans recapture ni changement d'identifiant.
 Mets à jour dans CURRENT l'état des anomalies concernées.
@@ -84,7 +93,9 @@ audit:`Réalise un audit ARIANE en lecture seule sur mkaldiAc/Ariane_capture_dat
 - dernière STR cohérente avec current/structure.json ;
 - archives STR présentes ;
 - aucune donnée EN_ATTENTE_RATTACHEMENT_STRUCTUREL dans CURRENT ;
-- identifiants préservés lors des promotions ;
+- identifiants préservés lors des promotions, retraits, déplacements et réintégrations ;
+- CURRENT sans observation ni relation associée à des objets hors STR active ;
+- propositions_structure.json immuables et jamais appliquées par une captation ;
 - sources cumulées ;
 - anomalies historiques inchangées ;
 - aucune STR créée sans VALIDER_STRUCTURE ;

@@ -1,3 +1,4 @@
+import type {StructureChange} from './structureRules';
 import {prompts} from '../content/prompts';
 
 export const normalizeArianeId=(value:string)=>value
@@ -69,13 +70,15 @@ export const buildStructureValidationPrompt=({
   sourceStructureVersion,
   targetStructureVersion,
   approvedCandidateObjectIds,
-  requestedChanges
+  requestedChanges,
+  changes=[]
 }:{
   programmeId:string;
   sourceStructureVersion:string;
   targetStructureVersion:string;
   approvedCandidateObjectIds:string[];
   requestedChanges:string[];
+  changes?:StructureChange[];
 })=>{
   const approvedCandidatesBlock=approvedCandidateObjectIds.length
     ?`approved_candidate_object_ids:\n${approvedCandidateObjectIds.map(id=>`  - ${id}`).join('\n')}`
@@ -83,6 +86,10 @@ export const buildStructureValidationPrompt=({
   const requestedChangesBlock=requestedChanges.length
     ?`requested_changes:\n${requestedChanges.map(change=>`  - ${yamlString(change)}`).join('\n')}`
     :'requested_changes: []';
+
+  const changesBlock=changes.length
+    ?`changes:\n${changes.map(change=>`  - operation: ${change.operation}\n    object_id: ${yamlString(change.object_id)}${change.from_parent_object_id!==undefined?`\n    from_parent_object_id: ${yamlString(change.from_parent_object_id||'')}`:''}${change.to_parent_object_id!==undefined?`\n    to_parent_object_id: ${yamlString(change.to_parent_object_id||'')}`:''}${change.justification?`\n    justification: ${yamlString(change.justification)}`:''}${change.source_proposal_ids?.length?`\n    source_proposal_ids: [${change.source_proposal_ids.map(yamlString).join(', ')}]`:''}`).join('\n')}`
+    :'changes: []';
 
   const scenario=prompts.validateCandidate
     .replaceAll('<PROGRAMME_ID>',programmeId)
@@ -95,7 +102,7 @@ export const buildStructureValidationPrompt=({
     .replace(
       /requested_changes:\n\s*- "<CORRECTION_EXPLICITEMENT_VALIDEE_PAR_L_HUMAIN>"/,
       requestedChangesBlock
-    );
+    ).replace('changes: []',changesBlock);
 
   return buildStandaloneScenario(
     'VALIDER_STRUCTURE',
