@@ -1,0 +1,173 @@
+{
+  "source_version": "1.3.4",
+  "objects": {
+    "PRG": {
+      "allowed_parents": [],
+      "label": "Programme"
+    },
+    "FON": {
+      "allowed_parents": [
+        "PRG"
+      ],
+      "label": "Foncier"
+    },
+    "PAR": {
+      "allowed_parents": [
+        "FON"
+      ],
+      "label": "Parcelle"
+    },
+    "RES": {
+      "allowed_parents": [
+        "FON"
+      ],
+      "label": "Résidence"
+    },
+    "BAT": {
+      "allowed_parents": [
+        "RES"
+      ],
+      "label": "Bâtiment"
+    },
+    "HAL": {
+      "allowed_parents": [
+        "BAT"
+      ],
+      "label": "Entrée / Hall"
+    },
+    "CAG": {
+      "allowed_parents": [
+        "BAT"
+      ],
+      "label": "Cage d'escalier"
+    },
+    "CIR": {
+      "allowed_parents": [
+        "BAT",
+        "CAG"
+      ],
+      "label": "Zone de circulation"
+    },
+    "LOG": {
+      "allowed_parents": [
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "label": "Logement"
+    },
+    "PIE": {
+      "allowed_parents": [
+        "LOG",
+        "LOC"
+      ],
+      "label": "Pièce"
+    },
+    "LOC": {
+      "allowed_parents": [
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "label": "Local d'activité / commerce"
+    },
+    "EXP": {
+      "allowed_parents": [
+        "LOG",
+        "LOC"
+      ],
+      "label": "Espace extérieur privatif"
+    },
+    "LPO": {
+      "allowed_parents": [
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "label": "Local poubelles"
+    },
+    "LVE": {
+      "allowed_parents": [
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "label": "Local vélos"
+    },
+    "CAV": {
+      "allowed_parents": [
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "label": "Cave"
+    },
+    "DEP": {
+      "allowed_parents": [
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "label": "Dépendance"
+    },
+    "LTE": {
+      "allowed_parents": [
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR",
+        "ZSI"
+      ],
+      "label": "Local technique"
+    },
+    "ZSI": {
+      "allowed_parents": [
+        "BAT"
+      ],
+      "label": "Zone de stationnement intérieure"
+    },
+    "EXT": {
+      "allowed_parents": [
+        "RES"
+      ],
+      "label": "Espace extérieur de résidence"
+    },
+    "VEG": {
+      "allowed_parents": [
+        "EXT"
+      ],
+      "label": "Espace végétalisé"
+    },
+    "CEX": {
+      "allowed_parents": [
+        "EXT"
+      ],
+      "label": "Zone de circulation extérieure"
+    },
+    "AJE": {
+      "allowed_parents": [
+        "EXT"
+      ],
+      "label": "Aire de jeux"
+    },
+    "ZSE": {
+      "allowed_parents": [
+        "EXT"
+      ],
+      "label": "Zone de stationnement extérieure"
+    },
+    "PST": {
+      "allowed_parents": [
+        "ZSI",
+        "ZSE"
+      ],
+      "label": "Place de stationnement"
+    }
+  }
+}

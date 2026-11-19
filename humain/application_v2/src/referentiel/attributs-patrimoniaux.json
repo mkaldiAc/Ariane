@@ -1,0 +1,3111 @@
+{
+  "source_version": "1.3.3",
+  "declaredCount": 278,
+  "attributes": [
+    {
+      "attributeId": "activites_autorisees",
+      "label": "Activités autorisées",
+      "objects": [
+        "FON"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "agence_ho_rattachement",
+      "label": "Agence (HO) de rattachement",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "architecte_conception",
+      "label": "Architecte de conception",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_architecte_conception",
+      "label": "Assurance architecte conception",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_bet_fluides",
+      "label": "Assurance BET fluides",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_bet_structure",
+      "label": "Assurance BET structure",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_bet_thermique",
+      "label": "Assurance BET thermique",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_controleur_technique",
+      "label": "Assurance contrôleur technique",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_ascenseur",
+      "label": "Assurance entreprise ascenseur",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_charpente",
+      "label": "Assurance entreprise charpente",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_cloisons",
+      "label": "Assurance entreprise cloisons",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_couverture",
+      "label": "Assurance entreprise couverture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_electricite_cfa",
+      "label": "Assurance entreprise électricité CFA",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_electricite_cfo",
+      "label": "Assurance entreprise électricité CFO",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_espaces_verts",
+      "label": "Assurance entreprise espaces verts",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_etancheite",
+      "label": "Assurance entreprise étanchéité",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_generale",
+      "label": "Assurance entreprise generale",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_go",
+      "label": "Assurance entreprise go",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_menuiseries_exterieures",
+      "label": "Assurance entreprise menuiseries extérieures",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_menuiseries_interieures",
+      "label": "Assurance entreprise menuiseries intérieures",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_peinture",
+      "label": "Assurance entreprise peinture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_plomberie",
+      "label": "Assurance entreprise plomberie",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_porte_automatique",
+      "label": "Assurance entreprise porte automatique",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_ravalement",
+      "label": "Assurance entreprise ravalement",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_revetement_sol_faience",
+      "label": "Assurance entreprise revetement sol faience",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_serrurerie",
+      "label": "Assurance entreprise serrurerie",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_terrassement",
+      "label": "Assurance entreprise terrassement",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_entreprise_vrd",
+      "label": "Assurance entreprise vrd",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_moex",
+      "label": "Assurance MOEX",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assurance_proprietaire_non_occupant",
+      "label": "Assurance propriétaire non occupant",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assureur_cnr",
+      "label": "Assureur CNR",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assureur_dab",
+      "label": "Assureur DAB",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assureur_do",
+      "label": "Assureur DO",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assureur_pno",
+      "label": "Assureur PNO",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "assureur_trc",
+      "label": "Assureur TRC",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "bail_emphyteotique",
+      "label": "Bail emphyteotique",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "base_tantiemes_charges_generales",
+      "label": "Base de répartition des tantièmes de charges générales",
+      "objects": [
+        "LOG",
+        "LOC",
+        "CAV",
+        "DEP",
+        "PST"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Tantièmes",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "bet_fluides",
+      "label": "BET fluides",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "bet_structure",
+      "label": "BET structure",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "bet_thermique",
+      "label": "BET thermique",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "certification_batiment",
+      "label": "Certification du bâtiment",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "charge_maximale_ascenseur",
+      "label": "Charge maximale de l’ascenseur",
+      "objects": [
+        "CAG"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "kg",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "classe_erp",
+      "label": "Classe ERP",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "code_court_programme",
+      "label": "Trigramme / quadrigramme du programme",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "configuration_niveaux_logement",
+      "label": "Configuration en niveaux du logement",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "contexte_amenagement",
+      "label": "Contexte d’aménagement du foncier",
+      "objects": [
+        "FON"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "controleur_technique",
+      "label": "Contrôleur technique",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "convention_specifique_foyer",
+      "label": "Convention specifique foyer",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "coordonnee_x_lambert93",
+      "label": "Coordonnée X Lambert-93 issue de l’adressage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "coordonnee_y_lambert93",
+      "label": "Coordonnée Y Lambert-93 issue de l’adressage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "daact_non_contestation",
+      "label": "Validation / non-contestation de la DAACT",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_daact",
+      "label": "Date DAACT",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_depot_pc_initial",
+      "label": "Date depot PC initial",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_depot_pc_modificatif",
+      "label": "Date depot PC modificatif",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_droc",
+      "label": "Date DROC",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_fin_bail_emphyteotique",
+      "label": "Date fin bail emphyteotique",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_levee_reserves",
+      "label": "Date de levée des réserves",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_obtention_agrement",
+      "label": "Date obtention agrément",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_obtention_pc_initial",
+      "label": "Date obtention PC initial",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_obtention_pc_modificatif",
+      "label": "Date obtention PC modificatif",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_raccordement_chauffage_urbain",
+      "label": "Date de raccordement au réseau de chauffage urbain",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_reception_travaux",
+      "label": "Date de réception des travaux",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_signature_acte",
+      "label": "Date signature acte",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_transfert_gestion",
+      "label": "Date de transfert en gestion",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "date_transfert_permis",
+      "label": "Date transfert permis",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Date",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "description_installation_photovoltaique",
+      "label": "Description installation photovoltaique",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "eau_froide_collective_sans_gestion_concessionnaire",
+      "label": "Eau froide collective sans gestion concessionnaire",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_ascenseur",
+      "label": "Entreprise ascenseur",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_charpente",
+      "label": "Entreprise charpente",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_cloisons",
+      "label": "Entreprise cloisons",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_couverture",
+      "label": "Entreprise couverture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_electricite_cfa",
+      "label": "Entreprise électricité CFA",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_electricite_cfo",
+      "label": "Entreprise électricité CFO",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_espaces_verts",
+      "label": "Entreprise espaces verts",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_etancheite",
+      "label": "Entreprise étanchéité",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_generale",
+      "label": "Entreprise generale",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_go",
+      "label": "Entreprise go",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_menuiseries_exterieures",
+      "label": "Entreprise menuiseries extérieures",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_menuiseries_interieures",
+      "label": "Entreprise menuiseries intérieures",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_peinture",
+      "label": "Entreprise peinture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_plomberie",
+      "label": "Entreprise plomberie",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_porte_automatique",
+      "label": "Entreprise porte automatique",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_ravalement",
+      "label": "Entreprise ravalement",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_revetement_sol_faience",
+      "label": "Entreprise revetement sol faience",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_serrurerie",
+      "label": "Entreprise serrurerie",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_terrassement",
+      "label": "Entreprise terrassement",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "entreprise_vrd",
+      "label": "Entreprise vrd",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "est_erp",
+      "label": "Bâtiment classé ERP",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "etancheite_espace_exterieur",
+      "label": "Étanchéité de l’espace extérieur privatif",
+      "objects": [
+        "EXP"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "financement_action_logement",
+      "label": "Financement action logement",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "fonction_dependance",
+      "label": "Fonction de la dépendance",
+      "objects": [
+        "DEP"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "a_f"
+    },
+    {
+      "attributeId": "garde_corps_toiture_protection_collective",
+      "label": "Présence d’un garde-corps de toiture en protection collective",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "geometre",
+      "label": "Géomètre",
+      "objects": [
+        "FON"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "gestionnaire_jardin_partage",
+      "label": "Gestionnaire du jardin partagé",
+      "objects": [
+        "VEG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "label_mon_logement_sante",
+      "label": "Label mon logement sante",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "longueur_garde_corps_facade",
+      "label": "Longueur garde corps façade",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m lin.",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "longueur_haies",
+      "label": "Longueur de haies",
+      "objects": [
+        "VEG"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m lin.",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "longueur_reseau_assainissement_eu",
+      "label": "Longueur reseau assainissement eu",
+      "objects": [
+        "EXT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m lin.",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "longueur_reseau_chauffage",
+      "label": "Longueur reseau chauffage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m lin.",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "longueur_reseau_eau_potable",
+      "label": "Longueur reseau eau potable",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m lin.",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "longueur_reseau_ecs",
+      "label": "Longueur reseau ECS",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m lin.",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "maitrise_ouvrage",
+      "label": "Maîtrise d’ouvrage",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "mandataire_groupement_moe",
+      "label": "Mandataire groupement MOE",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "marque_ascenseur",
+      "label": "Marque ascenseur",
+      "objects": [
+        "CAG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "mode_acquisition_operation",
+      "label": "Mode de réalisation / acquisition de l’opération",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "mode_financement",
+      "label": "Mode / catégorie de financement",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "modele_disconnecteur",
+      "label": "Modele disconnecteur",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "modele_pompe_chauffage_collectif",
+      "label": "Modele pompe chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "modele_pompe_relevage",
+      "label": "Modele pompe relevage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "moex",
+      "label": "MOEX",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "g_m"
+    },
+    {
+      "attributeId": "nom_assureur_mandataire",
+      "label": "Nom assureur mandataire",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nom_assureur_moex",
+      "label": "Nom assureur MOEX",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nom_commercial",
+      "label": "Nom commercial du programme",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nom_notaire",
+      "label": "Nom notaire",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nom_reseau_chauffage_urbain",
+      "label": "Nom du réseau de chauffage urbain",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nom_syndic_principal",
+      "label": "Nom syndic principal",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_antennes_toiture",
+      "label": "Nombre antennes toiture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_arbres",
+      "label": "Nombre d’arbres",
+      "objects": [
+        "VEG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_baignoires",
+      "label": "Nombre baignoires",
+      "objects": [
+        "PIE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_ballons_ecs_collective",
+      "label": "Nombre de ballons ECS collectifs",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_boites_aux_lettres",
+      "label": "Nombre boîtes aux lettres",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_bornes_escamotables",
+      "label": "Nombre bornes escamotables",
+      "objects": [
+        "CEX"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_chasses_eau_double_flux",
+      "label": "Nombre chasses eau double flux",
+      "objects": [
+        "PIE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_chassis_toiture",
+      "label": "Nombre chassis toiture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_colonnes_seches",
+      "label": "Nombre colonnes seches",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_compteurs_rfc",
+      "label": "Nombre compteurs RFC",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_detecteurs_fumee",
+      "label": "Nombre detecteurs fumee",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_detecteurs_monoxyde_carbone",
+      "label": "Nombre detecteurs monoxyde carbone",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_disconnecteurs",
+      "label": "Nombre disconnecteurs",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_dispositifs_controle_d_acces",
+      "label": "Nombre dispositifs controle d acces",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_dispositifs_interphone_a_bouton",
+      "label": "Nombre dispositifs interphone a bouton",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_dispositifs_interphone_a_defilement",
+      "label": "Nombre dispositifs interphone a defilement",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_dispositifs_interphone_a_digicode",
+      "label": "Nombre dispositifs interphone a digicode",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_dispositifs_urmet",
+      "label": "Nombre dispositifs urmet",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_dispositifs_videosurveillance",
+      "label": "Nombre dispositifs vidéosurveillance",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_dispositifs_visiophone",
+      "label": "Nombre dispositifs visiophone",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_douches",
+      "label": "Nombre douches",
+      "objects": [
+        "PIE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_emetteurs_chauffage_collectif",
+      "label": "Nombre d’émetteurs de chauffage collectif",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_emetteurs_chauffage_individuel",
+      "label": "Nombre d’émetteurs de chauffage individuel",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_equipements_ecs_individuelle",
+      "label": "Nombre d’équipements de production ECS individuelle",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_equipements_regulation_chauffage_collectif",
+      "label": "Nombre equipements régulation chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_generateurs_chauffage_collectif",
+      "label": "Nombre de générateurs de chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_generateurs_chauffage_individuel",
+      "label": "Nombre de générateurs de chauffage individuel",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_lignes_vie",
+      "label": "Nombre lignes vie",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_logements_reserves_action_logement",
+      "label": "Nombre logements réserves action logement",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_niveaux_desservis_ascenseur",
+      "label": "Nombre de niveaux desservis par l’ascenseur",
+      "objects": [
+        "CAG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_operations_desembouage",
+      "label": "Nombre operations désembouage",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_panneaux_photovoltaiques",
+      "label": "Nombre panneaux photovoltaiques",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_panneaux_solaires_thermiques",
+      "label": "Nombre panneaux solaires thermiques",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_pompes_chauffage_collectif",
+      "label": "Nombre pompes chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_pompes_relevage",
+      "label": "Nombre pompes relevage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_automatiques_basculante",
+      "label": "Nombre portes automatiques basculante",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_automatiques_battante",
+      "label": "Nombre portes automatiques battante",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_automatiques_coulissante",
+      "label": "Nombre portes automatiques coulissante",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_automatiques_levante",
+      "label": "Nombre portes automatiques levante",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_automatiques_sectionnable",
+      "label": "Nombre portes automatiques sectionnable",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_hall",
+      "label": "Nombre portes hall",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_hall_electrifiees",
+      "label": "Nombre portes hall électrifiées",
+      "objects": [
+        "HAL"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_palieres_electrifiees",
+      "label": "Nombre portes palieres électrifiées",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_palieres_logement",
+      "label": "Nombre portes palieres logement",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_portes_pietonnes_controle_acces_hors_hall",
+      "label": "Nombre portes pietonnes controle acces hors hall",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_recuperateurs_eau_pluie",
+      "label": "Nombre recuperateurs eau pluie",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_reseaux_distribution_chauffage_collectif",
+      "label": "Nombre reseaux distribution chauffage collectif",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_reseaux_distribution_ecs_collective",
+      "label": "Nombre reseaux distribution ECS collective",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_servomoteurs_chauffage_collectif",
+      "label": "Nombre servomoteurs chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_surpresseurs",
+      "label": "Nombre surpresseurs",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_systemes_ssi",
+      "label": "Nombre systemes SSI",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_systemes_ventilation_collective",
+      "label": "Nombre de systèmes de ventilation collective",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_systemes_ventilation_individuelle",
+      "label": "Nombre de systèmes de ventilation individuelle",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_thermostats_chauffage_collectif",
+      "label": "Nombre thermostats chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_tiges_cuisine_gaz",
+      "label": "Nombre tiges cuisine gaz",
+      "objects": [
+        "PIE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_trappes_desenfumage",
+      "label": "Nombre trappes désenfumage",
+      "objects": [
+        "CAG"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_vannes_regulation_chauffage_collectif",
+      "label": "Nombre vannes régulation chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "nombre_vases_expansion",
+      "label": "Nombre vases expansion",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Nombre",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_agrement_sisal",
+      "label": "Numéro d’agrément SISAL",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_lot_edd",
+      "label": "Numéro de lot EDD",
+      "objects": [
+        "LOG",
+        "LOC",
+        "CAV",
+        "DEP",
+        "PST"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pc_initial",
+      "label": "Numéro PC initial",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pc_modificatif",
+      "label": "Numéro PC modificatif",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pce_gaz_chaufferie",
+      "label": "Numéro de PCE gaz de la chaufferie",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pce_gaz_parties_communes",
+      "label": "Numéro PCE gaz parties communes",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pdl_eau_chaufferie",
+      "label": "Numéro de PDL eau de la chaufferie",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pdl_eau_parties_communes",
+      "label": "Numéro PDL eau parties communes",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pdl_electricite_logement",
+      "label": "Numéro PDL électricité logement",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pdl_electricite_parties_communes",
+      "label": "Numéro PDL électricité parties communes",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "numero_pot_ikos",
+      "label": "Numéro pot IKOS",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "occultations_electrifiees",
+      "label": "Occultations électrifiées",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_ascenseur",
+      "label": "Presence ascenseur",
+      "objects": [
+        "CAG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_bassin_retention",
+      "label": "Presence bassin retention",
+      "objects": [
+        "EXT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_clause_autonomie_juridique",
+      "label": "Présence d’une clause d’autonomie juridique",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_compteur_thermique_collectif_chauffage",
+      "label": "Presence compteur thermique collectif chauffage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_compteur_thermique_individuel_chauffage",
+      "label": "Presence compteur thermique individuel chauffage",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_compteur_volumetrique_collectif_ecs",
+      "label": "Presence compteur volumétrique collectif ECS",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_compteur_volumetrique_individuel_ecs",
+      "label": "Presence compteur volumétrique individuel ECS",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_eddv",
+      "label": "Présence d’un EDDV",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_installation_electrique_distribution",
+      "label": "Présence d’une installation électrique de distribution",
+      "objects": [
+        "LOG",
+        "LOC",
+        "LTE",
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_installation_plomberie",
+      "label": "Présence d’une installation de plomberie",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_installation_sanitaire",
+      "label": "Présence d’une installation sanitaire",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_pce_gaz_privatif",
+      "label": "Presence PCE gaz privatif",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_pdl_eau_privatif",
+      "label": "Presence PDL eau privatif",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_point_eau_jardin_partage",
+      "label": "Présence d’un point d’eau dans le jardin partagé",
+      "objects": [
+        "VEG"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_porte_place_stationnement",
+      "label": "Présence d’une fermeture/porte sur la place de stationnement",
+      "objects": [
+        "PST"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_robinet_roai",
+      "label": "Presence robinet ROAI",
+      "objects": [
+        "PIE"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "presence_syndicat_secondaire",
+      "label": "Présence d’un syndicat secondaire",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "n_p"
+    },
+    {
+      "attributeId": "quartier_collectivite",
+      "label": "Quartier de ville selon la définition de la collectivité",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "reference_acte_acquisition",
+      "label": "Reference acte acquisition",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "reference_cadastrale",
+      "label": "Référence cadastrale de la parcelle",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "reference_publicite_fonciere",
+      "label": "Reference publicite fonciere",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "regime_copropriete",
+      "label": "Régime de copropriété",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "regime_organisation_fonciere",
+      "label": "Régime / organisation foncière",
+      "objects": [
+        "FON"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "reglementation_thermique",
+      "label": "Réglementation thermique",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "repere_source",
+      "label": "Repère de l’objet dans la source",
+      "objects": [
+        "PRG",
+        "FON",
+        "PAR",
+        "RES",
+        "BAT",
+        "HAL",
+        "CAG",
+        "CIR",
+        "LOG",
+        "PIE",
+        "LOC",
+        "EXP",
+        "LPO",
+        "LVE",
+        "CAV",
+        "DEP",
+        "LTE",
+        "ZSI",
+        "EXT",
+        "VEG",
+        "CEX",
+        "AJE",
+        "ZSE",
+        "PST"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "retrocession_prevue_apres_livraison",
+      "label": "Rétrocession prévue après livraison",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "risque_inondation",
+      "label": "Risque d’inondation",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "risque_mouvement_terrain",
+      "label": "Risque de mouvement de terrain",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "risque_radon",
+      "label": "Risque radon",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "risque_retrait_gonflement_argiles",
+      "label": "Risque de retrait-gonflement des argiles",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "risque_sismique",
+      "label": "Risque sismique",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte / liste",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "siret_syndic_principal",
+      "label": "Siret syndic principal",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "sps",
+      "label": "Sps",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "superficie_foncier",
+      "label": "Superficie du foncier",
+      "objects": [
+        "FON"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_aire_jeux",
+      "label": "Surface de l’aire de jeux",
+      "objects": [
+        "AJE"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_couverture",
+      "label": "Surface couverture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_dependance",
+      "label": "Surface dependance",
+      "objects": [
+        "DEP"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_enherbee",
+      "label": "Surface enherbée",
+      "objects": [
+        "VEG"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_espace_exterieur_privatif",
+      "label": "Surface de l’espace extérieur privatif",
+      "objects": [
+        "EXP"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_espace_vegetalise",
+      "label": "Surface de l’espace végétalisé",
+      "objects": [
+        "VEG"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_facade_ite_bardage",
+      "label": "Surface façade ITE bardage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_facade_ite_enduit",
+      "label": "Surface façade ITE enduit",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_facade_iti_bardage",
+      "label": "Surface façade ITI bardage",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_facade_iti_enduit",
+      "label": "Surface façade ITI enduit",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_habitable_logement",
+      "label": "Surface habitable du logement",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_local_poubelles",
+      "label": "Surface local poubelles",
+      "objects": [
+        "LPO"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_local_velos",
+      "label": "Surface local velos",
+      "objects": [
+        "LVE"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_menuiseries_aluminium",
+      "label": "Surface menuiseries aluminium",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_menuiseries_bois",
+      "label": "Surface menuiseries bois",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_menuiseries_pvc",
+      "label": "Surface menuiseries pvc",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_murs",
+      "label": "Surface de murs",
+      "objects": [
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_murs_espaces_communs_batiment",
+      "label": "Surface de murs des espaces communs du bâtiment",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_murs_espaces_communs_residence",
+      "label": "Surface de murs des espaces communs de la résidence",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_occultations_autres",
+      "label": "Surface occultations autres",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_parcelle",
+      "label": "Surface cadastrale de la parcelle",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_piece",
+      "label": "Surface de la pièce",
+      "objects": [
+        "PIE"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_place_stationnement",
+      "label": "Surface de la place de stationnement",
+      "objects": [
+        "PST"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_plafond",
+      "label": "Surface de plafond",
+      "objects": [
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_plafond_espaces_communs_batiment",
+      "label": "Surface de plafond des espaces communs du bâtiment",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_plafond_espaces_communs_residence",
+      "label": "Surface de plafond des espaces communs de la résidence",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_sol",
+      "label": "Surface de sol",
+      "objects": [
+        "HAL",
+        "CAG",
+        "CIR"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_sol_espaces_communs_batiment",
+      "label": "Surface de sol des espaces communs du bâtiment",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_sol_espaces_communs_residence",
+      "label": "Surface de sol des espaces communs de la résidence",
+      "objects": [
+        "RES"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_toiture_terrasse",
+      "label": "Surface toiture terrasse",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_utile_local",
+      "label": "Surface utile du local d’activité / commerce",
+      "objects": [
+        "LOC"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_utile_logement",
+      "label": "Surface utile du logement",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_volets_roulants_integres",
+      "label": "Surface volets roulants integres",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "surface_zone_circulation_exterieure",
+      "label": "Surface de la zone de circulation extérieure",
+      "objects": [
+        "CEX"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "m²",
+      "family": null,
+      "catalogGroup": "q_s"
+    },
+    {
+      "attributeId": "tantieme_charges_generales",
+      "label": "Nombre de tantièmes de charges générales",
+      "objects": [
+        "LOG",
+        "LOC",
+        "CAV",
+        "DEP",
+        "PST"
+      ],
+      "dataType": "Nombre entier",
+      "unit": "Tantièmes",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_couverture",
+      "label": "Type couverture",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_emetteur_chauffage_collectif",
+      "label": "Type d’émetteur de chauffage collectif",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_emetteur_chauffage_individuel",
+      "label": "Type d’émetteur de chauffage individuel",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_generateur_chauffage_individuel",
+      "label": "Type de générateur de chauffage individuel",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_generation_chauffage_collectif",
+      "label": "Type de génération du chauffage collectif",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_piece",
+      "label": "Type de pièce",
+      "objects": [
+        "PIE"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_production_ecs_individuelle",
+      "label": "Type de production ECS individuelle",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_raccordement_chauffage_urbain",
+      "label": "Type de raccordement au chauffage urbain",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_stockage_ecs_collective",
+      "label": "Type de stockage / production ECS collective",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_toiture_terrasse",
+      "label": "Type toiture terrasse",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_ventilation_collective",
+      "label": "Type de ventilation collective",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "type_ventilation_individuelle",
+      "label": "Type de ventilation individuelle",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "typologie_logement",
+      "label": "Typologie du logement",
+      "objects": [
+        "LOG"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "usage_electricite_photovoltaique",
+      "label": "Usage de l’électricité photovoltaïque",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "usage_espace_vegetalise",
+      "label": "Usage de l’espace végétalisé",
+      "objects": [
+        "VEG"
+      ],
+      "dataType": "Texte / nomenclature",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "usage_pce_gaz_parties_communes",
+      "label": "Usage PCE gaz parties communes",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "usage_pdl_eau_parties_communes",
+      "label": "Usage PDL eau parties communes",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "usage_pdl_electricite_parties_communes",
+      "label": "Usage PDL électricité parties communes",
+      "objects": [
+        "BAT"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "vendeurs_operation",
+      "label": "Vendeur(s) de l’opération",
+      "objects": [
+        "PRG"
+      ],
+      "dataType": "Texte",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "volume_stockage_ecs_collective",
+      "label": "Volume de stockage ECS collective",
+      "objects": [
+        "LTE"
+      ],
+      "dataType": "Nombre décimal",
+      "unit": "L",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "zone_frr",
+      "label": "Zone FRR",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "zone_qpv",
+      "label": "Zone QPV",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    },
+    {
+      "attributeId": "zone_zrr",
+      "label": "Zone ZRR",
+      "objects": [
+        "PAR"
+      ],
+      "dataType": "Booléen",
+      "unit": "Sans unité",
+      "family": null,
+      "catalogGroup": "t_z"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "ariane_version": "1.5.0",
+  "source_branch": "main",
+  "source_manifest_blob_sha": "e7b9cbac1a0a34d00507d405c1a6a587204be809",
+  "source_objects_blob_sha": "fac2ca097e6cf6c108e8a6313466f4ca2bac8637",
+  "source_attribute_index_blob_sha": "15a0247838ad6333986426af66dcb8efda6c6c3c",
+  "source_attribute_catalog_blob_shas": {
+    "ia/referentiel/attributs/a_f.yaml": "e0d0e8b1311790e7c59303d2d567ad46813e3403",
+    "ia/referentiel/attributs/g_m.yaml": "8b9b40b7ec56c9824bc37b1231216cac9f544e7a",
+    "ia/referentiel/attributs/n_p.yaml": "da526f60d7b738e78b6a8b36e262318d607b3bac",
+    "ia/referentiel/attributs/q_s.yaml": "27b2feef525561f27cc615b7a3d78cb495a28b13",
+    "ia/referentiel/attributs/t_z.yaml": "99a8605836441a0073f70bf1b74cf788a99fb57f"
+  },
+  "canonical_attribute_count": 278,
+  "application_reference_format": "1.0"
+}

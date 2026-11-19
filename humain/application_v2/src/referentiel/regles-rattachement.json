@@ -1,0 +1,18 @@
+{
+  "circulation_physique_prioritaire": {
+    "applies_to": [
+      "LOG",
+      "LOC",
+      "LPO",
+      "LVE",
+      "CAV",
+      "DEP",
+      "LTE"
+    ],
+    "mandatory_parent": "CIR",
+    "requires_documentary_verification": true
+  },
+  "structure_changes_require_explicit_human_approval": true,
+  "forbid_implicit_cascading_removal": true,
+  "source": "ia/referentiel/objets-patrimoniaux.yaml"
+}
