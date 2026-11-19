@@ -1,6 +1,6 @@
 # ARIANE — Structure patrimoniale de référence
 
-Protocole ARIANE : **1.4.0** (révision du référentiel d'objets : **1.3.4**).
+Protocole ARIANE : **1.5.0** (révision du référentiel d'objets : **1.3.4**).
 
 Référence normative : [`ia/referentiel/objets-patrimoniaux.yaml`](../../ia/referentiel/objets-patrimoniaux.yaml).
 
@@ -97,3 +97,9 @@ Si un jeu documentaire ultérieur révèle un objet absent ou une incohérence, 
 Ce candidat et ses données restent **hors CURRENT**. Seule une décision humaine explicite, matérialisée par l'action `VALIDER_STRUCTURE`, peut produire une nouvelle version `STR-xxx` et promouvoir les données devenues rattachables vers CURRENT. Les captations historiques ne sont jamais modifiées.
 
 La validation humaine des valeurs métier reste un processus distinct, réalisé dans le système aval.
+
+## Propositions de retrait, de déplacement et de réintégration
+
+Depuis ARIANE 1.5.0, la captation peut **proposer** (et non appliquer) un AJOUT, un RETRAIT, un MODIFIER_PARENT ou une REINTEGRATION, conservés en CAPTURE et distingués des anomalies. Un écart de quantité non individualisé porte `A_QUALIFIER` : seul l'humain peut identifier l'objet à retirer.
+
+Après décision humaine explicite, `VALIDER_STRUCTURE` peut exclure un objet de la STR courante, le déplacer vers un parent conforme à `allowed_parents`, ou le restaurer sous son identifiant historique. Toutes les CAPTURE et STR anciennes restent immuables ; les observations redevenues rattachables sont restaurées vers CURRENT.

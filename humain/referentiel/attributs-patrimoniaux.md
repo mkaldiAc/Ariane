@@ -1,6 +1,6 @@
 # ARIANE — Référentiel attributaire
 
-Protocole ARIANE : **1.4.0** (révision du catalogue attributaire : **1.3.3**).
+Protocole ARIANE : **1.5.0** (révision du catalogue attributaire : **1.3.3**).
 
 Référence normative : [`ia/referentiel/attributs/index.yaml`](../../ia/referentiel/attributs/index.yaml), qui déclare **278 attributs canoniques**.
 
@@ -64,3 +64,7 @@ La sélection ultérieure d'une observation faisant foi relève de la base de do
 - les installations électriques, plomberie et sanitaire disposent de définitions distinctes.
 
 Le détail des arbitrages est conservé dans `humain/decisions/journal-arbitrages-attributs.md`.
+
+## Conservation des attributs au fil des versions
+
+Le retrait d'un objet n'efface aucune observation historique. Les observations de l'objet sont exclues de la projection CURRENT lorsque l'objet est absent de la dernière STR, puis redeviennent éligibles en cas de réintégration sous son `object_id` historique. Aucune CAPTURE ancienne n'est modifiée ; une réintégration recherche les observations conservées dans **toutes** les CAPTURE.

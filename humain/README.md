@@ -2,7 +2,7 @@
 
 Documentation métier, historique de décisions et applications de consultation et de préparation des scénarios ARIANE.
 
-**Protocole ARIANE en vigueur : 1.4.0** (défini par `VERSION` et `ia/manifest.yaml`). Le dossier `ia/` reste **l'unique source normative** pour les IA exécutant une captation.
+**Protocole ARIANE en vigueur : 1.5.0** (défini par `VERSION` et `ia/manifest.yaml`). Le dossier `ia/` reste **l'unique source normative** pour les IA exécutant une captation.
 
 ## Arborescence actuelle
 
@@ -38,7 +38,7 @@ Consulter [GUIDE_APPLICATIONS.md](GUIDE_APPLICATIONS.md) pour les chemins de lan
 - [Arbitrages de structure](decisions/journal-arbitrages-structure.md)
 - [Arbitrages d'attributs](decisions/journal-arbitrages-attributs.md)
 
-Les versions 1.3.x indiquées dans certains journaux ou référentiels normatifs sont des **révisions de ressources**, et non la version globale d'exécution ARIANE, qui reste **1.4.0**.
+Les versions 1.3.x indiquées dans certains journaux ou référentiels normatifs sont des **révisions de ressources**, et non la version globale d'exécution ARIANE, qui reste **1.5.0**.
 
 ## Règles de gouvernance
 

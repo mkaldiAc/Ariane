@@ -1,6 +1,6 @@
 # ARIANE — Guide humain : CAPTURE, CURRENT et validation de structure
 
-Protocole de référence : **ARIANE 1.4.0**.
+Protocole de référence : **ARIANE 1.5.0**.
 
 Ce document explique le fonctionnement opérationnel décidé pour les captations ARIANE. Le référentiel normatif utilisé par l'IA reste exclusivement le dossier `ia/`. La présente documentation est descriptive et n'ajoute aucune règle d'exécution.
 
@@ -40,3 +40,9 @@ L'IA :
 - propose des candidats ;
 - ne décide jamais seule de l'évolution ;
 - exécute uniquement les décisions explicites via `VALIDER_STRUCTURE`.
+
+## Réversibilité d'une structure validée
+
+Toute proposition AJOUT, RETRAIT, MODIFIER_PARENT ou REINTEGRATION est non exécutoire. Une `A_QUALIFIER` exige que l'humain établisse lui-même l'identité de l'objet précis. Aucun retrait en cascade implicite n'est autorisé : les enfants doivent faire l'objet de décisions explicites ou de rattachements conformes.
+
+L'action `VALIDER_STRUCTURE` n'est déclenchée qu'après confirmation humaine explicite. Un retrait ne détruit pas l'objet dans les archives ; un retour restaure le même identifiant et les données éligibles issues de toutes les CAPTURE. Les contrôles de parent et de cycles sont effectués dans l'application et à nouveau par l'exécutant IA selon les règles normatives de `ia/`.

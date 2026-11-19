@@ -1,6 +1,6 @@
 # ARIANE — Guide des versions applicatives
 
-**État de référence : 19 novembre 2026** — protocole ARIANE **1.4.0**.
+**État de référence : 19 novembre 2026** — protocole ARIANE **1.5.0**.
 
 ## Historique et convention de versions
 
@@ -19,7 +19,7 @@ Socle : React 19, TypeScript, Vite 7, Lucide, thème autonome `Aiguillon_design`
 Le front est statique et lit des JSON en HTTP :
 1. `mkaldiAc/Ariane_capture_data/main/catalog.json` pour découvrir les programmes ;
 2. les `index.json` de programme, puis les fichiers `captures/`, `structures/`, `current/` et `validations/` déclarés dans les index ;
-3. le référentiel attributaire depuis `mkaldiAc/Ariane/main/ia/referentiel/attributs/`.
+3. les types, parents autorisés et attributs depuis les fichiers JSON embarqués dans `humain/application_v2/src/referentiel/` (la V1 conserve son fonctionnement historique).
 
 L'interface présente les programmes, les données courantes, les captations et les structures validées, ainsi qu'un espace de décision d'évolution de structure. Les boutons de scénario **composent et copient des prompts** ; ils peuvent ouvrir ChatGPT, mais ne déclenchent ni captation automatique ni écriture Git depuis le navigateur.
 
@@ -56,7 +56,6 @@ Ouvrir `http://localhost:8080/`.
 ## Configuration
 
 - `VITE_CAPTURE_DATA_BASE_URL` : URL du dépôt des captations ; valeur par défaut : `https://raw.githubusercontent.com/mkaldiAc/Ariane_capture_data/main`.
-- `VITE_ARIANE_REFERENCE_BASE_URL` : URL de base du référentiel ; valeur par défaut : `https://raw.githubusercontent.com/mkaldiAc/Ariane/main`.
 - `VITE_CHATGPT_URL` : destination du bouton « Copier et ouvrir ChatGPT ».
 - `VITE_UI_THEME_BASE_URL` : éventuel thème Aiguillon distant ; une copie locale est incluse.
 - `VITE_USE_MOCK_DATA` : contrôle le démarrage sans authentification obligatoire. La lecture des fichiers JSON reste une lecture du dépôt distant.
@@ -71,3 +70,9 @@ Les fichiers internes `README.md` et `ARCHITECTURE.md` des applications sont vol
 Toute amélioration de la V2 doit être faite **uniquement dans `humain/application_v2/`**, après validation explicite. Ne pas synchroniser automatiquement ces changements vers la V1.
 
 **Référence normative d'exécution des captations : `ia/README.md` puis `ia/manifest.yaml`.** Le présent document est une documentation de l'interface humaine, sans portée normative sur les opérations IA.
+
+## Évolutions ARIANE 1.5.0 dans la V2
+
+La V2 gère les propositions de structure AJOUT / RETRAIT / MODIFIER_PARENT / REINTEGRATION, les écarts `A_QUALIFIER` et les objets réintégrables issus des archives STR. Les contrôles parents-enfants et les attributs reposent sur un référentiel applicatif **embarqué**, dérivé de la source normative unique `ia/` sur `main`.
+
+Avant chaque livraison, lancer `npm run verify` depuis `humain/application_v2/` dans un clone complet du dépôt. Il teste la correspondance avec les fichiers normatifs locaux et compile l'application. Les prompts consultent toujours directement `ia/` sur `main`, sans sélection d'une version historique. La V1 reste intacte.

@@ -14,9 +14,9 @@
 
 L'application propose la consultation des programmes, des CAPTURE, des données CURRENT, des structures validées, des décisions de validation et du guide de captation. Elle permet de **préparer et copier des prompts de scénario**, notamment pour l'évolution de la structure patrimoniale, et d'ouvrir ChatGPT.
 
-L'application est actuellement **en lecture seule** vis-à-vis des résultats de captation : elle charge les fichiers JSON de `mkaldiAc/Ariane_capture_data/main` à partir de `catalog.json` et des `index.json` de programme. Les boutons de scénario ne déclenchent aucune écriture Git depuis le navigateur.
+L'application est **en lecture seule** vis-à-vis des résultats de captation : elle charge les fichiers JSON de `mkaldiAc/Ariane_capture_data/main` à partir de `catalog.json` et des `index.json` de programme. Les boutons de scénario ne déclenchent aucune écriture Git depuis le navigateur.
 
-**État actuel du référentiel :** `src/services/captureDataService.ts` consulte encore en HTTP les fichiers `ia/referentiel/attributs/` de `mkaldiAc/Ariane/main`. L'embarquement autonome des attributs et des règles de parenté est une **évolution prévue**, non encore implémentée. Ne pas présenter ce découplage comme déjà réalisé.
+**Référentiel applicatif embarqué :** la V2 contient sous `src/referentiel/` les 24 types patrimoniaux, leurs parents autorisés et les 278 attributs canoniques, dérivés de `ia/` sur `main`. `src/execution/structureRules.ts` interdit les rattachements non définis, les cycles, les parents manquants et les identifiants dupliqués. Ces fichiers sont embarqués pour le navigateur et ne nécessitent pas de lecture HTTP de `ia/` à l'exécution. Le référentiel `ia/` sur `main` reste l'unique autorité normative pour les prompts IA.
 
 ## Démarrage
 
@@ -45,7 +45,6 @@ Application : `http://localhost:8080/`. Guide HTML : `http://localhost:8080/guid
 ## Configuration
 
 - `VITE_CAPTURE_DATA_BASE_URL` : URL du dépôt des captations, par défaut `https://raw.githubusercontent.com/mkaldiAc/Ariane_capture_data/main`.
-- `VITE_ARIANE_REFERENCE_BASE_URL` : URL du référentiel normatif, par défaut `https://raw.githubusercontent.com/mkaldiAc/Ariane/main` (dépendance actuelle pour les attributs).
 - `VITE_CHATGPT_URL` : URL d'ouverture de ChatGPT après copie du prompt.
 - `VITE_UI_THEME_BASE_URL` : thème Aiguillon distant optionnel ; une copie locale est disponible.
 - `VITE_USE_MOCK_DATA` : paramétrage du mode de démonstration et de l'authentification.
@@ -86,7 +85,7 @@ Lorsqu'une règle normative évolue avec l'accord explicite du responsable du pr
 5. Prévoir des tests de comparaison entre la source `ia/` et les copies applicatives ; à terme, **faire échouer le contrôle de conformité et empêcher la publication de la V2** si une divergence est détectée. Ne jamais remplacer une règle indisponible ou non interprétable par une autorisation par défaut.
 6. Documenter les changements et confirmer que `application_v1/` est restée inchangée.
 
-Ce contrôle est une **obligation de maintenance** ; il n'est **pas encore automatisé** dans la version actuelle de l'application.
+Le contrôle des empreintes normatives et des représentations embarquées est désormais automatisé par `npm run check:referentiel`. Il lit localement `ia/` dans le dépôt de travail complet, sans accès réseau, et vérifie les empreintes des règles, schémas et contrats ainsi que les objets, parents et attributs générés. Il échoue en cas de divergence. Il reste **obligatoire de l'exécuter avant toute publication** ; aucune action GitHub Actions de blocage automatique n'est encore installée.
 
 ### 4. Principe intangible de validation humaine
 
@@ -112,3 +111,32 @@ Toute modification Git du dépôt `Ariane` nécessite **une validation explicite
 - [Manifeste IA normatif](../../ia/manifest.yaml).
 - [Règles de structure patrimoniale](../../ia/regles/01-structure-patrimoniale.md).
 - [Contrat de stockage des captations](../../ia/contracts/capture-storage.yaml).
+
+## Espace de décision structurelle — ARIANE 1.5.0
+
+La V2 prépare les changements sans modifier directement Git ni CURRENT. L'atelier permet :
+- **AJOUT** d'un candidat documenté à la structure cible ;
+- **RETRAIT** explicite d'un objet actif, sans cascade implicite ; les enfants doivent être déplacés ou retirés individuellement ;
+- **REINTEGRATION** d'un objet retrouvé dans une STR historique, sous son identifiant d'origine ;
+- **MODIFIER_PARENT** par glisser-déposer sur un parent ou choix d'un parent autorisé, sans changer l'identifiant de l'objet ;
+- **QUALIFIER** un écart de comptage contenu dans une proposition `A_QUALIFIER`, en sélectionnant manuellement l'objet concerné et en documentant l'arbitrage.
+
+Les captations ARIANE 1.5.0 peuvent fournir `propositions_structure.json`. Par compatibilité, la V2 affiche également certaines anomalies historiques `INCOHERENCE_STRUCTURE` comme **écarts de quantité à qualifier** ; leur traduction n'est pas une proposition de retrait identifiée et ne sélectionne jamais un objet.
+
+Les contrôles statiques de `allowed_parents`, de racine PRG, d'identifiants, de parent manquant et de cycle s'appuient sur les JSON embarqués. La priorité physique des CIR ne peut pas être déduite d'une seule matrice de types : toute modification de parent nécessite une **attestation humaine de vérification physique** et une justification. Pour les retraits aussi, une justification humaine est exigée. Les changements sont résumés avant validation, avec une **case de confirmation humaine explicite**, puis intégrés à un prompt structuré `VALIDER_STRUCTURE`. L'IA doit refaire tous les contrôles normatifs avant une éventuelle écriture.
+
+Les observations, relations, objets et identifiants historiques restent conservés dans les CAPTURE et les STR archivées. Les données d'un objet retiré cessent d'être éligibles à CURRENT, mais redeviennent éligibles après réintégration explicite et vérifiée. L'application **ne modifie jamais `Ariane_capture_data`**.
+
+### Vérifications de livraison
+
+Depuis la racine du dépôt, après `cd humain/application_v2 && npm ci` :
+
+```bash
+npm run check:referentiel
+npm run check:types
+npm run build
+```
+
+La commande `npm run verify` regroupe ces trois contrôles. Le contrôle du référentiel nécessite que le dossier `ia/` de ce même dépôt soit disponible localement ; il n'est pas requis au démarrage du navigateur ou du conteneur. Le script ne synchronise jamais silencieusement des règles : toute divergence exige une correction validée du code et/ou de `ia/`.
+
+**Les nouvelles fonctions s'appliquent aux CAPTURE futures respectant ARIANE 1.5.0 ; les CAPTURE historiques ne sont jamais réécrites.**

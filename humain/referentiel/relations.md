@@ -1,6 +1,6 @@
 # ARIANE — Relations complémentaires et juridiques
 
-Protocole ARIANE : **1.4.0** (révision des relations juridiques : **1.3.2**).
+Protocole ARIANE : **1.5.0** (révision des relations juridiques : **1.3.2**).
 
 Références normatives : [`ia/referentiel/objets-patrimoniaux.yaml`](../../ia/referentiel/objets-patrimoniaux.yaml) pour les relations complémentaires et [`ia/referentiel/relations-juridiques.yaml`](../../ia/referentiel/relations-juridiques.yaml) pour les relations juridiques.
 
@@ -23,3 +23,7 @@ Une relation juridique doit conserver autant que possible sa nature, la référe
 ## Captation incrémentale
 
 Une relation identifiée dans un jeu documentaire ultérieur est conservée dans la CAPTURE, sans entraîner de modification automatique de la structure patrimoniale validée. Si elle dépend d'un objet candidat, elle est conservée avec le statut `EN_ATTENTE_RATTACHEMENT_STRUCTUREL` et reste hors CURRENT jusqu'à la validation explicite de l'objet. La promotion ultérieure ne réécrit pas la CAPTURE d'origine.
+
+## Relations et objets retirés
+
+Une relation entre objets patrimoniaux reste conservée dans la CAPTURE qui l'a constatée. Elle ne figure plus dans CURRENT si un objet nécessaire a été retiré, puis redevient éligible lorsque tous les objets sont présents dans la STR active. L'opération de retrait ou de réintégration ne réécrit jamais les preuves historiques.
