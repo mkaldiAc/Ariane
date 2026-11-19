@@ -1,7 +1,7 @@
 {
   "ariane_version": "1.5.0",
   "source_branch": "main",
-  "source_manifest_blob_sha": "e7b9cbac1a0a34d00507d405c1a6a587204be809",
+  "source_manifest_blob_sha": "aad6ea186eedad29686722b9299c4154d63852f7",
   "source_objects_blob_sha": "fac2ca097e6cf6c108e8a6313466f4ca2bac8637",
   "source_attribute_index_blob_sha": "15a0247838ad6333986426af66dcb8efda6c6c3c",
   "source_attribute_catalog_blob_shas": {
@@ -22,7 +22,7 @@
     "ia/regles/08-capture-current.md": "726ff5743ba2f61677656fdf2d66daa1aec8d1a7",
     "ia/contracts/capture-storage.yaml": "fa82d7c249df69eab5bda8114f6a455f6382a6c4",
     "ia/schemas/proposition-structure.schema.json": "4ecb937ab124feefd0270e3caace6a85f23b0018",
-    "ia/schemas/structure-finalization-request.schema.json": "5d7edb1c19e8e7093f202a7e85d72b3228f8eb65",
-    "ia/instructions/EXECUTION.md": "ba235f52a6ecb99c613c78976bd734648990dbd1"
+    "ia/schemas/structure-finalization-request.schema.json": "4e314b16961b17d7ea2f21ab63ccd95e8ecf65f0",
+    "ia/instructions/EXECUTION.md": "182e4427dfdede54cf686fc98dfb52490ec1b392"
   }
 }
