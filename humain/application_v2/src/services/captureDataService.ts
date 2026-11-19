@@ -205,7 +205,7 @@ export type AttributeReference={
 
 const base=config.captureDataBaseUrl.replace(/\/$/,'');
 const fetchJson=async<T>(path:string):Promise<T>=>{
-  const url=`${base}/${path.replace(/^\\//,'')}?v=${Date.now()}`;
+  const url=`${base}/${(path.startsWith('/')?path.slice(1):path)}?v=${Date.now()}`;
   const response=await fetch(url,{cache:'no-store'});
   if(!response.ok)throw new Error(`Impossible de charger ${path} (${response.status})`);
   return response.json() as Promise<T>;
