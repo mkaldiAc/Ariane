@@ -352,17 +352,26 @@ export const captureDataService={
       if(capture.proposals.length||!capture.metadata.files.anomalies)return;
       const data=await fetchJson<{anomalies:Anomaly[]}>(`${capture.entry.path}/${capture.metadata.files.anomalies}`);
       for(const anomaly of data.anomalies){
-        const quantityMismatch=anomaly.anomaly_type==='INCOHERENCE_STRUCTURE'
-          &&/\b\d+\s+(?:places?|locaux?|objets?)\b/i.test(anomaly.description)
-          &&/\b(?:contre|tandis que|alors que)\b/i.test(anomaly.description);
-        if(!quantityMismatch)continue;
+        if(anomaly.anomaly_type!=='INCOHERENCE_STRUCTURE')continue;
+        const description=anomaly.description;
+        // L'adaptateur des CAPTURE antérieures ne choisit JAMAIS d'object_id.
+        // Une incohérence numérique favorable à l'ajout ne doit pas être
+        // étiquetée comme un retrait (cf. grilles de loyer de BRECE).
+        const reportedMatch=description.match(/\b(\d+)\s+(?:places?|locaux?|v[ée]hicules?|PST|LPO)\b/i);
+        const expectedMatch=description.match(/\bSTR-\d+[^.;]{0,100}?(?:contient|comporte)\s+(\d+)\s+(?:objets?\s+)?(?:PST|LPO|places?)\b/i);
+        const singularWaste=/\b(?:un seul|une seule)\s+local\b/i.test(description)
+          &&/\bSTR-\d+\s+(?:deux|2)\s+LPO\b/i.test(description);
+        const documented=singularWaste?1:reportedMatch?Number(reportedMatch[1]):null;
+        const validated=singularWaste?2:expectedMatch?Number(expectedMatch[1]):null;
+        if(documented===null||validated===null||documented===validated)continue;
+        const operation:StructureProposal['operation']=documented<validated?'RETRAIT':'AJOUT';
         proposals.push({
           proposal_id:`LEGACY_${capture.entry.capture_id}_${anomaly.anomaly_id}`,
           programme_id:programme.index.programme_id,capture_id:capture.entry.capture_id,
-          operation:'RETRAIT',qualification_status:'A_QUALIFIER',object_id:null,
+          operation,qualification_status:'A_QUALIFIER',object_id:null,
           source_id:anomaly.source_id||'SOURCE_HISTORIQUE_NON_PRECISEE',
           source_anchor:anomaly.source_reference||null,anomaly_id:anomaly.anomaly_id,
-          description:anomaly.description,legacy:true
+          description,legacy:true
         });
       }
     }));
