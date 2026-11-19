@@ -2,21 +2,126 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ARIANE Demande de validation d'une structure",
   "type": "object",
-  "required": ["action", "human_approval", "programme_id", "target_structure_version"],
+  "required": [
+    "action",
+    "human_approval",
+    "programme_id",
+    "target_structure_version"
+  ],
   "properties": {
-    "action": {"const": "VALIDER_STRUCTURE"},
-    "human_approval": {"const": true},
-    "programme_id": {"type": "string", "minLength": 1},
-    "source_structure_version": {"type": ["string", "null"]},
-    "target_structure_version": {"type": "string", "minLength": 1},
+    "action": {
+      "const": "VALIDER_STRUCTURE"
+    },
+    "human_approval": {
+      "const": true
+    },
+    "programme_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_structure_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "target_structure_version": {
+      "type": "string",
+      "minLength": 1
+    },
     "approved_candidate_object_ids": {
       "type": "array",
-      "items": {"type": "string", "minLength": 1},
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true
     },
     "requested_changes": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
+    },
+    "changes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "operation",
+          "object_id"
+        ],
+        "properties": {
+          "operation": {
+            "enum": [
+              "AJOUT",
+              "RETRAIT",
+              "MODIFIER_PARENT",
+              "REINTEGRATION"
+            ]
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "from_parent_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "to_parent_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "justification": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_proposal_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "operation": {
+                  "const": "MODIFIER_PARENT"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "to_parent_object_id",
+                "justification"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "operation": {
+                  "const": "REINTEGRATION"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "to_parent_object_id"
+              ]
+            }
+          }
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "additionalProperties": true

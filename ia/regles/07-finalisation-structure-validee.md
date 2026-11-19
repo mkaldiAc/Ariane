@@ -1,6 +1,6 @@
 # ARIANE — Validation d'une structure patrimoniale
 
-Version : 1.4.0
+Version : 1.5.0
 
 ## Principe
 
@@ -107,3 +107,28 @@ Lorsqu'elle exécute `VALIDER_STRUCTURE`, l'IA doit indiquer :
 - les anomalies de `CURRENT` résolues ;
 - qu'aucune CAPTURE historique n'a été modifiée ;
 - qu'aucune décision autonome de validation n'a été prise par l'IA.
+
+## Opérations structurées approuvées par l'humain — 1.5.0
+
+Le déclencheur `VALIDER_STRUCTURE` peut inclure `changes`, tableau d'opérations explicitement décidées par l'humain, en complément du champ historique `approved_candidate_object_ids` :
+
+- `AJOUT` : intégrer un candidat existant dans les CAPTURE ; aucun candidat ne doit être créé par l'exécutant.
+- `RETRAIT` : retirer un `object_id` explicitement identifié de la nouvelle STR, sans détruire son historique.
+- `MODIFIER_PARENT` : modifier `parent_object_id` pour un objet actif ou ajouté, sans changer son identité ; la justification physique du nouveau parent doit être fournie.
+- `REINTEGRATION` : restaurer avec son `object_id` d'origine un objet appartenant à une STR archivée et absent de CURRENT.
+
+Chaque opération est contrôlée contre `ia/schemas/structure-finalization-request.schema.json` et `ia/referentiel/objets-patrimoniaux.yaml`. Une proposition issue d'une CAPTURE, un clic préparatoire ou une anomalie n'est jamais une validation humaine.
+
+### Préconditions cumulatives
+
+1. Les champs `action`, `human_approval: true`, `programme_id`, `source_structure_version` et `target_structure_version` sont présents **dans le message courant de l'humain** ; la version source correspond exactement à CURRENT.
+2. Les objets ajoutés existent dans les CAPTURE candidats ; les objets réintégrés existent dans une STR archivée ; les retraits visent des objets actifs et précisément sélectionnés ; aucun doublon d'identité.
+3. Aucune racine PRG ne peut être supprimée ni réattribuée. La structure cible contient une unique racine, aucun cycle, parent absent ou sous-arbre orphelin.
+4. Chaque type de parent appartient à `allowed_parents`. La règle de priorité du parent physique le plus précis, notamment la CIR directement desservante, reste obligatoire et doit être étayée par les sources ou l'arbitrage physique humain.
+5. Retirer un parent sans retirer **explicitement** ses enfants ni les rattacher correctement est interdit ; aucune cascade implicite.
+6. Une réintégration ne réécrit pas l'objet archivé ni les observations.
+7. Toutes les opérations doivent être appliquées et validées **ensemble**, sinon **aucune écriture** de STR ni CURRENT n'est autorisée. L'IA n'ajoute ni ne remplace une décision humaine.
+
+### Projection CURRENT
+
+Après validation, reconstruire les données structurellement rattachables de CURRENT à partir des CAPTURE immuables sur la structure cible : exclure les observations des objets retirés et les relations dont les objets ne sont plus tous présents ; restaurer celles redevenues éligibles, dédupliquées par identifiant, sans changement de valeur ni de provenance. Maintenir les sources cumulées et le suivi opérationnel des anomalies. Inscrire les opérations et objets concernés dans `validations/STR-xxx.json`.

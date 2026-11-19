@@ -1,6 +1,6 @@
 # ARIANE — Traçabilité et sources
 
-Version : 1.3.3
+Version : 1.5.0
 
 ## Principe
 
@@ -61,3 +61,7 @@ Pour `DEDUIT`, `PROXY` ou `ENRICHI`, conserver en plus :
 ## Multiplicité
 
 Deux occurrences distinctes dans deux documents différents produisent deux observations distinctes même si la valeur est identique.
+
+## Traçabilité des propositions structurelles
+
+Toute entrée de `propositions_structure.json` est reliée à une CAPTURE et à une source documentaire avec `source_id`, `source_anchor` lorsque disponible, justification et type d'opération. La description d'un écart de quantité ne doit jamais être convertie en identification arbitraire d'objet à retirer ; utiliser `A_QUALIFIER` et `object_id: null`. Les propositions sont conservées immuablement avec les CAPTURE. La décision humaine est tracée séparément dans la validation de STR. Une proposition ne vaut jamais autorisation de modifier la structure.

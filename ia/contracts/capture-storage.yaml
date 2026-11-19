@@ -1,4 +1,4 @@
-version: "1.4.0"
+version: "1.5.0"
 project: "ARIANE"
 purpose: "Contrat de stockage Git des captations ARIANE pour le démonstrateur."
 
@@ -30,6 +30,7 @@ capture_files:
   sources: "sources.json"
   structure_proposee: "structure_proposee.json"
   objets_candidats: "objets_candidats.json"
+  propositions_structure: "propositions_structure.json"
   observations: "observations.json"
   relations: "relations.json"
   anomalies: "anomalies.json"
@@ -58,6 +59,10 @@ json_shapes:
     required_root_fields: [programme_id, capture_id, structure_version, objects]
     collection_field: "objects"
     item_schema: "ia/schemas/objet.schema.json"
+  propositions_structure:
+    required_root_fields: [programme_id, capture_id, proposals]
+    collection_field: "proposals"
+    item_schema: "ia/schemas/proposition-structure.schema.json"
   observations:
     required_root_fields: [programme_id, capture_id, observations]
     collection_field: "observations"
@@ -106,11 +111,14 @@ write_sequence:
   incremental:
     - "Vérifier que le chemin de CAPTURE cible n'existe pas."
     - "Créer la nouvelle CAPTURE immuable."
+    - "Conserver les propositions de structure éventuelles dans la CAPTURE sans modifier la STR validée."
     - "Mettre à jour CURRENT uniquement avec les données structurellement rattachables."
     - "Mettre à jour l'index du programme et catalog.json."
     - "Committer les écritures."
   validate_structure:
     - "Créer une nouvelle archive structures/{structure_version}/structure.json."
+    - "Contrôler toutes les opérations humaines structurées contre le référentiel et préparer atomiquement la nouvelle STR et CURRENT."
+    - "Retirer de CURRENT les données devenues non rattachables ; restaurer depuis toutes les CAPTURE les données des objets réintégrés."
     - "Mettre à jour CURRENT conformément à VALIDER_STRUCTURE."
     - "Créer une trace dans validations/ sans modifier les CAPTURE."
     - "Mettre à jour l'index du programme et catalog.json."

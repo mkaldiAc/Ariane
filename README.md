@@ -2,7 +2,7 @@
 
 ARIANE est un référentiel et un protocole de captation patrimoniale standardisée assistée par IA.
 
-Version courante : **1.4.0**.
+Version courante : **1.5.0**.
 
 ## Organisation du dépôt
 
@@ -125,3 +125,7 @@ L'IA :
 ## Principe central
 
 > ARIANE construit une structure patrimoniale initiale par programme. La décision de validation de cette structure est humaine. Après validation explicite, la structure est figée ; les captations ultérieures accumulent des observations sourcées et scorées sur les objets existants sans modifier la structure ni arbitrer les valeurs métier.
+
+## ARIANE 1.5.0 — Changements structurels réversibles
+
+Les CAPTURE peuvent désormais documenter des propositions d'ajout, de retrait, de modification de parent et de réintégration, sans modifier automatiquement la structure validée. Seule une instruction humaine explicite `VALIDER_STRUCTURE` peut matérialiser une nouvelle STR. Un objet retiré ne perd ni son identité ni ses observations historiques et peut être réintégré sous le même ID. Les règles opérationnelles font autorité dans `ia/` sur `main`.

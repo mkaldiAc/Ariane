@@ -1,6 +1,6 @@
 # ARIANE — Préservation des observations
 
-Version : 1.4.0
+Version : 1.5.0
 
 ## Principe cardinal
 
@@ -48,3 +48,9 @@ L'IA ne doit jamais :
 La sélection éventuelle d'une observation comme valeur de référence est réalisée hors IA, dans la base de données ou le système métier aval, au moyen d'opérations transactionnelles distinctes de la captation.
 
 ARIANE IA n'a pas besoin de connaître le résultat de cette validation pour poursuivre les captations documentaires.
+
+## Retrait et réintégration
+
+Un retrait de la structure active ne supprime ni une observation, ni une relation, ni une source, ni l'identité de l'objet dans les CAPTURE historiques. Les STR archivées restent immuables. Les observations liées à un objet retiré ne figurent plus dans CURRENT, de même que les relations nécessitant cet objet.
+
+Lors d'une réintégration explicitement approuvée, conserver exactement le même `object_id` et réévaluer **toutes les CAPTURE** pour reconstruire les observations et relations désormais structurellement rattachables. Cette reconstruction doit inclure tant les observations d'objets auparavant validés que celles en attente. Conserver `observation_id`, `relation_id` et provenance, dédupliquer selon ces identifiants et ne réécrire aucune CAPTURE.

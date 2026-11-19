@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARIANE Proposition non exécutoire de modification de structure",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "programme_id",
+    "capture_id",
+    "operation",
+    "qualification_status",
+    "description",
+    "source_id"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "programme_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capture_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operation": {
+      "enum": [
+        "AJOUT",
+        "RETRAIT",
+        "MODIFIER_PARENT",
+        "REINTEGRATION"
+      ]
+    },
+    "qualification_status": {
+      "enum": [
+        "IDENTIFIEE",
+        "A_QUALIFIER"
+      ]
+    },
+    "object_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "object_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "from_parent_object_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "to_parent_object_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_anchor": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "anomaly_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "confidence_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "qualification_status": {
+            "const": "IDENTIFIEE"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "object_id"
+        ],
+        "properties": {
+          "object_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "qualification_status": {
+            "const": "A_QUALIFIER"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "object_id": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true
+}

@@ -1,6 +1,6 @@
 # ARIANE — CAPTURE, CURRENT et promotion des données
 
-Version : 1.4.0
+Version : 1.5.0
 
 ## 1. Principe général
 
@@ -98,3 +98,16 @@ CAPTURE est la mémoire factuelle et immuable.
 CURRENT est l'état consolidé courant.
 
 Une donnée captée n'est jamais perdue parce qu'elle n'est pas encore intégrable à CURRENT.
+
+## 11. Réversibilité et changements de parent — 1.5.0
+
+Une décision humaine explicite `VALIDER_STRUCTURE` peut approuver AJOUT, RETRAIT, MODIFIER_PARENT ou REINTEGRATION. Une proposition documentaire non approuvée ne modifie jamais la STR ni CURRENT.
+
+- RETRAIT : l'objet sort de la nouvelle structure active ; ses observations et relations restent **intactes dans toutes les CAPTURE** et les anciennes STR. CURRENT ne contient plus ses observations ou relations non rattachables.
+- REINTEGRATION : l'objet historique revient avec exactement le même `object_id` ; ses données sont rendues éligibles en reparcourant **toutes les CAPTURE**, même celles réalisées pendant son absence.
+- MODIFIER_PARENT : seul le parent de la structure cible change. Toutes les dépendances `allowed_parents`, la priorité physique des CIR, l'absence de cycles et les enfants sont vérifiées avant commit.
+- AJOUT : les observations en attente sont promues à partir des CAPTURE comme précédemment.
+
+Les propositions `A_QUALIFIER` ne sont pas des retraits d'objets identifiés. Une anomalie peut coexister avec une proposition, sans conférer à l'IA un pouvoir d'arbitrage.
+
+Toute validation est logiquement atomique : impossible d'enregistrer une STR cible sans CURRENT compatible ; aucune écriture partielle ni modification de CAPTURE passée.
