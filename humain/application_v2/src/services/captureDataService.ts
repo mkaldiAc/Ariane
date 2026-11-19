@@ -358,9 +358,9 @@ export const captureDataService={
         // Une incohérence numérique favorable à l'ajout ne doit pas être
         // étiquetée comme un retrait (cf. grilles de loyer de BRECE).
         const reportedMatch=description.match(/\b(\d+)\s+(?:places?|locaux?|v[ée]hicules?|PST|LPO)\b/i);
-        const expectedMatch=description.match(/\bSTR-\d+[^.;]{0,100}?(?:contient|comporte)\s+(\d+)\s+(?:objets?\s+)?(?:PST|LPO|places?)\b/i);
+        const expectedMatch=description.match(/\bSTR-\d+[^.;]{0,100}?(?:contient|comporte)\s+(\d+)\s+(?:objets?\s+)?(?:PST(?:_|\b)|LPO(?:_|\b)|places?\b)/i);
         const singularWaste=/\b(?:un seul|une seule)\s+local\b/i.test(description)
-          &&/\bSTR-\d+\s+(?:deux|2)\s+LPO\b/i.test(description);
+          &&/\bSTR-\d+\s+(?:deux|2)\s+LPO(?:_|\b)/i.test(description);
         const documented=singularWaste?1:reportedMatch?Number(reportedMatch[1]):null;
         const validated=singularWaste?2:expectedMatch?Number(expectedMatch[1]):null;
         if(documented===null||validated===null||documented===validated)continue;
