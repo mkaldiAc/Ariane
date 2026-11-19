@@ -6,6 +6,7 @@
     "action",
     "human_approval",
     "programme_id",
+    "source_structure_version",
     "target_structure_version"
   ],
   "properties": {
@@ -20,10 +21,8 @@
       "minLength": 1
     },
     "source_structure_version": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string",
+      "minLength": 1
     },
     "target_structure_version": {
       "type": "string",

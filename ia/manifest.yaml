@@ -79,6 +79,7 @@ structure_validation:
     - action
     - human_approval
     - programme_id
+    - source_structure_version
     - target_structure_version
   candidate_promotion_field: "approved_candidate_object_ids"
   structured_changes_field: "changes"

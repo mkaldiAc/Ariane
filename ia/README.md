@@ -107,6 +107,7 @@ L'IA peut l'exécuter uniquement si le message utilisateur courant fournit expli
 action: VALIDER_STRUCTURE
 human_approval: true
 programme_id: <PROGRAMME_ID>
+source_structure_version: <STRUCTURE_SOURCE>
 target_structure_version: <STRUCTURE_VERSION>
 ```
 

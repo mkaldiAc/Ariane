@@ -39,6 +39,7 @@ L'IA n'est autorisée à exécuter cette opération que si l'instruction utilisa
 - `action: VALIDER_STRUCTURE` ;
 - `human_approval: true` ;
 - `programme_id` ;
+- `source_structure_version`, correspondant exactement à CURRENT (ou `PROPOSEE` lors de la première validation) ;
 - `target_structure_version`.
 
 Lorsqu'un objet candidat doit être intégré, l'humain doit aussi identifier explicitement ce candidat, de préférence dans `approved_candidate_object_ids`.
