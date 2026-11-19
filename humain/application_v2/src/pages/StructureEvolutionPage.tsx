@@ -1,7 +1,8 @@
 import {useEffect,useMemo,useState,type DragEvent} from 'react';
-import {ArrowLeft,ArrowRight,Check,Clipboard,ExternalLink,GitBranch,GripVertical,LoaderCircle,RotateCcw,X} from 'lucide-react';
+import {AlertTriangle,ArchiveRestore,ArrowLeft,ArrowRight,Check,Clipboard,ExternalLink,GitBranch,GripVertical,LoaderCircle,Move,RotateCcw,X} from 'lucide-react';
 import {buildStructureValidationPrompt} from '../execution/promptBuilders';
-import {captureDataService,type PatrimonialObject,type ProgrammeData,type StructureCandidate} from '../services/captureDataService';
+import {allowedParentTypes,buildValidatedChanges,canReparent,parentNeedsPhysicalVerification,validateStructure,type StructureChange} from '../execution/structureRules';
+import {captureDataService,type HistoricalObject,type PatrimonialObject,type ProgrammeData,type StructureCandidate,type StructureProposal} from '../services/captureDataService';
 import {chatLaunchErrorMessage,clipboardErrorMessage,copyPromptAndMaybeOpenChat} from '../utils/promptActions';
 import './StructureEvolutionPage.css';
 
@@ -11,7 +12,7 @@ type Props={
   onChatLaunchError:(message:string|null)=>void;
 };
 
-type DragPayload={kind:'existing'|'candidate'|'removed';objectId:string};
+type DragPayload={kind:'existing'|'candidate'|'removed'|'historical';objectId:string};
 
 const nextStructureVersion=(programme:ProgrammeData)=>{
   const numbers=programme.index.structures
@@ -60,6 +61,18 @@ const ancestorIds=(objects:PatrimonialObject[],objectId:string)=>{
 export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Props){
   const [currentObjects,setCurrentObjects]=useState<PatrimonialObject[]>([]);
   const [candidates,setCandidates]=useState<StructureCandidate[]>([]);
+  const [historicalObjects,setHistoricalObjects]=useState<HistoricalObject[]>([]);
+  const [proposals,setProposals]=useState<StructureProposal[]>([]);
+  const [reintegratedIds,setReintegratedIds]=useState<Set<string>>(new Set());
+  const [parentOverrides,setParentOverrides]=useState<Record<string,string>>({});
+  const [moveObjectId,setMoveObjectId]=useState<string|null>(null);
+  const [qualifiedObjectId,setQualifiedObjectId]=useState('');
+  const [qualifiedProposalId,setQualifiedProposalId]=useState('');
+  const [humanJustification,setHumanJustification]=useState('');
+  const [physicalVerified,setPhysicalVerified]=useState(false);
+  const [humanApproved,setHumanApproved]=useState(false);
+  const [editError,setEditError]=useState<string|null>(null);
+  const [approvedProposalByObject,setApprovedProposalByObject]=useState<Record<string,string>>({});
   const [acceptedCandidateIds,setAcceptedCandidateIds]=useState<Set<string>>(new Set());
   const [removedExistingIds,setRemovedExistingIds]=useState<Set<string>>(new Set());
   const [loading,setLoading]=useState(true);
@@ -77,12 +90,23 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     setError(null);
     setAcceptedCandidateIds(new Set());
     setRemovedExistingIds(new Set());
+    setReintegratedIds(new Set());
+    setParentOverrides({});
+    setHumanApproved(false);
+    setPhysicalVerified(false);
+    setEditError(null);
     Promise.resolve().then(async()=>{
       const current=await captureDataService.loadCurrent(programme);
-      const foundCandidates=await captureDataService.loadCandidatesForStructure(programme,current.structure);
+      const [foundCandidates,historical,foundProposals]=await Promise.all([
+        captureDataService.loadCandidatesForStructure(programme,current.structure),
+        captureDataService.loadHistoricalObjects(programme,current.structure),
+        captureDataService.loadStructureProposals(programme)
+      ]);
       if(!active)return;
       setCurrentObjects(current.structure.objects);
       setCandidates(foundCandidates);
+      setHistoricalObjects(historical);
+      setProposals(foundProposals);
     }).catch(reason=>{
       if(active)setError(reason instanceof Error?reason.message:String(reason));
     }).finally(()=>{
@@ -93,11 +117,15 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
 
   const candidatesById=useMemo(()=>new Map(candidates.map(candidate=>[candidate.object.object_id,candidate])),[candidates]);
   const currentById=useMemo(()=>new Map(currentObjects.map(object=>[object.object_id,object])),[currentObjects]);
+  const historicalById=useMemo(()=>new Map(historicalObjects.map(item=>[item.object.object_id,item])),[historicalObjects]);
 
   const targetObjects=useMemo(()=>[
     ...currentObjects.filter(object=>!removedExistingIds.has(object.object_id)),
-    ...candidates.filter(candidate=>acceptedCandidateIds.has(candidate.object.object_id)).map(candidate=>candidate.object)
-  ],[currentObjects,candidates,removedExistingIds,acceptedCandidateIds]);
+    ...candidates.filter(candidate=>acceptedCandidateIds.has(candidate.object.object_id)).map(candidate=>candidate.object),
+    ...historicalObjects.filter(item=>reintegratedIds.has(item.object.object_id)).map(item=>item.object)
+  ].map(object=>parentOverrides[object.object_id]
+    ?{...object,parent_object_id:parentOverrides[object.object_id]}
+    :object),[currentObjects,candidates,historicalObjects,removedExistingIds,acceptedCandidateIds,reintegratedIds,parentOverrides]);
 
   const targetIds=useMemo(()=>new Set(targetObjects.map(object=>object.object_id)),[targetObjects]);
 
@@ -128,26 +156,57 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     [targetObjects,targetIds]
   );
 
+  const structureIssues=useMemo(()=>validateStructure(targetObjects),[targetObjects]);
   const availableCandidates=candidates.filter(candidate=>!acceptedCandidateIds.has(candidate.object.object_id));
   const removedExisting=currentObjects.filter(object=>removedExistingIds.has(object.object_id));
+  const archivedAvailable=historicalObjects.filter(item=>!reintegratedIds.has(item.object.object_id));
+  const reinserted=historicalObjects.filter(item=>reintegratedIds.has(item.object.object_id));
+  const changedParents=targetObjects.filter(object=>parentOverrides[object.object_id]
+    &&parentOverrides[object.object_id]!==(
+      currentById.get(object.object_id)||candidatesById.get(object.object_id)?.object||historicalById.get(object.object_id)?.object
+    )?.parent_object_id);
+  const hasParentChanges=changedParents.length>0;
 
-  const removeExisting=(objectId:string)=>{
-    const cascade=descendantsOf(currentObjects,objectId);
-    setRemovedExistingIds(previous=>{
-      const next=new Set(previous);
-      cascade.forEach(id=>next.add(id));
-      return next;
-    });
+  const removeExisting=(objectId:string,proposalId?:string)=>{
+    const object=currentById.get(objectId);
+    if(!object||object.object_type==='PRG'){
+      setEditError('La racine PRG ne peut pas être retirée.');
+      return;
+    }
+    const directChildren=targetObjects.filter(item=>item.parent_object_id===objectId);
+    if(directChildren.length){
+      setEditError('Retrait bloqué : déplacez ou retirez explicitement les '+directChildren.length+' enfant(s) avant de retirer '+objectId+'. Aucune cascade automatique.');
+      return;
+    }
+    setRemovedExistingIds(previous=>new Set(previous).add(objectId));
+    if(proposalId)setApprovedProposalByObject(previous=>({...previous,[objectId]:proposalId}));
+    setEditError(null);
   };
 
   const restoreExisting=(objectId:string)=>{
-    const ancestors=ancestorIds(currentObjects,objectId);
-    setRemovedExistingIds(previous=>{
-      const next=new Set(previous);
-      next.delete(objectId);
-      ancestors.forEach(id=>next.delete(id));
-      return next;
-    });
+    setRemovedExistingIds(previous=>{const next=new Set(previous);next.delete(objectId);return next});
+    setEditError(null);
+  };
+  const reintegrateHistorical=(objectId:string)=>{
+    if(!historicalById.has(objectId))return;
+    setReintegratedIds(previous=>new Set(previous).add(objectId));
+    setEditError(null);
+  };
+  const removeHistorical=(objectId:string)=>{
+    setReintegratedIds(previous=>{const next=new Set(previous);next.delete(objectId);return next});
+    setParentOverrides(previous=>{const next={...previous};delete next[objectId];return next});
+  };
+  const updateParent=(objectId:string,parentId:string,proposalId?:string)=>{
+    const object=targetObjects.find(item=>item.object_id===objectId);
+    const parent=targetObjects.find(item=>item.object_id===parentId);
+    if(!object||!parent)return setEditError('Le déplacement requiert deux objets présents dans la structure cible.');
+    const issues=canReparent(targetObjects,objectId,parentId);
+    if(issues.length)return setEditError('Déplacement interdit : '+issues[0].message);
+    setParentOverrides(previous=>({...previous,[objectId]:parentId}));
+    setMoveObjectId(null);
+    setPhysicalVerified(false);
+    if(proposalId)setApprovedProposalByObject(previous=>({...previous,[objectId]:proposalId}));
+    setEditError(null);
   };
 
   const addCandidate=(objectId:string)=>{
@@ -156,6 +215,7 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
   };
 
   const removeCandidate=(objectId:string)=>{
+    setParentOverrides(previous=>{const next={...previous};delete next[objectId];return next});
     setAcceptedCandidateIds(previous=>{
       const next=new Set(previous);
       next.delete(objectId);
@@ -163,16 +223,22 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     });
   };
 
-  const onDrop=(zone:'target'|'available',event:DragEvent)=>{
+  const onDrop=(zone:'target'|'available',event:DragEvent,parentId?:string)=>{
     event.preventDefault();
     try{
       const payload=JSON.parse(event.dataTransfer.getData('application/json')) as DragPayload;
       if(zone==='target'){
-        if(payload.kind==='candidate')addCandidate(payload.objectId);
-        if(payload.kind==='removed')restoreExisting(payload.objectId);
+        if(parentId){
+          updateParent(payload.objectId,parentId);
+        }else{
+          if(payload.kind==='candidate')addCandidate(payload.objectId);
+          if(payload.kind==='removed')restoreExisting(payload.objectId);
+          if(payload.kind==='historical')reintegrateHistorical(payload.objectId);
+        }
       }else{
         if(payload.kind==='existing')removeExisting(payload.objectId);
         if(payload.kind==='candidate')removeCandidate(payload.objectId);
+        if(payload.kind==='historical')removeHistorical(payload.objectId);
       }
     }catch{
       // Ignore malformed drag payloads.
@@ -186,25 +252,51 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
 
   const approvedCandidateIds=Array.from(acceptedCandidateIds);
   const removedIds=Array.from(removedExistingIds);
-  const requestedChanges=[
-    ...removedIds.map(id=>{
-      const object=currentById.get(id);
-      return `Retirer de la structure validée l'objet ${id} (${object?.object_type||'TYPE_INCONNU'} — ${object?objectLabel(object):id}).`;
-    })
+  const reinsertedIds=Array.from(reintegratedIds);
+  const changes:StructureChange[]=[
+    ...approvedCandidateIds.map(id=>({
+      operation:'AJOUT' as const,object_id:id,
+      source_proposal_ids:approvedProposalByObject[id]?[approvedProposalByObject[id]]:undefined
+    })),
+    ...removedIds.map(id=>({
+      operation:'RETRAIT' as const,object_id:id,
+      justification:humanJustification.trim()||'Retrait explicitement arbitré par l’humain',
+      source_proposal_ids:approvedProposalByObject[id]?[approvedProposalByObject[id]]:undefined
+    })),
+    ...reinsertedIds.map(id=>({
+      operation:'REINTEGRATION' as const,object_id:id,
+      to_parent_object_id:targetObjects.find(object=>object.object_id===id)?.parent_object_id||null
+    })),
+    ...changedParents.map(object=>({
+      operation:'MODIFIER_PARENT' as const,object_id:object.object_id,
+      from_parent_object_id:(
+        currentById.get(object.object_id)||candidatesById.get(object.object_id)?.object||historicalById.get(object.object_id)?.object
+      )?.parent_object_id||null,
+      to_parent_object_id:object.parent_object_id||null,
+      justification:humanJustification.trim(),
+      source_proposal_ids:approvedProposalByObject[object.object_id]?[approvedProposalByObject[object.object_id]]:undefined
+    }))
   ];
-  const hasChanges=approvedCandidateIds.length>0||removedIds.length>0;
-  const canValidate=Boolean(sourceStructureVersion&&hasChanges&&orphanTargetObjects.length===0);
+  const requestedChanges:string[]=[]; // Les changements exécutables sont exclusivement structurés.
+  const hasChanges=changes.length>0;
+  const physicalWarnings=changedParents.filter(object=>
+    parentNeedsPhysicalVerification(object.object_type,targetObjects.find(x=>x.object_id===object.parent_object_id)?.object_type||'')
+  );
+  const canValidate=Boolean(sourceStructureVersion&&hasChanges&&structureIssues.length===0
+    &&(!hasParentChanges||(physicalVerified&&humanJustification.trim().length>=12))
+    &&(!removedIds.length||humanJustification.trim().length>=12));
 
   const buildPrompt=()=>buildStructureValidationPrompt({
     programmeId:programme.index.programme_id,
     sourceStructureVersion:sourceStructureVersion!,
     targetStructureVersion,
     approvedCandidateObjectIds:approvedCandidateIds,
-    requestedChanges
+    requestedChanges,
+    changes:buildValidatedChanges(humanApproved,changes)
   });
 
   const copyPrompt=async(openChat:boolean)=>{
-    if(!canValidate)return;
+    if(!canValidate||!humanApproved)return;
     setClipboardError(null);
     onChatLaunchError(null);
     try{
