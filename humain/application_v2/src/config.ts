@@ -3,6 +3,7 @@ export const config={
   captureDataBaseUrl:import.meta.env.VITE_CAPTURE_DATA_BASE_URL||'https://raw.githubusercontent.com/mkaldiAc/Ariane_capture_data/main',
   referenceDataBaseUrl:import.meta.env.VITE_ARIANE_REFERENCE_BASE_URL||'https://raw.githubusercontent.com/mkaldiAc/Ariane/main',
   useMockData:import.meta.env.VITE_USE_MOCK_DATA!=='false',
+  chatgptUrl:import.meta.env.VITE_CHATGPT_URL||'https://chatgpt.com/',
   azure:{
     clientId:import.meta.env.VITE_AZURE_CLIENT_ID||'',
     tenantId:import.meta.env.VITE_AZURE_TENANT_ID||'',

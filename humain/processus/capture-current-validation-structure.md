@@ -1,6 +1,8 @@
 # ARIANE — Guide humain : CAPTURE, CURRENT et validation de structure
 
-Ce document explique le fonctionnement opérationnel décidé pour les captations ARIANE. Le référentiel normatif utilisé par l'IA reste exclusivement le dossier `ia/`.
+Protocole de référence : **ARIANE 1.4.0**.
+
+Ce document explique le fonctionnement opérationnel décidé pour les captations ARIANE. Le référentiel normatif utilisé par l'IA reste exclusivement le dossier `ia/`. La présente documentation est descriptive et n'ajoute aucune règle d'exécution.
 
 ## Principes
 

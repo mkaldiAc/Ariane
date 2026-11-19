@@ -1,6 +1,9 @@
 import {useEffect,useMemo,useState} from 'react';
-import {ArrowLeft,Boxes,CalendarDays,ChevronRight,Database,FileText,GitBranch,Layers3,LoaderCircle} from 'lucide-react';
+import {ArrowLeft,Boxes,CalendarDays,ChevronRight,Clipboard,Database,ExternalLink,FileText,GitBranch,Layers3,LoaderCircle,Plus,X} from 'lucide-react';
 import {CurrentDataPage} from './CurrentDataPage';
+import {StructureEvolutionPage} from './StructureEvolutionPage';
+import {buildIncrementalPrompt,buildInitialisationPrompt,normalizeArianeId} from '../execution/promptBuilders';
+import {chatLaunchErrorMessage,clipboardErrorMessage,copyPromptAndMaybeOpenChat} from '../utils/promptActions';
 import {
   captureDataService,
   type CaptureDetail,
@@ -18,7 +21,8 @@ type Route=
   |{kind:'capture';programmeId:string;captureId:string}
   |{kind:'structures';programmeId:string}
   |{kind:'structure';programmeId:string;structureVersion:string}
-  |{kind:'candidates';programmeId:string;structureVersion:string};
+  |{kind:'candidates';programmeId:string;structureVersion:string}
+  |{kind:'evolve';programmeId:string};
 
 type BreadcrumbItem={label:string;route?:Route};
 
@@ -55,6 +59,16 @@ export function ProgrammesPage(){
   const [loading,setLoading]=useState(true);
   const [detailLoading,setDetailLoading]=useState(false);
   const [error,setError]=useState<string|null>(null);
+  const [chatLaunchError,setChatLaunchError]=useState<string|null>(null);
+  const [newProgrammeOpen,setNewProgrammeOpen]=useState(false);
+  const [newProgrammeName,setNewProgrammeName]=useState('');
+  const [initialCaptureName,setInitialCaptureName]=useState('APD_PLAN');
+  const [promptCopied,setPromptCopied]=useState(false);
+  const [initialClipboardError,setInitialClipboardError]=useState<string|null>(null);
+  const [incrementalProgrammeId,setIncrementalProgrammeId]=useState<string|null>(null);
+  const [incrementalCaptureName,setIncrementalCaptureName]=useState('');
+  const [incrementalPromptCopied,setIncrementalPromptCopied]=useState(false);
+  const [incrementalClipboardError,setIncrementalClipboardError]=useState<string|null>(null);
 
   useEffect(()=>{let active=true;setLoading(true);
     captureDataService.loadAllProgrammes().then(async items=>{
@@ -103,7 +117,58 @@ export function ProgrammesPage(){
     return()=>{active=false};
   },[route,selectedProgramme]);
 
-  const navigate=(next:Route)=>{setError(null);setRoute(next)};
+  const navigate=(next:Route)=>{setError(null);setChatLaunchError(null);setRoute(next)};
+  const newProgrammeId=normalizeArianeId(newProgrammeName);
+  const initialCaptureId=normalizeArianeId(initialCaptureName);
+  const programmeAlreadyExists=programmes.some(programme=>programme.index.programme_id===newProgrammeId);
+  const initialisationReady=Boolean(newProgrammeId&&initialCaptureId&&!programmeAlreadyExists);
+
+  const copyInitialisationPrompt=async(openChat=false)=>{
+    if(!initialisationReady)return;
+    setInitialClipboardError(null);
+    setChatLaunchError(null);
+    const prompt=buildInitialisationPrompt({programmeId:newProgrammeId,captureId:initialCaptureId});
+    try{
+      const launch=await copyPromptAndMaybeOpenChat(prompt,openChat);
+      setPromptCopied(true);
+      setNewProgrammeOpen(false);
+      window.setTimeout(()=>setPromptCopied(false),1600);
+      setChatLaunchError(chatLaunchErrorMessage(launch));
+    }catch{
+      setInitialClipboardError(clipboardErrorMessage());
+    }
+  };
+
+  const openIncremental=(programmeId:string)=>{
+    setIncrementalProgrammeId(current=>current===programmeId?null:programmeId);
+    setIncrementalCaptureName('');
+    setIncrementalPromptCopied(false);
+    setIncrementalClipboardError(null);
+    setChatLaunchError(null);
+  };
+
+  const copyIncrementalPrompt=async(programme:ProgrammeData,openChat=false)=>{
+    const captureId=normalizeArianeId(incrementalCaptureName);
+    const structureVersion=programme.index.current.structure_version;
+    const captureAlreadyExists=programme.index.captures.some(capture=>capture.capture_id===captureId);
+    if(!captureId||!structureVersion||captureAlreadyExists)return;
+    const prompt=buildIncrementalPrompt({
+      programmeId:programme.index.programme_id,
+      captureId,
+      structureVersion
+    });
+    setIncrementalClipboardError(null);
+    setChatLaunchError(null);
+    try{
+      const launch=await copyPromptAndMaybeOpenChat(prompt,openChat);
+      setIncrementalPromptCopied(true);
+      setIncrementalProgrammeId(null);
+      window.setTimeout(()=>setIncrementalPromptCopied(false),1600);
+      setChatLaunchError(chatLaunchErrorMessage(launch));
+    }catch{
+      setIncrementalClipboardError(clipboardErrorMessage());
+    }
+  };
 
   const breadcrumbItems=():BreadcrumbItem[]=>{
     const base:BreadcrumbItem[]=[{label:'Programmes',route:route.kind==='programmes'?undefined:{kind:'programmes'}}];
@@ -114,6 +179,7 @@ export function ProgrammesPage(){
     if(route.kind==='capture')base.push({label:'Captations',route:{kind:'captures',programmeId:route.programmeId}},{label:route.captureId});
     if(route.kind==='structures')base.push({label:'Structures validées'});
     if(route.kind==='structure')base.push({label:'Structures validées',route:{kind:'structures',programmeId:route.programmeId}},{label:route.structureVersion});
+    if(route.kind==='evolve')base.push({label:'Faire évoluer structure patrimoniale'});
     if(route.kind==='candidates')base.push(
       {label:'Structures validées',route:{kind:'structures',programmeId:route.programmeId}},
       {label:route.structureVersion,route:{kind:'structure',programmeId:route.programmeId,structureVersion:route.structureVersion}},
@@ -125,6 +191,7 @@ export function ProgrammesPage(){
   const backRoute=():Route|undefined=>{
     if(route.kind==='programmes')return undefined;
     if(route.kind==='programme')return {kind:'programmes'};
+    if(route.kind==='evolve')return {kind:'programmes'};
     if(route.kind==='current'||route.kind==='captures'||route.kind==='structures')return {kind:'programme',programmeId:route.programmeId};
     if(route.kind==='capture')return {kind:'captures',programmeId:route.programmeId};
     if(route.kind==='structure')return {kind:'structures',programmeId:route.programmeId};
@@ -139,17 +206,84 @@ export function ProgrammesPage(){
     <Breadcrumb items={breadcrumbItems()} onNavigate={navigate} onBack={back?()=>navigate(back):undefined}/>
 
     {error&&<section className="panel ariane-programme-error"><p className="ariane-error">{error}</p></section>}
+    {chatLaunchError&&<section className="panel ariane-programme-error"><p className="ariane-error">{chatLaunchError}</p></section>}
 
     {route.kind==='programmes'&&<>
       <section className="panel ariane-data-header">
         <div><p className="eyebrow">ARIANE · PROGRAMMES</p><h1>Programmes</h1><p>Accédez aux données courantes, aux captations et aux structures validées de chaque programme.</p></div>
-        <span className="ariane-count-pill">{programmes.length} programme(s)</span>
+        <div className="ariane-programmes-header-actions">
+          <span className="ariane-count-pill">{programmes.length} programme(s)</span>
+          <button type="button" className="button button-action ariane-new-programme-button" onClick={()=>{setNewProgrammeOpen(value=>!value);setInitialClipboardError(null);setChatLaunchError(null)}}>
+            {newProgrammeOpen?<X/>:<Plus/>}{newProgrammeOpen?'Fermer':'Nouveau programme'}
+          </button>
+        </div>
       </section>
+      {newProgrammeOpen&&<section className="panel action-panel ariane-new-programme">
+        <header>
+          <div><h2>Initialiser un nouveau programme</h2><p>Renseignez uniquement les informations nécessaires. ARIANE construit le prompt technique.</p></div>
+        </header>
+        <div className="ariane-new-programme-form">
+          <label>
+            <span>Nom du programme</span>
+            <input autoFocus value={newProgrammeName} onChange={event=>setNewProgrammeName(event.target.value)} placeholder="Ex. Brécé Le Grand Domaine"/>
+            <small>Identifiant généré : <code>{newProgrammeId||'—'}</code></small>
+          </label>
+          <label>
+            <span>Nom de la captation initiale</span>
+            <input value={initialCaptureName} onChange={event=>setInitialCaptureName(event.target.value)} placeholder="APD_PLAN"/>
+            <small>Identifiant généré : <code>{initialCaptureId||'—'}</code></small>
+          </label>
+        </div>
+        {programmeAlreadyExists&&<p className="ariane-new-programme-warning">Ce programme existe déjà dans ARIANE. Utilisez une captation incrémentale depuis sa fiche programme.</p>}
+        {initialClipboardError&&<p className="ariane-new-programme-warning">{initialClipboardError}</p>}
+        <div className="ariane-new-programme-actions">
+          <p><b>Étape suivante :</b> ouvrez ChatGPT, joignez les documents du jeu initial, collez le prompt puis envoyez.</p>
+          <button type="button" className="button button-action" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(false)}><Clipboard/>{promptCopied?'Prompt copié':'Copier le prompt'}</button>
+          <button type="button" className="button button-action" disabled={!initialisationReady} onClick={()=>void copyInitialisationPrompt(true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
+        </div>
+      </section>}
       <section className="ariane-programme-grid">
         {programmes.map(programme=>{
           const current=metrics[programme.index.programme_id];
-          return <article className="panel ariane-programme-card" key={programme.index.programme_id}>
-            <header><Database/><div><p className="eyebrow">PROGRAMME</p><h2>{programme.index.programme_id}</h2></div></header>
+          const programmeId=programme.index.programme_id;
+          const incrementalOpen=incrementalProgrammeId===programmeId;
+          const incrementalCaptureId=normalizeArianeId(incrementalCaptureName);
+          const currentStructureVersion=programme.index.current.structure_version;
+          const incrementalCaptureExists=programme.index.captures.some(capture=>capture.capture_id===incrementalCaptureId);
+          const incrementalReady=Boolean(incrementalCaptureId&&currentStructureVersion&&!incrementalCaptureExists);
+          return <article className="panel ariane-programme-card" key={programmeId}>
+            <header>
+              <Database/>
+              <div><p className="eyebrow">PROGRAMME</p><h2>{programmeId}</h2></div>
+              <div className="ariane-programme-scenario-actions">
+                <button type="button" className="button button-action ariane-incremental-launcher" onClick={()=>openIncremental(programmeId)}>
+                  {incrementalOpen?<X/>:<Plus/>}{incrementalOpen?'Fermer':'Nouvelle captation'}
+                </button>
+                <button type="button" className="button button-action" disabled={!currentStructureVersion} onClick={()=>{setIncrementalProgrammeId(null);setNewProgrammeOpen(false);navigate({kind:'evolve',programmeId})}}>
+                  <GitBranch/>Faire évoluer structure patrimoniale
+                </button>
+              </div>
+            </header>
+            {incrementalOpen&&<section className="action-panel ariane-incremental-panel">
+              <div className="ariane-incremental-heading">
+                <div><h3>Captation incrémentale</h3><p>Le programme et la structure courante sont renseignés automatiquement.</p></div>
+                <span>Structure : <code>{currentStructureVersion||'Aucune structure validée'}</code></span>
+              </div>
+              {!currentStructureVersion?<p className="ariane-new-programme-warning">Une captation incrémentale nécessite une structure CURRENT validée. Validez d’abord la structure initiale.</p>:<>
+                <label>
+                  <span>Nom de la nouvelle captation</span>
+                  <input autoFocus value={incrementalCaptureName} onChange={event=>setIncrementalCaptureName(event.target.value)} placeholder="Ex. PC"/>
+                  <small>Identifiant généré : <code>{incrementalCaptureId||'—'}</code></small>
+                </label>
+                {incrementalCaptureExists&&<p className="ariane-new-programme-warning">Cet identifiant de captation existe déjà pour ce programme.</p>}
+                {incrementalClipboardError&&<p className="ariane-new-programme-warning">{incrementalClipboardError}</p>}
+                <div className="ariane-incremental-actions">
+                  <p><b>Étape suivante :</b> joignez uniquement les nouveaux documents dans ChatGPT, collez le prompt puis envoyez.</p>
+                  <button type="button" className="button button-action" disabled={!incrementalReady} onClick={()=>void copyIncrementalPrompt(programme,false)}><Clipboard/>{incrementalPromptCopied?'Prompt copié':'Copier le prompt'}</button>
+                  <button type="button" className="button button-action" disabled={!incrementalReady} onClick={()=>void copyIncrementalPrompt(programme,true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
+                </div>
+              </>}
+            </section>}
             <div className="ariane-programme-actions">
               <button type="button" onClick={()=>navigate({kind:'current',programmeId:programme.index.programme_id})}>
                 <span><Database/><b>Données courantes</b></span>
@@ -182,6 +316,12 @@ export function ProgrammesPage(){
     </>}
 
     {route.kind==='current'&&selectedProgramme&&<CurrentDataPage programmeId={selectedProgramme.index.programme_id}/>}
+
+    {route.kind==='evolve'&&selectedProgramme&&<StructureEvolutionPage
+      programme={selectedProgramme}
+      onBack={()=>navigate({kind:'programmes'})}
+      onChatLaunchError={setChatLaunchError}
+    />}
 
     {route.kind==='captures'&&selectedProgramme&&<>
       <section className="panel ariane-data-header"><div><p className="eyebrow">CAPTATIONS</p><h1>Captations réalisées</h1><p>{selectedProgramme.index.programme_id}</p></div><span className="ariane-count-pill">{selectedProgramme.index.captures.length}</span></section>

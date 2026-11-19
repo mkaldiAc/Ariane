@@ -1,6 +1,8 @@
 # ARIANE — Structure patrimoniale de référence
 
-Version : 1.3.4
+Protocole ARIANE : **1.4.0** (révision du référentiel d'objets : **1.3.4**).
+
+Référence normative : [`ia/referentiel/objets-patrimoniaux.yaml`](../../ia/referentiel/objets-patrimoniaux.yaml).
 
 ## Finalité
 
@@ -90,4 +92,8 @@ Les captations documentaires ultérieures :
 - réutilisent les identifiants d'objets existants ;
 - ne peuvent jamais la modifier automatiquement.
 
-Si un jeu documentaire ultérieur révèle un objet absent ou une incohérence, l'IA produit une anomalie. Toute évolution éventuelle de la structure est une décision de gouvernance externe à la captation IA.
+Si un jeu documentaire ultérieur révèle un objet absent ou une incohérence, l'IA signale une anomalie. Lorsque l'existence d'un objet absent est démontrée, elle peut également le conserver comme `CANDIDAT_STRUCTURE` dans la CAPTURE immuable, avec ses observations et relations en attente de rattachement structurel.
+
+Ce candidat et ses données restent **hors CURRENT**. Seule une décision humaine explicite, matérialisée par l'action `VALIDER_STRUCTURE`, peut produire une nouvelle version `STR-xxx` et promouvoir les données devenues rattachables vers CURRENT. Les captations historiques ne sont jamais modifiées.
+
+La validation humaine des valeurs métier reste un processus distinct, réalisé dans le système aval.

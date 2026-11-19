@@ -1,6 +1,8 @@
 # ARIANE — Référentiel attributaire
 
-Version : 1.3.0
+Protocole ARIANE : **1.4.0** (révision du catalogue attributaire : **1.3.3**).
+
+Référence normative : [`ia/referentiel/attributs/index.yaml`](../../ia/referentiel/attributs/index.yaml), qui déclare **278 attributs canoniques**.
 
 ## Finalité
 
@@ -43,8 +45,9 @@ Pour un programme donné :
 
 1. le premier jeu documentaire permet de construire une structure et de produire les premières observations ;
 2. après validation externe de la structure, celle-ci est figée ;
-3. chaque jeu documentaire suivant produit uniquement de nouvelles observations sur les objets existants ;
-4. aucune observation antérieure n'est écrasée.
+3. chaque jeu documentaire suivant produit de nouvelles observations et relations sur la structure validée ;
+4. un objet nouveau démontré peut être conservé comme `CANDIDAT_STRUCTURE`, avec ses observations et relations dans une CAPTURE, sans entrer dans CURRENT avant une validation humaine explicite de la structure ;
+5. aucune observation antérieure n'est écrasée et aucune CAPTURE historique n'est réécrite.
 
 La sélection ultérieure d'une observation faisant foi relève de la base de données et du processus métier aval, pas de l'IA.
 
@@ -52,7 +55,7 @@ La sélection ultérieure d'une observation faisant foi relève de la base de do
 
 - `mode_financement` est porté par `LOG`.
 - `numero_lot_edd` est autorisé sur `LOG`, `LOC`, `CAV`, `DEP`, `PST` sans création d'un objet `LOT`.
-- `repere_source` conserve les désignations explicites présentes dans les documents.
+- `repere_source` conserve uniquement une désignation explicitement portée par la source et attribuable sans ambiguïté à l'objet. Il est distinct de `source_anchor`, qui localise la preuve documentaire ; il n'est jamais fabriqué à partir d'un identifiant ARIANE.
 - les surfaces de sol, plafond et murs sont portées par `HAL`, `CAG`, `CIR` ; des agrégats `BAT` existent, avec `RES` uniquement comme exception documentaire.
 - un proxy surface de sol → surface de plafond est autorisé sous conditions et doit être tracé.
 - les tantièmes de charges générales sont séparés entre numérateur et base de répartition.
