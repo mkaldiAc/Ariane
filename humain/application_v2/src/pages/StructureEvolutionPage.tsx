@@ -121,7 +121,6 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
   const availableCandidates=candidates.filter(candidate=>!acceptedCandidateIds.has(candidate.object.object_id)&&!historicalById.has(candidate.object.object_id));
   const removedExisting=currentObjects.filter(object=>removedExistingIds.has(object.object_id));
   const archivedAvailable=historicalObjects.filter(item=>!reintegratedIds.has(item.object.object_id));
-  const reinserted=historicalObjects.filter(item=>reintegratedIds.has(item.object.object_id));
   const changedParents=targetObjects.filter(object=>parentOverrides[object.object_id]
     &&parentOverrides[object.object_id]!==(
       currentById.get(object.object_id)||candidatesById.get(object.object_id)?.object||historicalById.get(object.object_id)?.object

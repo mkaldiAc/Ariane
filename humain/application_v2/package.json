@@ -11,7 +11,10 @@
     "theme:assets": "node scripts/prepare-theme.mjs",
     "predev": "npm run theme:assets",
     "prebuild": "npm run theme:assets",
-    "prepreview": "npm run theme:assets"
+    "prepreview": "npm run theme:assets",
+    "check:referentiel": "node scripts/check-referentiel.mjs",
+    "check:types": "tsc --noEmit -p tsconfig.app.json",
+    "verify": "npm run check:referentiel && npm run check:types && npm run build"
   },
   "dependencies": {
     "@azure/msal-browser": "^4.20.0",
