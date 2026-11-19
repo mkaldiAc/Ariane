@@ -4,7 +4,7 @@ Ce dossier constitue le **seul point d'entrée nécessaire à une IA de captatio
 
 L'IA ne doit pas utiliser les ressources du dossier `humain/` pour exécuter une captation. Ces ressources servent à la compréhension, à la gouvernance, aux arbitrages et aux livrables de travail.
 
-Version : **1.4.0**.\n\nLes champs `version` portés par certaines ressources internes correspondent à leur révision propre et peuvent être antérieurs à la version globale du protocole. La version d'exécution ARIANE faisant autorité est celle de `manifest.yaml` et du fichier `VERSION` racine.
+Version : **1.5.0**.\n\nLes champs `version` portés par certaines ressources internes correspondent à leur révision propre et peuvent être antérieurs à la version globale du protocole. La version d'exécution ARIANE faisant autorité est celle de `manifest.yaml` et du fichier `VERSION` racine.
 
 ## Objectif
 
@@ -54,6 +54,7 @@ Entrées minimales :
 Sorties :
 - `SOURCES` ;
 - `OBJETS_CANDIDATS` lorsque nécessaire ;
+- `PROPOSITIONS_STRUCTURE` lorsque des écarts structurels sont démontrés ;
 - `OBSERVATIONS` ;
 - `RELATIONS` ;
 - `ANOMALIES`.
@@ -168,3 +169,11 @@ Elle ne valide jamais seule une donnée métier ni une évolution de structure.
 Une donnée captée n'est jamais perdue au seul motif qu'elle n'est pas encore intégrable à CURRENT.
 
 Pour le démonstrateur Git, toute écriture de résultat s'effectue exclusivement dans `mkaldiAc/Ariane_capture_data` selon `contracts/capture-storage.yaml`. Le dépôt `mkaldiAc/Ariane` reste en lecture seule pendant une captation.
+
+## ARIANE 1.5.0 : propositions structurelles réversibles
+
+Les captations incrémentales conservent dans `propositions_structure.json` les propositions `AJOUT`, `RETRAIT`, `MODIFIER_PARENT` et `REINTEGRATION`. Ce sont des constats documentaires **sans effet sur la structure validée**. `IDENTIFIEE` signifie que l'objet précis est démontré ; `A_QUALIFIER` signifie que l'écart ne permet pas de choisir un objet (par exemple 21 places contre 22). L'IA ne sélectionne jamais arbitrairement une suppression.
+
+Un retrait validé sort l'objet de CURRENT sans effacer les CAPTURE et STR historiques. Une réintégration reprend le même `object_id` et restaure les observations éligibles de toutes les CAPTURE. Les décisions humaines explicites `VALIDER_STRUCTURE` peuvent porter des opérations `changes` structurées.
+
+**Source normative unique :** le dossier `ia/` de la branche `main`, sans versions historiques sélectionnables par l'application ou les prompts.

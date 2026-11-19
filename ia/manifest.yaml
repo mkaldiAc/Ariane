@@ -1,4 +1,4 @@
-version: "1.4.0"
+version: "1.5.0"
 project: "ARIANE"
 purpose: "Protocole standardisé de captation patrimoniale cumulative assistée par IA."
 
@@ -19,7 +19,7 @@ execution_modes:
     may_create_structure: false
     may_emit_candidate_objects: true
     may_modify_validated_structure: false
-    outputs: [SOURCES, OBJETS_CANDIDATS, OBSERVATIONS, RELATIONS, ANOMALIES]
+    outputs: [SOURCES, OBJETS_CANDIDATS, PROPOSITIONS_STRUCTURE, OBSERVATIONS, RELATIONS, ANOMALIES]
 
 required_context:
   always:
@@ -36,6 +36,7 @@ normative_resources:
   attributes_index: "ia/referentiel/attributs/index.yaml"
   execution: "ia/instructions/EXECUTION.md"
   capture_storage: "ia/contracts/capture-storage.yaml"
+  structure_proposals_schema: "ia/schemas/proposition-structure.schema.json"
   rules:
     - "ia/regles/01-structure-patrimoniale.md"
     - "ia/regles/02-captation-attributs.md"
@@ -54,6 +55,11 @@ principles:
   - "Les observations et relations d'un objet candidat sont conservées dans la CAPTURE avec le statut EN_ATTENTE_RATTACHEMENT_STRUCTUREL."
   - "L'action VALIDER_STRUCTURE est le seul mécanisme IA autorisé pour matérialiser une décision humaine d'évolution de structure et promouvoir les données devenues rattachables vers CURRENT."
   - "L'IA ne décide jamais seule qu'une structure est validée."
+  - "Une captation peut proposer AJOUT, RETRAIT, MODIFIER_PARENT ou REINTEGRATION, mais ne modifie jamais une STR validée."
+  - "Une différence quantitative sans identification ne permet jamais de sélectionner un objet à retirer : proposition A_QUALIFIER."
+  - "Le retrait n'efface jamais l'object_id, les observations ni les relations historiques de l'objet."
+  - "Une réintégration réutilise l'identifiant historique et les CAPTURE immuables pour restaurer les données éligibles."
+  - "Les déplacements respectent allowed_parents, la réalité physique, la priorité des CIR et l'absence de cycles."
   - "Une observation ne remplace jamais une observation antérieure."
   - "La validation humaine des observations est hors du périmètre IA."
   - "Toute source analysée est déclarée dans la sortie SOURCES avec un source_id stable pour la captation."
@@ -75,6 +81,7 @@ structure_validation:
     - programme_id
     - target_structure_version
   candidate_promotion_field: "approved_candidate_object_ids"
+  structured_changes_field: "changes"
   request_schema: "ia/schemas/structure-finalization-request.schema.json"
   rule: "ia/regles/07-finalisation-structure-validee.md"
   missing_field_behavior: "DO_NOT_VALIDATE"

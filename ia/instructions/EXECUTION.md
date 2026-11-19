@@ -1,6 +1,6 @@
 # ARIANE — Protocole d'exécution IA
 
-Version : 1.4.0
+Version : 1.5.0
 
 ## 1. Déterminer l'opération
 
@@ -154,6 +154,7 @@ L'IA ne renseigne aucun statut métier tel que :
 ### CAPTATION_INCREMENTALE
 - SOURCES
 - OBJETS_CANDIDATS si nécessaire
+- PROPOSITIONS_STRUCTURE si nécessaire
 - OBSERVATIONS
 - RELATIONS
 - ANOMALIES
@@ -181,3 +182,9 @@ Lorsque l'utilisateur demande explicitement de stocker les résultats dans Git :
 - ne jamais réécrire une CAPTURE existante ;
 - mettre à jour uniquement les index techniques et CURRENT lorsque le protocole l'autorise ;
 - créer `capture.json` conformément à `ia/schemas/capture-metadata.schema.json`.
+
+## 16. Propositions non exécutoires et retrait réversible
+
+En `CAPTATION_INCREMENTALE`, émettre `propositions_structure.json` si les documents justifient un AJOUT, RETRAIT, MODIFIER_PARENT ou REINTEGRATION. Le choix d'un object_id pour un retrait requiert une identification documentaire probante : si seule une quantité diffère, proposer `RETRAIT / A_QUALIFIER` sans object_id. Une absence de mention ne prouve pas une absence physique. Maintenir l'anomalie pour tracer l'écart.
+
+À `VALIDER_STRUCTURE`, exiger l'instruction humaine explicite et la correspondance à la dernière STR CURRENT ; vérifier l'intégralité de l'arbre, `allowed_parents`, la priorité CIR, les enfants et l'absence de cycles. Refuser tout changement non conforme et n'écrire aucune sortie partielle. Une suppression validée retire les données de CURRENT mais jamais des CAPTURE historiques. Une réintégration restaure les observations/relations éligibles de **toutes** les CAPTURE sous l'ID historique. Aucun changement structurel n'est exécuté pendant une captation.

@@ -1,6 +1,6 @@
 # ARIANE — Règles IA de structure patrimoniale
 
-Version : 1.4.0
+Version : 1.5.0
 
 ## Portée
 
@@ -74,3 +74,7 @@ Lorsqu'un document d'une captation incrémentale démontre l'existence d'un obje
 - l'objet candidat ne peut jamais entrer dans la structure validée ni dans `CURRENT` au cours de la captation.
 
 Une évolution de structure ne peut intervenir qu'après décision humaine explicite matérialisée par `VALIDER_STRUCTURE`.
+
+## Écarts structurels observés dans les captations incrémentales
+
+L'IA peut signaler les écarts dans `propositions_structure.json` : `AJOUT` d'un objet absent, `RETRAIT` d'un objet validé, `MODIFIER_PARENT` lorsque le parent physique est prouvé différent, et `REINTEGRATION` d'un ancien objet identifié dans une STR historique. Ces propositions ne sont jamais exécutoires. Lorsqu'un objet précis ne peut pas être identifié, le statut est `A_QUALIFIER` : ne pas deviner d'ID ni de parent. Les anomalies restent conservées indépendamment de ces propositions.

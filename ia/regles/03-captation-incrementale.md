@@ -1,6 +1,6 @@
 # ARIANE — Captation incrémentale
 
-Version : 1.4.0
+Version : 1.5.0
 
 ## Objectif
 
@@ -71,3 +71,15 @@ Toutes les sorties d'une captation incrémentale reprennent le même `programme_
 Une CAPTURE passée n'est jamais modifiée par une captation ultérieure.
 
 Le fonctionnement détaillé de `CAPTURE`, `CURRENT` et de la promotion après validation de structure est défini dans `08-capture-current.md`.
+
+## Propositions de structure : ajout, retrait, déplacement, réintégration
+
+Une CAPTURE incrémentale peut inclure `propositions_structure.json` conforme à `ia/schemas/proposition-structure.schema.json`. Pour tout écart démontré :
+- `AJOUT` : créer le candidat classique si l'objet est réellement nouveau, avec observations en attente ;
+- `RETRAIT` : proposer le retrait d'un objet actif seulement si la source remet en cause sa présence ;
+- `MODIFIER_PARENT` : documenter l'ancien et le nouveau parent, et la preuve physique ;
+- `REINTEGRATION` : rechercher l'object_id historique avant d'inventer un nouvel ID pour un objet précédemment retiré.
+
+`IDENTIFIEE` implique une identité documentée. Sinon, utiliser `A_QUALIFIER` et `object_id: null`. Un total de 21 places pour 22 objets validés ne prouve pas que `PST_SS_22` doit être retirée. La seule omission d'un objet dans un document n'est pas une preuve de retrait.
+
+La proposition conserve sa source et son ancre ; l'anomalie correspondante reste traçable. Une proposition ne modifie ni la structure validée ni sa projection CURRENT. Les nouvelles observations sur les objets toujours actifs restent éligibles à CURRENT ; celles d'objets archivés en attente de réintégration restent dans la CAPTURE. **Aucune évolution n'est appliquée sans validation humaine explicite.**
