@@ -25,39 +25,6 @@ const nextStructureVersion=(programme:ProgrammeData)=>{
 
 const objectLabel=(object:PatrimonialObject)=>object.label||object.object_id;
 
-const descendantsOf=(objects:PatrimonialObject[],rootId:string)=>{
-  const byParent=new Map<string,PatrimonialObject[]>();
-  objects.forEach(object=>{
-    if(!object.parent_object_id)return;
-    const list=byParent.get(object.parent_object_id)||[];
-    list.push(object);
-    byParent.set(object.parent_object_id,list);
-  });
-  const ids=new Set<string>([rootId]);
-  const visit=(id:string)=>{
-    (byParent.get(id)||[]).forEach(child=>{
-      if(ids.has(child.object_id))return;
-      ids.add(child.object_id);
-      visit(child.object_id);
-    });
-  };
-  visit(rootId);
-  return ids;
-};
-
-const ancestorIds=(objects:PatrimonialObject[],objectId:string)=>{
-  const byId=new Map(objects.map(object=>[object.object_id,object]));
-  const ids=new Set<string>();
-  let current=byId.get(objectId);
-  while(current?.parent_object_id){
-    const parentId=current.parent_object_id;
-    if(ids.has(parentId))break;
-    ids.add(parentId);
-    current=byId.get(parentId);
-  }
-  return ids;
-};
-
 export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Props){
   const [currentObjects,setCurrentObjects]=useState<PatrimonialObject[]>([]);
   const [candidates,setCandidates]=useState<StructureCandidate[]>([]);
@@ -151,10 +118,6 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
     return ordered;
   },[targetObjects]);
 
-  const orphanTargetObjects=useMemo(
-    ()=>targetObjects.filter(object=>object.parent_object_id&&!targetIds.has(object.parent_object_id)),
-    [targetObjects,targetIds]
-  );
 
   const structureIssues=useMemo(()=>validateStructure(targetObjects),[targetObjects]);
   const availableCandidates=candidates.filter(candidate=>!acceptedCandidateIds.has(candidate.object.object_id));
@@ -327,11 +290,19 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
       <span><b>{targetObjects.length}</b> objets cible</span>
       <span><b>{approvedCandidateIds.length}</b> candidat(s) ajouté(s)</span>
       <span><b>{removedIds.length}</b> objet(s) retiré(s)</span>
-      <button type="button" className="button button-action" disabled={!hasChanges} onClick={()=>{setAcceptedCandidateIds(new Set());setRemovedExistingIds(new Set())}}><RotateCcw/>Réinitialiser</button>
+      <span><b>{reinsertedIds.length}</b> objet(s) réintégré(s)</span>
+      <span><b>{changedParents.length}</b> parent(s) modifié(s)</span>
+      <button type="button" className="button button-action" disabled={!hasChanges} onClick={()=>{
+        setAcceptedCandidateIds(new Set());setRemovedExistingIds(new Set());
+        setReintegratedIds(new Set());setParentOverrides({});setPhysicalVerified(false);
+        setHumanJustification('');setEditError(null);setApprovedProposalByObject({});
+      }}><RotateCcw/>Réinitialiser</button>
     </div>
 
-    {orphanTargetObjects.length>0&&<div className="ariane-evolution-warning">
-      <b>Structure cible incohérente :</b> {orphanTargetObjects.length} objet(s) ont un parent absent de la structure cible. Réintégrez le parent ou retirez l’objet concerné avant validation.
+    {editError&&<div className="ariane-evolution-warning" role="alert"><AlertTriangle/> {editError}</div>}
+    {structureIssues.length>0&&<div className="ariane-evolution-warning" role="alert">
+      <b>Validation bloquée : {structureIssues.length} erreur(s) de structure</b>
+      <ul>{structureIssues.slice(0,12).map((issue,index)=><li key={index}><code>{issue.objectId}</code> : {issue.message}</li>)}</ul>
     </div>}
 
     <div className="ariane-evolution-columns">
@@ -340,39 +311,114 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
         <div className="ariane-evolution-list">
           {orderedTargetObjects.map(({object,depth})=>{
             const isCandidate=acceptedCandidateIds.has(object.object_id);
-            return <article key={object.object_id} style={{marginLeft:`${Math.min(depth,8)*14}px`}} draggable onDragStart={event=>dragStart(event,{kind:isCandidate?'candidate':'existing',objectId:object.object_id})} className={isCandidate?'is-added':''}>
+            const isReintegrated=reintegratedIds.has(object.object_id);
+            const editable=moveObjectId===object.object_id;
+            const parents=targetObjects.filter(parent=>
+              parent.object_id!==object.object_id&&allowedParentTypes(object.object_type).includes(parent.object_type)
+              &&canReparent(targetObjects,object.object_id,parent.object_id).length===0
+            );
+            return <article key={object.object_id} style={{marginLeft:`${Math.min(depth,8)*14}px`}}
+              draggable onDragStart={event=>dragStart(event,{kind:isCandidate?'candidate':isReintegrated?'historical':'existing',objectId:object.object_id})}
+              onDragOver={event=>{event.preventDefault();event.stopPropagation()}}
+              onDrop={event=>{event.stopPropagation();onDrop('target',event,object.object_id)}}
+              className={isCandidate?'is-added':isReintegrated?'is-reintegrated':parentOverrides[object.object_id]?'is-moved':''}>
               <GripVertical/>
               <span className="ariane-type-badge">{object.object_type}</span>
-              <div><b>{objectLabel(object)}</b><code>{object.object_id}</code><small>Parent : {object.parent_object_id||'racine'}{isCandidate?' · candidat ajouté':''}</small></div>
-              <button type="button" className="ariane-evolution-item-action" aria-label={isCandidate?'Retirer ce candidat de la structure cible':'Retirer cet objet de la structure cible'} onClick={()=>isCandidate?removeCandidate(object.object_id):removeExisting(object.object_id)}><ArrowRight/></button>
+              <div>
+                <b>{objectLabel(object)}</b><code>{object.object_id}</code>
+                <small>Parent : {object.parent_object_id||'racine'}{isCandidate?' · ajout':isReintegrated?' · réintégration':parentOverrides[object.object_id]?' · parent modifié':''}</small>
+                {editable&&<label className="ariane-parent-picker">Nouveau parent :
+                  <select value={object.parent_object_id||''} onChange={event=>updateParent(object.object_id,event.target.value)}>
+                    <option value="" disabled>Choisir un parent valide</option>
+                    {parents.map(parent=><option key={parent.object_id} value={parent.object_id}>{parent.object_type} · {objectLabel(parent)} ({parent.object_id})</option>)}
+                  </select>
+                </label>}
+              </div>
+              {object.object_type!=='PRG'&&<button type="button" className="ariane-evolution-item-action" title="Changer le parent de cet objet" aria-label={'Changer le parent de '+object.object_id} onClick={()=>setMoveObjectId(editable?null:object.object_id)}><Move/></button>}
+              <button type="button" className="ariane-evolution-item-action" aria-label={isCandidate?'Annuler cet ajout':isReintegrated?'Annuler cette réintégration':'Proposer un retrait explicite'} onClick={()=>isCandidate?removeCandidate(object.object_id):isReintegrated?removeHistorical(object.object_id):removeExisting(object.object_id)}><ArrowRight/></button>
             </article>;
           })}
         </div>
       </section>
 
       <section className="panel ariane-evolution-zone ariane-evolution-available" onDragOver={event=>event.preventDefault()} onDrop={event=>onDrop('available',event)}>
-        <header><div><GitBranch/><div><h2>Hors structure cible</h2><p>Candidats disponibles et objets explicitement retirés</p></div></div><span>{availableCandidates.length+removedExisting.length}</span></header>
+        <header><div><GitBranch/><div><h2>Propositions et archives</h2><p>Ajouts · retraits · réintégrations · écarts documentaires</p></div></div><span>{availableCandidates.length+removedExisting.length+archivedAvailable.length+proposals.length}</span></header>
         <div className="ariane-evolution-list">
+          {proposals.length>0&&<div className="ariane-evolution-proposals">
+            <h3>Propositions issues des captations ({proposals.length})</h3>
+            {proposals.map(proposal=>{
+              const target=proposal.object_id?targetObjects.find(object=>object.object_id===proposal.object_id):undefined;
+              const archived=proposal.object_id?historicalById.get(proposal.object_id):undefined;
+              const candidate=proposal.object_id?candidatesById.get(proposal.object_id):undefined;
+              const canRemove=proposal.operation==='RETRAIT'&&target&&proposal.qualification_status==='IDENTIFIEE';
+              return <div key={proposal.proposal_id} className="ariane-evolution-proposal">
+                <b>{proposal.operation} · {proposal.qualification_status==='A_QUALIFIER'?'À qualifier':'Objet identifié'}</b>
+                <small>{proposal.capture_id}{proposal.legacy?' · Anomalie historique interprétée, non validée':''}</small>
+                <p>{proposal.description}</p>
+                {proposal.object_id&&<code>{proposal.object_id}</code>}
+                <div className="ariane-evolution-proposal-actions">
+                  {canRemove&&<button type="button" className="button" onClick={()=>removeExisting(proposal.object_id!,proposal.proposal_id)}>Proposer le retrait</button>}
+                  {proposal.operation==='AJOUT'&&candidate&&<button className="button" type="button" onClick={()=>addCandidate(candidate.object.object_id)}>Ajouter le candidat</button>}
+                  {proposal.operation==='REINTEGRATION'&&archived&&<button className="button" type="button" onClick={()=>reintegrateHistorical(archived.object.object_id)}>Réintégrer</button>}
+                  {proposal.operation==='MODIFIER_PARENT'&&target&&proposal.to_parent_object_id&&<button className="button" type="button" onClick={()=>updateParent(target.object_id,proposal.to_parent_object_id!,proposal.proposal_id)}>Appliquer le rattachement proposé</button>}
+                  {proposal.operation==='RETRAIT'&&proposal.qualification_status==='A_QUALIFIER'&&<button className="button" type="button" onClick={()=>{
+                    setQualifiedProposalId(qualifiedProposalId===proposal.proposal_id?'':proposal.proposal_id);
+                    setQualifiedObjectId('');
+                  }}>Qualifier manuellement</button>}
+                </div>
+                {qualifiedProposalId===proposal.proposal_id&&<div className="ariane-qualify">
+                  <label>Objet à retirer, identifié par l'humain
+                    <select value={qualifiedObjectId} onChange={event=>setQualifiedObjectId(event.target.value)}>
+                      <option value="">Sélectionner l'objet exact</option>
+                      {targetObjects.filter(o=>o.object_type!=='PRG').map(object=><option key={object.object_id} value={object.object_id}>{object.object_type} · {objectLabel(object)} ({object.object_id})</option>)}
+                    </select>
+                  </label>
+                  <button type="button" className="button" disabled={!qualifiedObjectId} onClick={()=>{
+                    removeExisting(qualifiedObjectId,proposal.proposal_id);
+                    setQualifiedProposalId('');
+                  }}>Retenir cet objet pour retrait</button>
+                </div>}
+              </div>;
+            })}
+          </div>}
+          <h3 className="ariane-zone-subtitle">Nouveaux objets candidats ({availableCandidates.length})</h3>
           {availableCandidates.map(candidate=><article key={candidate.object.object_id} draggable onDragStart={event=>dragStart(event,{kind:'candidate',objectId:candidate.object.object_id})}>
             <GripVertical/>
             <span className="ariane-type-badge">{candidate.object.object_type}</span>
             <div><b>{objectLabel(candidate.object)}</b><code>{candidate.object.object_id}</code><small>Parent : {candidate.object.parent_object_id||'racine'} · détecté dans {candidate.captureIds.join(', ')}</small></div>
             <button type="button" className="ariane-evolution-item-action" aria-label="Ajouter ce candidat à la structure cible" onClick={()=>addCandidate(candidate.object.object_id)}><ArrowLeft/></button>
           </article>)}
+          <h3 className="ariane-zone-subtitle">Objets retirés de la structure cible ({removedExisting.length})</h3>
           {removedExisting.map(object=><article key={object.object_id} draggable onDragStart={event=>dragStart(event,{kind:'removed',objectId:object.object_id})} className="is-removed">
             <GripVertical/>
             <span className="ariane-type-badge">{object.object_type}</span>
             <div><b>{objectLabel(object)}</b><code>{object.object_id}</code><small>Retiré de la structure cible · glissez à gauche pour annuler</small></div>
             <button type="button" className="ariane-evolution-item-action" aria-label="Réintégrer cet objet à la structure cible" onClick={()=>restoreExisting(object.object_id)}><ArrowLeft/></button>
           </article>)}
-          {availableCandidates.length===0&&removedExisting.length===0&&<p className="ariane-evolution-empty">Aucun élément hors structure cible.</p>}
+          <h3 className="ariane-zone-subtitle">Objets archivés réintégrables ({archivedAvailable.length})</h3>
+          {archivedAvailable.map(item=><article key={item.object.object_id} className="is-archived" draggable onDragStart={event=>dragStart(event,{kind:'historical',objectId:item.object.object_id})}>
+            <ArchiveRestore/><span className="ariane-type-badge">{item.object.object_type}</span>
+            <div><b>{objectLabel(item.object)}</b><code>{item.object.object_id}</code><small>Présent dans : {item.structureVersions.join(', ')}</small></div>
+            <button type="button" className="ariane-evolution-item-action" aria-label={'Réintégrer '+item.object.object_id} onClick={()=>reintegrateHistorical(item.object.object_id)}><ArrowLeft/></button>
+          </article>)}
+          {availableCandidates.length===0&&removedExisting.length===0&&archivedAvailable.length===0&&proposals.length===0&&<p className="ariane-evolution-empty">Aucun élément hors structure cible.</p>}
         </div>
       </section>
     </div>
 
+    <section className="panel ariane-evolution-evidence">
+      <h2>Justification de l'arbitrage humain</h2>
+      <p>Obligatoire pour retirer ou déplacer un objet. Précisez la preuve physique et les identifiants concernés : aucun retrait ne découle automatiquement d'une anomalie.</p>
+      <textarea value={humanJustification} onChange={event=>setHumanJustification(event.target.value)} rows={3} placeholder="Document ou constat métier justifiant la sélection précise, le retrait ou le nouveau parent…" />
+      {hasParentChanges&&<label className="ariane-evolution-physical">
+        <input type="checkbox" checked={physicalVerified} onChange={event=>setPhysicalVerified(event.target.checked)}/>
+        J'ai vérifié la réalité physique du rattachement et la priorité obligatoire des CIR directement desservantes.
+      </label>}
+      {physicalWarnings.length>0&&<p className="ariane-evolution-warning">{physicalWarnings.length} objet(s) ont un parent qui n'est pas une CIR. Vérifiez qu'aucune circulation intérieure directement desservante n'est démontrable.</p>}
+    </section>
     <footer className="panel ariane-evolution-footer">
-      <p>Chaque déplacement constitue une décision humaine préparatoire. Le prompt ne sera généré qu’après confirmation explicite.</p>
-      <button className="button button-action" type="button" disabled={!canValidate} onClick={()=>setConfirmOpen(true)}><Check/>Valider les changements</button>
+      <p>Les mouvements sont des décisions préparatoires. La structure reste inchangée jusqu'à confirmation explicite, puis exécution contrôlée du prompt.</p>
+      <button className="button button-action" type="button" disabled={!canValidate} onClick={()=>{setHumanApproved(false);setConfirmOpen(true)}}><Check/>Valider les changements</button>
     </footer>
 
     {confirmOpen&&<div className="ariane-evolution-modal-backdrop" role="presentation">
@@ -381,11 +427,17 @@ export function StructureEvolutionPage({programme,onBack,onChatLaunchError}:Prop
         <div className="ariane-evolution-changes">
           <section><h3>Candidats ajoutés ({approvedCandidateIds.length})</h3>{approvedCandidateIds.length?<ul>{approvedCandidateIds.map(id=><li key={id}><code>{id}</code> · {objectLabel(candidatesById.get(id)!.object)}</li>)}</ul>:<p>Aucun candidat ajouté.</p>}</section>
           <section><h3>Objets retirés ({removedIds.length})</h3>{removedIds.length?<ul>{removedIds.map(id=><li key={id}><code>{id}</code> · {objectLabel(currentById.get(id)!)}</li>)}</ul>:<p>Aucun objet retiré.</p>}</section>
+          <section><h3>Objets réintégrés ({reinsertedIds.length})</h3>{reinsertedIds.length?<ul>{reinsertedIds.map(id=><li key={id}><code>{id}</code></li>)}</ul>:<p>Aucune réintégration.</p>}</section>
+          <section><h3>Rattachements modifiés ({changedParents.length})</h3>{changedParents.length?<ul>{changedParents.map(o=><li key={o.object_id}><code>{o.object_id}</code> → <code>{o.parent_object_id}</code></li>)}</ul>:<p>Aucun déplacement.</p>}</section>
         </div>
+        <label className="ariane-evolution-approval">
+          <input type="checkbox" checked={humanApproved} onChange={event=>setHumanApproved(event.target.checked)}/>
+          Je confirme explicitement, en tant qu'humain, l'ensemble des {changes.length} changement(s) décrits ci-dessus. Je comprends qu'aucun changement n'est validé par l'IA de sa propre initiative.
+        </label>
         {clipboardError&&<p className="ariane-new-programme-warning">{clipboardError}</p>}
         <div className="ariane-evolution-modal-actions">
-          <button type="button" className="button button-action" onClick={()=>void copyPrompt(false)}><Clipboard/>{promptCopied?'Prompt copié':'Copier le prompt'}</button>
-          <button type="button" className="button button-action" onClick={()=>void copyPrompt(true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
+          <button type="button" className="button button-action" disabled={!humanApproved} onClick={()=>void copyPrompt(false)}><Clipboard/>{promptCopied?'Prompt copié':'Copier le prompt'}</button>
+          <button type="button" className="button button-action" disabled={!humanApproved} onClick={()=>void copyPrompt(true)}><ExternalLink/>Copier et ouvrir ChatGPT</button>
         </div>
       </section>
     </div>}
