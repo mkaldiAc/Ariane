@@ -20,10 +20,11 @@ Le déclencheur canonique est :
 action: VALIDER_STRUCTURE
 human_approval: true
 programme_id: <PROGRAMME_ID>
+source_structure_version: <STRUCTURE_SOURCE>
 target_structure_version: <STRUCTURE_VERSION>
 ```
 
-Les quatre informations doivent être fournies explicitement par l'humain.
+Les cinq informations doivent être fournies explicitement par l'humain. La version source est celle de CURRENT (ou PROPOSEE lors de la première validation).
 
 Pour l'ajout d'un ou plusieurs objets candidats détectés dans des CAPTURE antérieures, l'instruction doit en outre identifier explicitement les candidats approuvés, de préférence par :
 
