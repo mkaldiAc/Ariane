@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARIANE — Guide de captation</title><link rel="stylesheet" href="/theme/tokens.css"><link rel="stylesheet" href="/theme/shell.css"><link rel="stylesheet" href="/theme/components.css"><link rel="stylesheet" href="/guide.css"></head><body><aside class="doc-side"><h1>ARIANE</h1><p>Guide de captation · 1.4.0</p><a href="#modele">Modèle</a><a href="#init">Initialisation</a><a href="#validation">Validation</a><a href="#increment">Incrémental</a><a href="#audit">Audit</a></aside><main class="doc-main"><section id="modele"><h2>Captation de bout en bout</h2><div class="flow"><b>Documents</b><span>→</span><b>ChatGPT</b><span>→</span><b>CAPTURE Git</b><span>→</span><b>Front statique</b></div><img class="diagram" src="/diagrams/cycle-ariane.svg" alt="Cycle ARIANE complet"><p class="note">Le référentiel est dans <code>mkaldiAc/Ariane/ia</code>. Les résultats sont écrits uniquement dans <code>mkaldiAc/Ariane_capture_data</code> selon <code>ia/contracts/capture-storage.yaml</code>.</p></section><section id="init"><h2>1. Initialisation</h2><pre>MODE: INITIALISATION_PROGRAMME
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARIANE — Guide de captation</title><link rel="stylesheet" href="/theme/tokens.css"><link rel="stylesheet" href="/theme/shell.css"><link rel="stylesheet" href="/theme/components.css"><link rel="stylesheet" href="/guide.css"></head><body><aside class="doc-side"><h1>ARIANE</h1><p>Guide de captation · 1.5.0</p><a href="#modele">Modèle</a><a href="#init">Initialisation</a><a href="#validation">Validation</a><a href="#increment">Incrémental</a><a href="#changement">Évolution de STR</a><a href="#audit">Audit</a></aside><main class="doc-main"><section id="modele"><h2>Captation de bout en bout</h2><div class="flow"><b>Documents</b><span>→</span><b>ChatGPT</b><span>→</span><b>CAPTURE Git</b><span>→</span><b>Front statique</b></div><img class="diagram" src="/diagrams/cycle-ariane.svg" alt="Cycle ARIANE complet"><p class="note">Le référentiel est dans <code>mkaldiAc/Ariane/ia</code>. Les résultats sont écrits uniquement dans <code>mkaldiAc/Ariane_capture_data</code> selon <code>ia/contracts/capture-storage.yaml</code>.</p></section><section id="init"><h2>1. Initialisation</h2><pre>MODE: INITIALISATION_PROGRAMME
 programme_id: &lt;PROGRAMME_ID&gt;
 capture_id: &lt;CAPTURE_ID_INITIAL&gt;
 
@@ -22,4 +22,18 @@ structure_version: &lt;STR_COURANTE&gt;
 
 Charge current/structure.json.
 La structure validée est intangible.
-Crée une nouvelle CAPTURE immuable et mets à jour CURRENT uniquement avec les données autorisées.</pre></section><section id="audit"><h2>4. Visualiser et auditer</h2><p>Recharge l'application ARIANE : elle lit <code>catalog.json</code> et les index de programme directement depuis le dépôt de données. Les vues Programmes, Captations, Structures et Validations se mettent à jour sans modification du code du front.</p></section></main></body></html>
+Crée une nouvelle CAPTURE immuable.
+Propose AJOUT / RETRAIT / MODIFIER_PARENT / REINTEGRATION dans propositions_structure.json lorsqu'un écart est prouvé.
+Un retrait non identifiable reste A_QUALIFIER, sans object_id arbitraire.
+Ne modifie aucune structure validée. Mets à jour CURRENT uniquement avec les données déjà rattachables.</pre></section>
+<section id="changement"><h2>4. Évolution de structure (humain uniquement)</h2><p>Dans l'application V2, l'humain examine les propositions, qualifie les écarts, ajoute ou retire des objets, réintègre des objets archivés ou déplace des objets vers un parent autorisé. Les changements ne sont pas exécutés automatiquement. L'utilisateur justifie les décisions, vérifie physiquement les rattachements et confirme explicitement la structure cible.</p><pre>action: VALIDER_STRUCTURE
+human_approval: true
+programme_id: &lt;PROGRAMME_ID&gt;
+source_structure_version: &lt;STR_COURANTE&gt;
+target_structure_version: &lt;STR_SUIVANTE&gt;
+changes:
+  - operation: RETRAIT
+    object_id: &lt;OBJECT_ID_IDENTIFIE_ET_APPROUVE&gt;
+    justification: &lt;PREUVE_VALIDEE_PAR_L_HUMAIN&gt;
+
+L'IA contrôle les règles du référentiel ia/ sur main et matérialise uniquement les opérations expressément approuvées. Un retrait n'efface jamais les CAPTURE ; une réintégration retrouve l'identifiant et les observations historiques.</pre></section><section id="audit"><h2>5. Visualiser et auditer</h2><p>Recharge l'application ARIANE : elle lit <code>catalog.json</code> et les index de programme directement depuis le dépôt de données. Les vues Programmes, Captations, Structures et Validations se mettent à jour sans modification du code du front.</p></section></main></body></html>
